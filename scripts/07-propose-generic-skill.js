@@ -31,11 +31,13 @@ function parseSkill(md) {
 }
 
 async function main() {
-  const [configPath, skillRepoArg, evidencePath, surfacesPath, roundId] = process.argv.slice(2);
+  const [configPath, skillRepoArg, evidencePath, surfacesPath, roundId, candidateCountArg] = process.argv.slice(2);
   if (!configPath || !skillRepoArg || !evidencePath || !surfacesPath || !roundId) {
-    console.error('Usage: 07-propose-generic-skill.js <model-config> <skill-repo> <evidence.json> <surfaces.json> <round-id>');
+    console.error('Usage: 07-propose-generic-skill.js <model-config> <skill-repo> <evidence.json> <surfaces.json> <round-id> [candidate-count=2]');
     process.exit(2);
   }
+  const candidateCount = Math.max(1, Number(candidateCountArg || 2));
+  if (!Number.isInteger(candidateCount)) throw new Error('candidate-count must be an integer');
   const config = readYAML(configPath);
   const providerCfg = JSON.parse(fs.readFileSync(path.join(os.homedir(), '.zcode', 'v2', 'config.json'), 'utf8'));
   const modelCfg = config.model || {};
@@ -57,7 +59,7 @@ async function main() {
   };
   const prompt = [
     'You are the proposer in a Self-Harness experiment.',
-    'Generate exactly 2 distinct, minimal candidates to improve the current procedural skill.',
+    'Generate exactly ' + candidateCount + ' distinct, minimal candidates to improve the current procedural skill.',
     '',
     '## Visible evidence (held-in only)',
     JSON.stringify(evidence, null, 2),
@@ -75,7 +77,7 @@ async function main() {
     '4. Candidates must be materially distinct by surface or mechanism.',
     '5. new_content must be the complete replacement content for the selected surface.',
     '',
-    'Return ONLY a JSON array with exactly 2 objects, each containing:',
+    'Return ONLY a JSON array with exactly ' + candidateCount + ' objects, each containing:',
     '{"surface_id":"...","new_content":"...","rationale":"...","expected_effect":"...","regression_risk":"..."}'
   ].join('\n');
   const response = await fetch(model.base + '/chat/completions', {
@@ -100,7 +102,7 @@ async function main() {
     if (fenced) proposals = JSON.parse(fenced[1]);
     else throw new Error('proposer did not return JSON: '+content.slice(0,1000));
   }
-  if (!Array.isArray(proposals) || proposals.length !== 2) throw new Error('expected exactly 2 proposals');
+  if (!Array.isArray(proposals) || proposals.length !== candidateCount) throw new Error('expected exactly ' + candidateCount + ' proposals');
   const outDir = path.resolve('proposals/general/mcp-builder', roundId);
   fs.mkdirSync(outDir, {recursive:true});
   proposals.forEach((proposal,index) => {
