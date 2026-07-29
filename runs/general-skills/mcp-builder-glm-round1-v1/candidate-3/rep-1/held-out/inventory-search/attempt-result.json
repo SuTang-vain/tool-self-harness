@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "inventory-search",
+  "repeat": 1,
+  "pass": false,
+  "verify_exit": 1,
+  "verify_msg": "  operator: 'strictEqual', |   diff: 'simple' | } |  | Node.js v22.23.0",
+  "runner": {
+    "steps": 8,
+    "final_answer": "All tests pass. Here's a summary of what I did.\n\n## Summary\n\nI completed `server.mjs`, which was previously a stub returning empty tools and empty content.\n\n### Implementation\n\n**`listTools()`** — exposes a single tool, `inventory_search`, with a strict input schema:\n- `query`: required string\n- `limit`: optional integer, constrained with `minimum: 1` / `maximum: 10`\n- `required: ['query']`\n- `additionalProperties: false` (per the skill's pre-finish checklist for the strict schema contract)\n\n**`callTool(name, args)`**:\n- Rejects **unknown tools** by throwing `Unknown tool: <name>` (the protocol layer converts thrown errors into JSON-RPC `-32602` errors).\n- Rejects **unknown arguments** (keys not in `{query, limit}`).\n- Validates `query` is a string (catches missing/empty-query misuse and wrong types).\n- Validates `limit`, when present, is an integer between 1 and 10 (rejects `0`, `11`, `2.5`, etc.).\n- Searches product names **case-insensitively** via `name.toLowerCase().includes(query.toLowerCase())`.\n- Applies `limit` by slicing results.\n- Returns a single `{ type: 'text', text }` content entry — either the newline-joined matching product names, or `\"No matching products found.\"` when nothing matches.\n\n### Verification\n- The provided test (`searches`) passes: querying `pen` returns both `Blue Pen` and `Red Pen`.\n- Manually confirmed: case-insensitivity (`NOTE` → `Notebook`), limit truncation (`limit:1` → only `Blue Pen`), and that all invalid inputs (missing/non-string query, out-of-range/non-integer limit, unknown args, unknown tool) throw clear errors.\n\nThe full test suite passes (`✔ searches`, 1 pass / 0 fail).",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-round1-v1/candidate-3/rep-1/held-out/inventory-search/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 12,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "All tests pass. Here's a summary of what I did.\n\n## Summary\n\nI completed `server.mjs`, which was previously a stub returning empty tools and empty content.\n\n### Implementation\n\n**`listTools()`** — exposes a single tool, `inventory_search`, with a strict input schema:\n- `query`: required string\n- `limit`: optional integer, constrained with `minimum: 1` / `maximum: 10`\n- `required: ['query']`\n- `additionalProperties: false` (per the skill's pre-finish checklist for the strict schema contract)\n\n**`callTool(name, args)`**:\n- Rejects **unknown tools** by throwing `Unknown tool: <name>` (the protocol layer converts thrown errors into JSON-RPC `-32602` errors).\n- Rejects **unknown arguments** (keys not in `{query, limit}`).\n- Validates `query` is a string (catches missing/empty-query misuse and wrong types).\n- Validates `limit`, when present, is an integer between 1 and 10 (rejects `0`, `11`, `2.5`, etc.).\n- Searches product names **case-insensitively** via `name.toLowerCase().includes(query.toLowerCase())`.\n- Applies `limit` by slicing results.\n- Returns a single `{ type: 'text', text }` content entry — either the newline-joined matching product names, or `\"No matching products found.\"` when nothing matches.\n\n### Verification\n- The provided test (`searches`) passes: querying `pen` returns both `Blue Pen` and `Red Pen`.\n- Manually confirmed: case-insensitivity (`NOTE` → `Notebook`), limit truncation (`limit:1` → only `Blue Pen`), and that all invalid inputs (missing/non-string query, out-of-range/non-integer limit, unknown args, unknown tool) throw clear errors.\n\nThe full test suite passes (`✔ searches`, 1 pass / 0 fail).",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-round1-v1/candidate-3/rep-1/held-out/inventory-search/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-round1-v1/candidate-3/rep-1/held-out/inventory-search/trace.jsonl"
+}

@@ -480,3 +480,30 @@ The correct conclusion is narrower than either a pure positive or pure negative 
 Candidate 1 produces a reproducible aggregate improvement, but not a regression-free reliable
 Self-Harness lineage transition. The final protocol therefore reports the paper gate for
 comparability while using the reliable task-set gate for all promotion decisions.
+
+### 7.2 Round 1: First Reliable Self-Harness Promotion
+
+Using only the three held-in tasks that were not reliable under `h0-stable`, the GLM proposer
+generated three frozen candidates: a direct strict-schema contract in the core instructions, a
+frontmatter-description reminder, and a pre-finish schema checklist. Each candidate was then
+run on all 8 held-in and 4 held-out tasks with three fresh repeats.
+
+| Candidate | Mechanism | Held-in | Reliable held-in | Held-out | Reliable held-out | Paper gate | Reliable gate |
+|---|---|---:|---:|---:|---:|---|---|
+| 1 | direct core contract | 24/24 | 8/8 | 6/12 | 2/4 | accept | **accept** |
+| 2 | description reminder | 23/24 | 7/8 | 6/12 | 2/4 | accept | reject (lost `batch-user-lookup`) |
+| 3 | pre-finish checklist | 23/24 | 7/8 | 6/12 | 2/4 | accept | **accept** |
+
+Candidate 1 gained reliable passes on `customer-directory`, `notes-store`, and
+`paginated-catalog`, lost no reliable task, and did not reduce either split's aggregate pass
+count. It was selected over Candidate 3 because it is the smaller direct edit and reached 24/24
+held-in attempts. This creates `h1-stable`, the first positive lineage transition under the
+frozen `reliable-task-set-v1` protocol.
+
+Two forward combinations were also evaluated against Candidate 1. Adding the description edit
+reduced held-in to 23/24 and lost `notes-store` reliability; adding the checklist was exactly
+flat at 24/24 and created no new reliable task. Both combinations were rejected, preserving the
+minimal Candidate 1 lineage. The paired-attempt sign test for Candidate 1 versus `h0-stable`
+has only three discordant pairs, all favoring Candidate 1 (two-sided exact p=0.25); therefore the
+promotion is protocol-valid but still a small-pilot result rather than strong population-level
+statistical evidence.

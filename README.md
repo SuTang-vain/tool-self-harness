@@ -155,6 +155,7 @@ handling in `runner.js` (future work).
 - ✅ Per-task acceptance metadata and stability gate implemented; clean reruns of round-1/m3-2/ds-3/ds-4 accepted 0/8 candidates.
 - ✅ MCP Builder prospective comparison completed: paper gate accepted 21/24→23/24 held-in with held-out flat, but reliable promotion rejected one lost 3/3 task.
 - ✅ Final generic-skill promotion rule frozen as `reliable-task-set-v1`.
+- ✅ MCP Builder Round 1 produced `h1-stable`: 24/24 held-in, 6/12 held-out, no lost reliable task; redundant combinations were rejected.
 - ⚠ MCP tool support not yet implemented (skill-only).
 - ⚠ references/scripts not yet editable surfaces (SKILL.md only).
 
