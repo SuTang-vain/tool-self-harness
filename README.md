@@ -157,6 +157,7 @@ handling in `runner.js` (future work).
 - ✅ Final generic-skill promotion rule frozen as `reliable-task-set-v1`.
 - ✅ MCP Builder Round 1 produced `h1-stable`: 24/24 held-in, 6/12 held-out, no lost reliable task; redundant combinations were rejected.
 - ⚠ Systematic-debugging pilot was outcome-flat across no/minimal/full skill (14/16 held-in, 6/8 held-out); benchmark revision is required before Self-Harness proposals.
+- ⚠ MCP `h1-stable` is model-specific: reliable for GLM, rejected for MiniMax (held-out regression) and DeepSeek (reliable-task exchange).
 - ⚠ MCP tool support not yet implemented (skill-only).
 - ⚠ references/scripts not yet editable surfaces (SKILL.md only).
 

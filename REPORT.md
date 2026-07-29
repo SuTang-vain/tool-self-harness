@@ -527,3 +527,23 @@ Therefore this benchmark currently measures general coding competence more stron
 incremental value of the debugging procedure. We do not interpret the pilot as positive
 Self-Harness evidence and will add process-sensitive tasks before running a systematic-debugging
 proposal round.
+
+### 7.3 Cross-Model Replication of `h1-stable`
+
+The frozen GLM-derived edit was next evaluated prospectively with MiniMax-M3 and
+DeepSeek-V4-Pro, again using three fresh repeats on all 12 tasks. The reliable gate was applied
+separately within each model.
+
+| Model | h0 held-in | h1 held-in | h0 held-out | h1 held-out | Paper gate | Reliable gate |
+|---|---:|---:|---:|---:|---|---|
+| GLM-5.2 | 21/24 (5/8 reliable) | 24/24 (8/8) | 6/12 (2/4) | 6/12 (2/4) | accept | **accept** |
+| MiniMax-M3 | 24/24 (8/8) | 24/24 (8/8) | 9/12 (3/4) | 6/12 (2/4) | reject | reject |
+| DeepSeek-V4-Pro | 14/24 (4/8) | 18/24 (4/8) | 3/12 (0/4) | 5/12 (1/4) | accept | reject |
+
+For MiniMax, `h0-stable` already reached the held-in ceiling and the GLM-derived rule caused
+`inventory-search` to fall from 3/3 to 0/3. For DeepSeek, aggregate outcomes improved on both
+splits, but the reliable task set exchanged `file-metadata` for `safe-calculator` and added
+`text-transform`; the lost reliable task blocks promotion. Thus the first strict Self-Harness
+promotion is real for GLM on this pilot but does not transfer as a universal model-independent
+skill edit. This strengthens the model-specificity result and makes per-model acceptance a
+necessary part of subsequent task expansion.
