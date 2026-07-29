@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('inclusive',async()=>{const r=await callTool('sales_report',{start_date:'2026-01-01',end_date:'2026-01-02'});assert.match(r.content[0].text,/25/);assert.match(r.content[0].text,/2/)});

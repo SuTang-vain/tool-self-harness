@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('status',async()=>{const r=await callTool('order_status',{order_id:'o1'});assert.match(r.content[0].text,/shipped/);assert.doesNotMatch(r.content[0].text,/created.*paid/)});

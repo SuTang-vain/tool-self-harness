@@ -116,6 +116,17 @@ Each task has `task.md` (instructions), `input/` (the library to extract),
 `expected/data.json` (ground-truth pack), and `verify.sh` (deterministic
 grader: `validate` + semantic field comparison).
 
+## Tests
+
+Run the pure acceptance-rule regression tests with Node's built-in test runner:
+
+```bash
+node --test tests/acceptance.test.js
+```
+
+The tests cover stable task-pass computation, unstable held-in/held-out improvements,
+stable acceptance, and rejection of legacy aggregate-only result records.
+
 ## Retargeting
 
 To apply Self-Harness to a different skill:
@@ -136,7 +147,7 @@ handling in `runner.js` (future work).
 - ✅ End-to-end loop runs, produces trace/evidence/proposals/results/lineage.
 - ✅ t01 confirmed solvable by the baseline harness (non-zero baseline).
 - ✅ All 5 expected packs pass their verifiers.
-- ⚠ MVP `eval_repeats=1` (paper uses 2 for variance reduction).
+- ✅ Per-task acceptance metadata and stability gate implemented; clean reruns of round-1/m3-2/ds-3/ds-4 accepted 0/8 candidates.
 - ⚠ MCP tool support not yet implemented (skill-only).
 - ⚠ references/scripts not yet editable surfaces (SKILL.md only).
 

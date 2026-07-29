@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('slug',async()=>{const r=await callTool('text_transform',{text:' Hello, MCP! ',mode:'slug'});assert.equal(r.content[0].text,'hello-mcp')});

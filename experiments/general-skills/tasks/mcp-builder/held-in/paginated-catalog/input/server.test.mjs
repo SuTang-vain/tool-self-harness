@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('paginates',async()=>{const r=await callTool('catalog_search',{query:'widget',limit:2});assert.match(r.content[0].text,/i1/);assert.match(r.content[0].text,/next_offset/)});

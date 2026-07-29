@@ -1,0 +1,1 @@
+import test from'node:test';import assert from'node:assert/strict';import{resolveWorkspace}from'./paths.js';test('rejects sibling prefix',()=>assert.throws(()=>resolveWorkspace('/tmp/work','../workspace-secret')));test('allows child',()=>assert.equal(resolveWorkspace('/tmp/work','a'),'/tmp/work/a'));

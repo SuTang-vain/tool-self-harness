@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('searches',async()=>{const r=await callTool('inventory_search',{query:'pen'});assert.match(r.content[0].text,/Blue Pen/);assert.match(r.content[0].text,/Red Pen/)})

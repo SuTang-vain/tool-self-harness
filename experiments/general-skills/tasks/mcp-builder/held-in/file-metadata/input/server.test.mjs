@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('metadata',async()=>{const r=await callTool('file_metadata',{path:'readme.txt'});assert.match(r.content[0].text,/\.txt/);assert.match(r.content[0].text,/6/)});

@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('batch',async()=>{const r=await callTool('users_get_many',{user_ids:['u2','missing']});assert.match(r.content[0].text,/Grace/);assert.match(r.content[0].text,/missing/)});

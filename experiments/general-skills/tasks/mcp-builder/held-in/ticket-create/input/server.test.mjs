@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('creates',async()=>{const r=await callTool('ticket_create',{title:'Bug',description:'Broken'});assert.match(r.content[0].text,/t1/);assert.match(r.content[0].text,/normal/)});

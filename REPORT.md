@@ -257,7 +257,7 @@ Both candidates **REJECTED**: candidate 1 flat (baseline already maxed held-in a
 
 ### 3.10 Multi-Round Evolution Trajectory (Figure 5a Reproduction)
 
-We extend each model through multiple rounds to test whether the harness continues to evolve or converges. All three models eventually converge.
+We extend each model through multiple rounds to test whether the harness continues to evolve or converges. Under the legacy aggregate best-of-N acceptance rule, all three models eventually reached a reject round; the per-task audit below shows that three of the four historical accepts were unstable and must not yet be treated as validated convergence.
 
 **Complete evolution trajectories:**
 
@@ -287,11 +287,11 @@ DeepSeek-V4:   h0 ──R1 accept──► h3 ──R2 accept──► h4 ──
 | MiniMax-M3 | 1 | 2 (1 accept + 1 reject) | h2 (rule-cheat-sheet) | 2/3 | 3/5 |
 | DeepSeek-V4-Pro | **2** | **3** (2 accepts + 1 reject) | h4 (cheat-sheet + core-concept) | 3/3 | 4/5 |
 
-**Finding 11: Evolution trajectory reproduced (Figure 5a).** All three models reproduce the paper's Figure 5a pattern: a bounded number of accepts followed by convergence (0 accepts). This is the paper's central structural finding—the harness lineage stabilizes rather than accumulating changes indefinitely.
+**Finding 11 (legacy rule): Evolution trajectory appeared bounded.** Under the aggregate best-of-N rule, all three models showed a bounded number of accepts followed by a reject round. This is not yet a validated convergence result under the per-task consistency rule.
 
-**Finding 12: Model-specific convergence speed.** DeepSeek-V4-Pro uniquely requires 2 accepts (3 rounds) to converge, while GLM-5.2 and MiniMax-M3 converge after 1 accept (2 rounds). Critically, GLM-5.2 tried the same `core-concept` edit in its Round-2 that DeepSeek accepted in Round-2, but GLM's version was flat (rejected). This proves that **the same surface edit has different effects on different models**—not just different proposals, but different outcomes for the same proposal.
+**Finding 12 (legacy rule): Model-specific convergence speed appeared different.** DeepSeek-V4-Pro required 2 aggregate-rule accepts across 3 rounds, while GLM-5.2 and MiniMax-M3 required 1. Critically, GLM-5.2 tried the same `core-concept` surface in Round-2 that DeepSeek accepted in Round-2, but GLM's version was flat (rejected). This suggests that **the same surface edit can have different effects on different models**; a per-task rerun is required before treating the convergence counts as validated.
 
-**Finding 13: Model-specific convergence ceilings.** Despite all three models selecting the same surface (rule-cheat-sheet) for the same failure cluster, the accepted edits have different content quality:
+**Finding 13 (legacy rule): Apparent model-specific convergence ceilings.** Despite all three models selecting the same surface (rule-cheat-sheet) for the same failure cluster, the historically accepted edits had different downstream outcomes:
 
 | Model | Accepted edit content | t02 after edit | Convergence ceiling |
 |---|---|---|---|
@@ -299,17 +299,44 @@ DeepSeek-V4:   h0 ──R1 accept──► h3 ──R2 accept──► h4 ──
 | MiniMax-M3 | Added E4 row + Pattern-B reminder (additive-only) | **FAIL** | 2/3 held-in (3/5 total) |
 | DeepSeek-V4 | Clarified validation semantics + E4 context | **PASS** (with core-concept) | 3/3 held-in (4/5 total) |
 
-This is the deepest model-specificity finding: not just different proposals or different acceptance outcomes, but **different accepted edits produce different convergence ceilings**. GLM's targeted callout permanently fixed t02; MiniMax's additive-only edit left t02 failing, resulting in a permanently lower ceiling.
+Under the legacy rule, this appeared to show different convergence ceilings. The per-task audit now qualifies that interpretation: MiniMax's and DeepSeek's acceptance events were unstable, so their long-term edit quality must be re-evaluated after a clean rerun.
 
-**Finding 14: Multi-round discovers complementary fixes.** DeepSeek's 2 accepts addressed the same failure cluster (t02 provenance missing) from two different angles: Round-1's rule-cheat-sheet edit clarified the rules, Round-2's core-concept edit reinforced the alias-gate obligation at the foundational layer. Single-round iteration cannot discover these complementary fixes—a key argument for multi-round Self-Harness.
+**Finding 14 (legacy rule): Multi-round complementary fixes are provisional.** DeepSeek's two historical accepts appeared to address the same failure cluster from two angles, but both depended on aggregate best-of-N improvements. The per-task audit classifies them as unstable; a new-rule rerun is required before treating them as complementary fixes.
 
 **Finding 15: Non-harness-fixable failures correctly remain unfixed.** The t05 failure (`kind: "member"` vs `"person"`) persists across all models and all rounds. This is a task-design issue (verify.sh expects `person` but the engine's `role` field suggests `member`), not a harness deficiency. Self-Harness correctly converges without overfitting to it—no accepted edit attempted to "fix" t05 by hardcoding kind values.
 
-This is the **deepest model-specificity finding**: not just that different models propose different edits (Finding 2), or that the same edit can be accepted/rejected differently (Finding 10), but that **accepted edits of equivalent acceptance-level quality produce different downstream harness quality**. GLM's edit included a targeted callout ("Chinese-name libraries: every crawled name MUST have an alias entry") that directly addressed t02's failure mode; MiniMax's edit added the same E4 rule but without the targeted callout, so the model still didn't apply it correctly.
+The legacy results suggested a deeper model-specificity effect: accepted edits of apparently equivalent aggregate quality produced different downstream quality. That claim is now provisional because the per-task audit shows that aggregate acceptance quality was not equivalent across models.
 
-**Implication:** The acceptance gate measures *immediate* pass-rate improvement, not *long-term* harness quality. Two edits can both improve P_in from 2/3 to 3/3, but one (GLM's) fixes the root cause while the other (MiniMax's) might be a lucky variance hit that reverts in the next round. This suggests a potential improvement to the acceptance rule: **require consistency across eval_repeats at the individual-task level**, not just aggregate pass counts.
+**Implication:** The acceptance gate measures *immediate* pass-rate improvement, not *long-term* harness quality. Two edits can both improve P_in from 2/3 to 3/3, but one (GLM's) fixes the root cause while the other (MiniMax's) might be a lucky variance hit that reverts in the next round. This motivated the implemented per-task acceptance rule: **require every newly passing task to pass in all eval repeats**, not just aggregate pass counts. Historical results must be regenerated before using the new rule.
 
 ---
+
+
+### 3.11 Per-task acceptance correction and clean rerun
+
+The original acceptance rule aggregated each split by taking the best pass count across `eval_repeats`. A candidate could therefore improve from `2/3` to `3/3` even when the newly passing task succeeded in only one repeat.
+
+The corrected validator records the per-task pass set for every repeat:
+
+- `passed_in_tasks`
+- `passed_ho_tasks`
+- `best_pass_tasks`
+- `stable_pass_tasks`
+
+The corrected acceptance gate requires every newly passing task to pass in all repeats. Validation repeats now always use `--no-cache`; API failures abort the experiment instead of becoming synthetic zero-pass results. Legacy aggregate-only result files are rejected and must be regenerated.
+
+We reconstructed independent baselines and reran the four historical acceptance points. GLM, MiniMax, and DeepSeek `ds-3` used clean `h0`; DeepSeek `ds-4` used a reconstructed `h3` baseline.
+
+| Re-evaluation | Baseline repeats (stable) | Candidate 1 repeats (stable) | Candidate 2 repeats (stable) | New decision |
+|---|---|---|---|---|
+| GLM `round-1` | `[2/3, 2/3]` (2/3) | `[2/3, 2/3]` (2/3) | `[2/3, 2/3]` (2/3) | both flat, reject |
+| MiniMax `m3-2` | `[2/3, 2/3]` (2/3) | `[2/3, 2/3]` (2/3) | `[2/3, 2/3]` (2/3) | both flat, reject |
+| DeepSeek `ds-3` | `[2/3, 2/3]` (2/3) | `[3/3, 2/3]` (2/3) | `[2/3, 2/3]` (2/3) | candidate 1 unstable t02, reject; candidate 2 flat |
+| DeepSeek `ds-4` | `[3/3, 2/3]` (2/3) | `[3/3, 3/3]` (3/3) | `[3/3, 3/3]` (3/3) | both aggregate-flat, reject |
+
+The clean rerun produced **0 accepted candidates**. It directly validates the per-task gate on DeepSeek `ds-3`: candidate 1 reached best-of-repeat `3/3`, but `t02-chinese-alias` passed in only one repeat and was explicitly rejected as an unstable improvement.
+
+The rerun also reveals a second design question. In `ds-4`, the baseline had best-of-repeat `3/3` but stable `2/3`, while both candidates achieved stable `3/3`. The current rule still rejects them because the historical pass-count gate compares best-of-repeat counts (`3` vs `3`). Future work should decide whether acceptance should use `stable_p_in` / `stable_p_ho` as the primary performance measure, rather than using stability only as a rejection filter.
 
 ## 4. Discussion
 
@@ -339,10 +366,10 @@ Self-Harness cannot fix failures rooted in:
 |---|---|---|
 | Model-specific weaknesses (Fig 5/6) | t02/t03 divergence across 3 models | ✓ Reproduced |
 | Proposal diversity (§3.3) | 3 models, 3 fix directions, 5 distinct surfaces | ✓ Reproduced |
-| Acceptance gate prevents regressions (§3.4) | 2/6 proposals caused regression, both rejected | ✓ Reproduced |
+| Per-task acceptance rejects lucky passes | DeepSeek ds-3 best 3/3 but stable 2/3 was rejected | ✓ Demonstrated in clean rerun |
 | Variance reduction via eval_repeats | MiniMax var=0, GLM var=high | ✓ Reproduced |
-| Harness lineage evolution (h0->h1) | GLM h0->h1, M3 h0->h2, DS h0->h3->h4 | ✓ Reproduced |
-| Evolution trajectory (Fig 5a: accept->reject) | ALL 3 models converge after bounded accepts | ✓ Reproduced |
+| Harness lineage evolution (h0->h1) | Historical lineage was produced under the legacy aggregate gate | ⚠ Requires corrected rerun |
+| Evolution trajectory (Fig 5a: accept->reject) | Clean per-task rerun accepted 0/8 candidates | ⚠ Historical convergence claim revised |
 | Model-specific convergence speed (NEW) | DeepSeek: 2 accepts/3 rounds; GLM+MiniMax: 1 accept/2 rounds | ✓ New finding |
 | Model-specific convergence ceiling (NEW) | GLM 3/3 vs MiniMax 2/3: same surface, different edit quality | ✓ New finding |
 | Multi-round complementary fixes (NEW) | DeepSeek: cheat-sheet (R1) + core-concept (R2) = complementary | ✓ New finding |
@@ -353,7 +380,7 @@ Self-Harness cannot fix failures rooted in:
 
 1. **Synthetic tasks**: 5 small synthetic libraries may not capture the complexity of real component libraries. Real-world tasks might expose different failure modes.
 2. **Single skill**: Only `sg-data-pack` tested. Generalization to other skills (and MCP tools) is architectural but unvalidated.
-3. **Multi-round iteration demonstrated**: GLM and MiniMax both show 2-round trajectories (accept -> reject = convergence). DeepSeek completed its first accept (h3); Round-3 needed to confirm convergence. Deeper iteration (h0->...->h5) not yet explored.
+3. **Per-task rerun completed on four historical acceptance points**: the rerun accepted 0/8 candidates. More repeats and a decision on stable-count-based acceptance are still needed.
 4. **Headless runner fidelity**: The runner simulates progressive disclosure but lacks real IDE features (hooks, permissions, other skills). Real-world behavior may differ.
 5. **Limited model diversity**: All three models are reasoning models from Chinese AI labs. Western models (GPT, Claude) untested.
 
@@ -361,13 +388,13 @@ Self-Harness cannot fix failures rooted in:
 
 ## 6. Conclusion
 
-We demonstrate that the Self-Harness paradigm is applicable to tool-side harnesses (skills), with minimal adaptation. The three-stage loop runs end-to-end, produces auditable lineage, and the acceptance gate correctly rejects non-improving edits while accepting genuinely beneficial ones. All three models (GLM-5.2, MiniMax-M3, DeepSeek-V4-Pro) converge after a bounded number of accepted edits (1-2 accepts), reproducing the paper's Figure 5a evolution trajectory.
+We demonstrate that the Self-Harness paradigm can run end-to-end on a tool-side skill. The loop produces traces, proposals, regression results, and lineage artifacts. However, the original aggregate acceptance rule accepted four candidates, three of which showed repeat variance. A stricter per-task consistency rule is now implemented and was exercised on four reconstructed historical acceptance points; the clean rerun accepted 0/8 candidates and explicitly rejected one lucky task pass.
 
-Cross-model comparison reveals three layers of model-specificity, each deeper than the last: (1) different models expose different weaknesses on the same harness (Finding 1), (2) the same evidence yields different proposal styles (Finding 2), (3) the same surface edit can be accepted for one model and rejected for another (Finding 12), and (4) accepted edits of equivalent acceptance-level quality produce different convergence ceilings (Finding 13). The deepest finding is that MiniMax's additive-only cheat-sheet edit left t02 permanently failing (2/3 ceiling), while GLM's targeted Chinese-name callout permanently fixed it (3/3 ceiling)—despite both edits being accepted by the same acceptance rule.
+Cross-model comparison still supports two robust layers of model-specificity: (1) different models expose different weaknesses on the same harness (Finding 1), and (2) the same evidence yields different proposal styles (Finding 2). The later claims about acceptance-dependent convergence ceilings remain provisional: the clean per-task rerun did not reproduce any historical accept, although ds-4 exposed a stable-count improvement that the current best-count gate cannot reward.
 
-A key structural finding (Finding 14) is that multi-round iteration discovers complementary fixes invisible to single-round evaluation: DeepSeek's two accepts (rule-cheat-sheet + core-concept) addressed the same failure cluster from two different angles, neither of which alone would have been sufficient. This argues strongly for multi-round Self-Harness over one-shot prompt optimization.
+The current strongest methodological finding is that aggregate best-of-N can confuse lucky task passes with durable fixes. Per-task consistency is therefore required before making claims about multi-round convergence or complementary fixes.
 
-The main practical lesson is that **harness improvement must be grounded in behavioral evidence AND valid task design**—when failures stem from verifier quirks rather than harness deficiencies, Self-Harness correctly converges without overfitting (Finding 15). The acceptance gate's reliance on aggregate pass-rate creates a potential for false-positive accepts (lucky variance hits), suggesting a per-task consistency criterion as a future improvement.
+The main practical lesson is that **harness improvement must be grounded in behavioral evidence AND valid task design**. The acceptance gate must also be grounded at the task level: a split-level pass-count improvement is insufficient when the newly passing task is unstable across repeats.
 
 ---
 
@@ -409,3 +436,23 @@ bash scripts/loop.sh <config>.yaml 1    # config.yaml=GLM, minimax-config.yaml=M
 # Generate cross-model comparison:
 node scripts/report.js
 ```
+
+## 7. General-Skill Extension: MCP Builder Pilot
+
+To test generalization beyond `sg-data-pack`, we constructed an 8 held-in / 4 held-out MCP
+server benchmark and evaluated no-skill, sparse seed, minimal, and official-full MCP-building
+skills with GLM-5.2 coding/v3 over two attempts per task. `seed-h0` improved held-in mean pass
+rate from 75.0% to 87.5% without held-out degradation, establishing a measurable static skill
+effect and a suitable Self-Harness starting point.
+
+In the first Self-Harness round, the proposer saw only the stable held-in `notes-store` failure
+(strict JSON Schema enforcement). Candidate 1 improved aggregate held-in attempts from 14/16
+to 15/16 with held-out flat at 4/8, so the paper-style aggregate gate accepts it. The per-task
+stable gate rejects it because `notes-store` becomes stable while `customer-directory` changes
+from 2/2 to 1/2. Candidate 2 reaches 16/16 held-in but degrades held-out from 4/8 to 3/8 and is
+rejected by both gates. No candidate is promoted under the stable non-regressive lineage.
+
+This is the clearest result of the extension so far: an aggregate pass-count gate can accept a
+candidate that exchanges one reliable task for another, while a task-set-aware gate detects the
+regression. The result supports the value of per-task acceptance, but does not yet demonstrate a
+positive Self-Harness lineage transition.

@@ -1,0 +1,177 @@
+{
+  "run_id": "systematic-glm-smoke",
+  "variant": "minimal",
+  "model_config": "/Users/tangyaoyue/DEV/tool-self-harness/config.yaml",
+  "skill_repo": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/general-skills/targets/systematic-debugging/minimal",
+  "suite": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/general-skills/tasks/systematic-debugging",
+  "repeats": 1,
+  "held_in": {
+    "passes": 2,
+    "attempts": 3,
+    "pass_rate": 0.6666666666666666,
+    "stable_tasks": [
+      "js-async-write",
+      "py-cache-key"
+    ],
+    "stable_task_count": 2,
+    "task_count": 3
+  },
+  "held_out": {
+    "passes": 1,
+    "attempts": 1,
+    "pass_rate": 1,
+    "stable_tasks": [
+      "js-retry-budget"
+    ],
+    "stable_task_count": 1,
+    "task_count": 1
+  },
+  "behavior": {
+    "loaded_skill_rate": 0.5,
+    "test_before_edit_rate": 1,
+    "test_after_edit_rate": 1
+  },
+  "per_task": [
+    {
+      "split": "held-in",
+      "task_id": "js-async-write",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "js-async-write",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 54.195667 | PASS js-async-write",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Done. The fix is complete and all tests pass.\n\n## Summary\n\n**Reproduced the failure:** `npm test` failed with `ENOENT: no such file or directory` when trying to read `tmp-report.json` immediately after awaiting `saveReport`. The file didn't exist yet when the test read it.\n\n**Root cause:** In `report.js`, the `async function saveReport` called `writeFile(...)` as a fire-and-forget promise — it was neither `await`ed nor returned. Because the function body contained no `await`, the `async` function's returned promise resolved on the next microtask, well before the async file write had finished writing the file to disk. This broke the API contract that awaiting `saveReport` guarantees the report is durable.\n\n**Smallest production fix:** Added `await` before `writeFile(...)` so the returned promise only resolves once the write completes:\n\n```js\nexport async function saveReport(path, report) {\n  await writeFile(path, JSON.stringify(report, null, 2), 'utf8');\n}\n```\n\n**Verification:** Ran the full test suite (`npm test`) — the test passes (1 pass, 0 fail). Tests were not modified.\n\n(The diff also shows the deletion of a stale `tmp-report.json` artifact left from a prior run; that's a test-created temp file, not part of the production code.)",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-in/js-async-write/trace.jsonl"
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "Done. The fix is complete and all tests pass.\n\n## Summary\n\n**Reproduced the failure:** `npm test` failed with `ENOENT: no such file or directory` when trying to read `tmp-report.json` immediately after awaiting `saveReport`. The file didn't exist yet when the test read it.\n\n**Root cause:** In `report.js`, the `async function saveReport` called `writeFile(...)` as a fire-and-forget promise — it was neither `await`ed nor returned. Because the function body contained no `await`, the `async` function's returned promise resolved on the next microtask, well before the async file write had finished writing the file to disk. This broke the API contract that awaiting `saveReport` guarantees the report is durable.\n\n**Smallest production fix:** Added `await` before `writeFile(...)` so the returned promise only resolves once the write completes:\n\n```js\nexport async function saveReport(path, report) {\n  await writeFile(path, JSON.stringify(report, null, 2), 'utf8');\n}\n```\n\n**Verification:** Ran the full test suite (`npm test`) — the test passes (1 pass, 0 fail). Tests were not modified.\n\n(The diff also shows the deletion of a stale `tmp-report.json` artifact left from a prior run; that's a test-created temp file, not part of the production code.)",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-in/js-async-write/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-in/js-async-write/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "py-cache-key",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "py-cache-key",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": " | ---------------------------------------------------------------------- | Ran 2 tests in 0.000s |  | OK",
+          "runner": {
+            "steps": 10,
+            "final_answer": "Done. \n\n## Summary\n\n**Root cause:** The pricing cache keyed results only on the `subtotal` value, ignoring the `tax_rate`. When the same subtotal was queried with a different tax rate, the stale cached result from the first call was returned — `total_with_tax(100, 0.05)` cached `105.0` under key `100`, so `total_with_tax(100, 0.20)` incorrectly returned `105.0` instead of `120.0`.\n\n**Fix (smallest correct change):** Include the `tax_rate` in the cache key as a tuple:\n\n```python\nkey = (round(float(subtotal), 2), round(float(tax_rate), 6))\n```\n\nThis makes the cache discriminate correctly between different tax rates while still caching repeated identical calls (`test_repeated_call` still passes). The rounding on the tax rate component avoids floating-point key mismatch issues.\n\n**Verification:**\n- Focused tests: both `test_same_subtotal_different_tax_rates` and `test_repeated_call` pass.\n- Full suite (`unittest discover`): all 2 tests pass.\n\nNo tests were weakened or deleted.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-in/py-cache-key/trace.jsonl"
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "Done. \n\n## Summary\n\n**Root cause:** The pricing cache keyed results only on the `subtotal` value, ignoring the `tax_rate`. When the same subtotal was queried with a different tax rate, the stale cached result from the first call was returned — `total_with_tax(100, 0.05)` cached `105.0` under key `100`, so `total_with_tax(100, 0.20)` incorrectly returned `105.0` instead of `120.0`.\n\n**Fix (smallest correct change):** Include the `tax_rate` in the cache key as a tuple:\n\n```python\nkey = (round(float(subtotal), 2), round(float(tax_rate), 6))\n```\n\nThis makes the cache discriminate correctly between different tax rates while still caching repeated identical calls (`test_repeated_call` still passes). The rounding on the tax rate component avoids floating-point key mismatch issues.\n\n**Verification:**\n- Focused tests: both `test_same_subtotal_different_tax_rates` and `test_repeated_call` pass.\n- Full suite (`unittest discover`): all 2 tests pass.\n\nNo tests were weakened or deleted.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-in/py-cache-key/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-in/py-cache-key/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "py-env-bool",
+      "passes": 0,
+      "attempts": 1,
+      "stable_pass": false,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "py-env-bool",
+          "repeat": 0,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": " | OK | Traceback (most recent call last): |   File \"<stdin>\", line 7, in <module> | AssertionError: ambiguous values must fail loudly",
+          "runner": {
+            "steps": 10,
+            "final_answer": "The fix is complete. Here's a summary of what I did:\n\n## Problem\nThe configuration loader misinterpreted common environment values. Strings like `'false'`, `'0'`, `'no'`, `'off'` were all treated as `True` because `env_bool` simply did `bool(value)`, and any non-empty string is truthy in Python.\n\n## Trace of the bad value (e.g. `'false'`)\n1. `env.get('APP_DEBUG')` → `'false'`\n2. `env_bool('false', False)` → `value is None` is `False`, so it reaches `return bool(value)`\n3. `bool('false')` → `True` ❌\n\n## Fix\nModified `env_bool` in `config.py` to recognize common false-y string values (`'false'`, `'0'`, `'no'`, `'off'`, and the empty string) before falling back to `bool(value)`. The check normalizes case and surrounding whitespace.\n\n## Constraints honored\n- **Public API preserved**: `env_bool(value, default=False)` and `load(env)` keep their signatures and behavior for the existing truthy path.\n- **No new dependencies**: pure standard-library Python.\n- **Smallest correct change**: only the parser logic was touched.\n\n## Verification\n- Full test suite (`test_config.py`): both `test_false_strings` and `test_true_strings` pass.\n- Additional sanity checks for `None` (default path), case/whitespace variants, actual booleans, and `load({})` all pass.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-in/py-env-bool/trace.jsonl"
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "The fix is complete. Here's a summary of what I did:\n\n## Problem\nThe configuration loader misinterpreted common environment values. Strings like `'false'`, `'0'`, `'no'`, `'off'` were all treated as `True` because `env_bool` simply did `bool(value)`, and any non-empty string is truthy in Python.\n\n## Trace of the bad value (e.g. `'false'`)\n1. `env.get('APP_DEBUG')` → `'false'`\n2. `env_bool('false', False)` → `value is None` is `False`, so it reaches `return bool(value)`\n3. `bool('false')` → `True` ❌\n\n## Fix\nModified `env_bool` in `config.py` to recognize common false-y string values (`'false'`, `'0'`, `'no'`, `'off'`, and the empty string) before falling back to `bool(value)`. The check normalizes case and surrounding whitespace.\n\n## Constraints honored\n- **Public API preserved**: `env_bool(value, default=False)` and `load(env)` keep their signatures and behavior for the existing truthy path.\n- **No new dependencies**: pure standard-library Python.\n- **Smallest correct change**: only the parser logic was touched.\n\n## Verification\n- Full test suite (`test_config.py`): both `test_false_strings` and `test_true_strings` pass.\n- Additional sanity checks for `None` (default path), case/whitespace variants, actual booleans, and `load({})` all pass.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-in/py-env-bool/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-in/py-env-bool/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "js-retry-budget",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "js-retry-budget",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 51.236584 | PASS js-retry-budget",
+          "runner": {
+            "steps": 8,
+            "final_answer": "## Summary\n\n**Problem:** The retry helper violated its documented attempt budget. With `maxAttempts = 3`, the operation was actually called 4 times.\n\n**Root cause:** The loop used `attempt <= maxAttempts`, iterating over `attempt` values `0, 1, 2, 3` — that's `maxAttempts + 1` iterations, exceeding the budget by one.\n\n**Fix (smallest correct change):** Changed the loop condition from `attempt <= maxAttempts` to `attempt < maxAttempts`. Now the loop iterates `attempt` from `0` to `maxAttempts - 1`, calling the operation exactly `maxAttempts` times.\n\nThe API and tests were left untouched. Verified both behaviors:\n- **Success case:** Returns as soon as an attempt succeeds (`returns when an attempt succeeds` passes with `calls === 2`).\n- **Exhausted-error case:** After exhausting all `maxAttempts` attempts, throws the last error (`never exceeds maxAttempts` passes with `calls === 3`).\n\nFull test suite: 2 pass, 0 fail.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-out/js-retry-budget/trace.jsonl"
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "## Summary\n\n**Problem:** The retry helper violated its documented attempt budget. With `maxAttempts = 3`, the operation was actually called 4 times.\n\n**Root cause:** The loop used `attempt <= maxAttempts`, iterating over `attempt` values `0, 1, 2, 3` — that's `maxAttempts + 1` iterations, exceeding the budget by one.\n\n**Fix (smallest correct change):** Changed the loop condition from `attempt <= maxAttempts` to `attempt < maxAttempts`. Now the loop iterates `attempt` from `0` to `maxAttempts - 1`, calling the operation exactly `maxAttempts` times.\n\nThe API and tests were left untouched. Verified both behaviors:\n- **Success case:** Returns as soon as an attempt succeeds (`returns when an attempt succeeds` passes with `calls === 2`).\n- **Exhausted-error case:** After exhausting all `maxAttempts` attempts, throws the last error (`never exceeds maxAttempts` passes with `calls === 3`).\n\nFull test suite: 2 pass, 0 fail.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-out/js-retry-budget/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-glm-smoke/minimal/rep-0/held-out/js-retry-budget/trace.jsonl"
+        }
+      ]
+    }
+  ],
+  "generated_at": "2026-07-29T08:10:48.330Z"
+}

@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "order-status",
+  "repeat": 1,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 49.717 | PASS order-status",
+  "runner": {
+    "steps": 9,
+    "final_answer": "All tests pass. Here's a summary of the implementation.\n\n## Summary\n\nI implemented the `order_status` MCP server in `server.mjs`, replacing the stub.\n\n### `listTools()`\nDiscovers one tool — `order_status` — with an explicit input schema:\n- `order_id`: required `string`\n- `include_history`: optional `boolean`, `default: false`\n- `additionalProperties: false` (rejects extra fields at the schema level)\n\n### `callTool(name, args)`\n- **Unknown tool**: throws `Unknown tool: <name>` → protocol maps to JSON-RPC `-32602`.\n- **Extra/invalid fields**: iterates keys against an allow-list, throwing `Unexpected field: <key>` for anything beyond `order_id`/`include_history`.\n- **`order_id`**: required; throws if missing or not a string.\n- **`include_history`**: defaults to `false`; throws if present but not a boolean.\n- **Missing order**: throws `Order not found: <id>`.\n- **Output**: returns `{ content: [{ type: 'text', text }] }` with current status. History is appended as a chronological comma-separated list **only** when `include_history` is true (e.g. `created, paid, shipped`), keeping protocol output clean.\n\n### Verification\n- Existing test passes (status shows `shipped`, no `created.*paid` history leak).\n- Additional manual checks confirm: unknown tools, missing orders, extra fields, missing `order_id`, wrong types for `order_id`/`include_history`, and the history-omitted-by-default path all behave correctly.\n- End-to-end JSON-RPC via `protocol.mjs` returns the discoverable tool list, successful results, and proper error responses.\n\nThe change was minimal — only `server.mjs` was modified; `protocol.mjs`, `orders.json`, and `package.json` were left intact since the protocol dispatcher and error mapping were already in place.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-pilot-v1/seed-h0/rep-1/held-out/order-status/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 14,
+    "loaded_skill": true,
+    "read_skill_reference": true,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "All tests pass. Here's a summary of the implementation.\n\n## Summary\n\nI implemented the `order_status` MCP server in `server.mjs`, replacing the stub.\n\n### `listTools()`\nDiscovers one tool — `order_status` — with an explicit input schema:\n- `order_id`: required `string`\n- `include_history`: optional `boolean`, `default: false`\n- `additionalProperties: false` (rejects extra fields at the schema level)\n\n### `callTool(name, args)`\n- **Unknown tool**: throws `Unknown tool: <name>` → protocol maps to JSON-RPC `-32602`.\n- **Extra/invalid fields**: iterates keys against an allow-list, throwing `Unexpected field: <key>` for anything beyond `order_id`/`include_history`.\n- **`order_id`**: required; throws if missing or not a string.\n- **`include_history`**: defaults to `false`; throws if present but not a boolean.\n- **Missing order**: throws `Order not found: <id>`.\n- **Output**: returns `{ content: [{ type: 'text', text }] }` with current status. History is appended as a chronological comma-separated list **only** when `include_history` is true (e.g. `created, paid, shipped`), keeping protocol output clean.\n\n### Verification\n- Existing test passes (status shows `shipped`, no `created.*paid` history leak).\n- Additional manual checks confirm: unknown tools, missing orders, extra fields, missing `order_id`, wrong types for `order_id`/`include_history`, and the history-omitted-by-default path all behave correctly.\n- End-to-end JSON-RPC via `protocol.mjs` returns the discoverable tool list, successful results, and proper error responses.\n\nThe change was minimal — only `server.mjs` was modified; `protocol.mjs`, `orders.json`, and `package.json` were left intact since the protocol dispatcher and error mapping were already in place.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-pilot-v1/seed-h0/rep-1/held-out/order-status/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-pilot-v1/seed-h0/rep-1/held-out/order-status/trace.jsonl"
+}

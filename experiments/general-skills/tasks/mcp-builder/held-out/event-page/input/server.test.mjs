@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('first page',async()=>{const r=await callTool('events_list',{});assert.match(r.content[0].text,/e1/);assert.match(r.content[0].text,/e2/);assert.match(r.content[0].text,/next_cursor/)});
