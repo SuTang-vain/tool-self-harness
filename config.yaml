@@ -1,0 +1,38 @@
+# Tool Self-Harness configuration
+# Points at a target skill repo and the model that operates it ("self").
+
+target:
+  kind: skill               # skill | mcp (mcp not yet implemented)
+  skill_repo: /Users/tangyaoyue/DEV/sg-data-pack
+  skill_name: sg-data-pack
+  skill_entry: SKILL.md
+
+model:
+  # Provider key in ~/.zcode/v2/config.json -> provider.<id>
+  # 25850cbc... = GLM-5.2 via Volcengine Ark (OpenAI-compatible) -- the same model
+  # that runs ZCode, so this is genuinely "self" harness.
+  provider_id: "25850cbc-8ed0-4910-bb2f-24378054cb0e"
+  model: glm-5.2
+  # Auth is read from config.json; no env var needed.
+  # Override here if you want to point at a different endpoint:
+  # base_url: https://ark.cn-beijing.volces.com/api/coding/v3
+  # api_key: <key>
+  temperature: 0
+  max_tokens: 8192
+
+loop:
+  rounds: 3
+  proposals_per_round: 2    # K
+  max_steps_per_task: 24
+  eval_repeats: 2           # best-of-N to reduce variance from stochastic tool loops (paper §3.4)
+
+paths:
+  # All relative to the harness root (this file's dir) unless absolute.
+  tasks_held_in: tasks/held-in
+  tasks_held_out: tasks/held-out
+  sandbox: sandbox          # working copy of the skill repo under edit
+  lineage: lineage          # git tags h0, h1, ...
+  runs: runs                # per-round trace output
+  evidence: evidence
+  proposals: proposals
+  results: results

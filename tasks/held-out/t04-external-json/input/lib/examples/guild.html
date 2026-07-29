@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Guild Example</title></head>
+<body>
+<div id="root"></div>
+<script src="lib/src/guild.js"></script>
+<script id="sg-data" type="application/json">
+{
+  "members": [
+    { "id": "leader", "name": "Aria", "kind": "person", "role": "Leader" },
+    { "id": "mage", "name": "Bram", "kind": "person", "role": "Mage" },
+    { "id": "scout", "name": "Cira", "kind": "person", "role": "Scout" }
+  ],
+  "bonds": [
+    { "a": "leader", "b": "mage", "type": "mentor" },
+    { "a": "mage", "b": "scout", "type": "ally" }
+  ]
+}
+</script>
+<script>
+  // engine reads the external JSON block at mount
+  var data = JSON.parse(document.getElementById('sg-data').textContent);
+  Guild.mount(document.getElementById('root'), { chars: makeChars(data.members), edges: data.bonds });
+  function makeChars(arr) { var o = {}; arr.forEach(function (m) { o[m.id] = { name: m.name, kind: m.kind }; }); return o; }
+</script>
+</body>
+</html>
