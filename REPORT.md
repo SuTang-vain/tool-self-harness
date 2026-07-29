@@ -507,3 +507,23 @@ minimal Candidate 1 lineage. The paired-attempt sign test for Candidate 1 versus
 has only three discordant pairs, all favoring Candidate 1 (two-sided exact p=0.25); therefore the
 promotion is protocol-valid but still a small-pilot result rather than strong population-level
 statistical evidence.
+
+## 8. Systematic-Debugging Qualification Pilot
+
+A preregistered 8 held-in / 4 held-out pilot compared no skill, a minimal debugging skill, and
+the official `obra/superpowers` systematic-debugging skill using two fresh attempts per task.
+All three variants produced exactly the same task outcome matrix:
+
+| Variant | Held-in | Reliable held-in (2/2) | Held-out | Reliable held-out (2/2) |
+|---|---:|---:|---:|---:|
+| no skill | 14/16 | 7/8 | 6/8 | 3/4 |
+| minimal | 14/16 | 7/8 | 6/8 | 3/4 |
+| official full | 14/16 | 7/8 | 6/8 | 3/4 |
+
+The skill-bearing variants were loaded in 22/24 attempts and increased test-before-first-edit
+behavior from 23/24 to 24/24, but this did not change verifier outcomes. `py-env-bool` failed all
+held-in attempts and `js-options-default` failed all held-out attempts for every variant.
+Therefore this benchmark currently measures general coding competence more strongly than the
+incremental value of the debugging procedure. We do not interpret the pilot as positive
+Self-Harness evidence and will add process-sensitive tasks before running a systematic-debugging
+proposal round.

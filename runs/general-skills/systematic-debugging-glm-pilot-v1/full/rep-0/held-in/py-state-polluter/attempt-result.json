@@ -1,0 +1,26 @@
+{
+  "split": "held-in",
+  "task_id": "py-state-polluter",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": " | ---------------------------------------------------------------------- | Ran 2 tests in 0.000s |  | OK",
+  "runner": {
+    "steps": 9,
+    "final_answer": "The fix is complete and verified.\n\n## Summary\n\n### Problem\nThe full test suite was order-dependent: `test_add` passed alone, `test_fresh` passed alone, but together `test_fresh` failed with `['a'] != []`.\n\n### Root Cause (Phase 1)\nClassic Python **mutable default argument** bug in `registry.py`:\n\n```python\nDEFAULT_TAGS=[]\nclass Registry:\n def __init__(self,tags=DEFAULT_TAGS): self.tags=tags\n def add(self,tag): self.tags.append(tag)\n```\n\nThe default `tags=DEFAULT_TAGS` is evaluated **once** at class definition time, so every `Registry()` instance without an explicit `tags` argument shared the **same** list object. Data-flow trace:\n1. `test_add`: `r=Registry()` → `r.tags` is a reference to the shared `DEFAULT_TAGS`.\n2. `r.add('a')` → mutates that shared list to `['a']`.\n3. `test_fresh`: `Registry().tags` returns the same list, now `['a']` → assertion fails.\n\nThis is cross-test state pollution via shared mutable state in production code — not a test bug.\n\n### Fix (smallest correct change, no test modification)\nReplaced the shared default with a `None` sentinel that allocates a fresh list per instance:\n\n```python\ndef __init__(self,tags=None):\n if tags is None: tags=[]\n self.tags=tags\n```\n\nCallers passing an explicit `tags` list still share it (intentional, preserving original semantics for that path), while callers relying on the default get isolated state.\n\n### Verification\n- ✅ `test_add` alone — pass\n- ✅ `test_fresh` alone — pass\n- ✅ Full suite — pass\n- ✅ Reversed order (`test_fresh` first) — pass (order independence confirmed)\n\nThe only source change is the one-liner above (the `__pycache__` diffs are compiled bytecode, regenerated automatically).",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-0/held-in/py-state-polluter/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 11,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The fix is complete and verified.\n\n## Summary\n\n### Problem\nThe full test suite was order-dependent: `test_add` passed alone, `test_fresh` passed alone, but together `test_fresh` failed with `['a'] != []`.\n\n### Root Cause (Phase 1)\nClassic Python **mutable default argument** bug in `registry.py`:\n\n```python\nDEFAULT_TAGS=[]\nclass Registry:\n def __init__(self,tags=DEFAULT_TAGS): self.tags=tags\n def add(self,tag): self.tags.append(tag)\n```\n\nThe default `tags=DEFAULT_TAGS` is evaluated **once** at class definition time, so every `Registry()` instance without an explicit `tags` argument shared the **same** list object. Data-flow trace:\n1. `test_add`: `r=Registry()` → `r.tags` is a reference to the shared `DEFAULT_TAGS`.\n2. `r.add('a')` → mutates that shared list to `['a']`.\n3. `test_fresh`: `Registry().tags` returns the same list, now `['a']` → assertion fails.\n\nThis is cross-test state pollution via shared mutable state in production code — not a test bug.\n\n### Fix (smallest correct change, no test modification)\nReplaced the shared default with a `None` sentinel that allocates a fresh list per instance:\n\n```python\ndef __init__(self,tags=None):\n if tags is None: tags=[]\n self.tags=tags\n```\n\nCallers passing an explicit `tags` list still share it (intentional, preserving original semantics for that path), while callers relying on the default get isolated state.\n\n### Verification\n- ✅ `test_add` alone — pass\n- ✅ `test_fresh` alone — pass\n- ✅ Full suite — pass\n- ✅ Reversed order (`test_fresh` first) — pass (order independence confirmed)\n\nThe only source change is the one-liner above (the `__pycache__` diffs are compiled bytecode, regenerated automatically).",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-0/held-in/py-state-polluter/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-0/held-in/py-state-polluter/trace.jsonl"
+}

@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "go-slice-alias",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "ok  \texample/snapshot\t(cached) | ok  \texample/snapshot\t(cached) | PASS go-slice-alias",
+  "runner": {
+    "steps": 7,
+    "final_answer": "The fix is complete.\n\n## Summary\n\n**Root cause:** `Snapshot()` returned the store's internal `items` slice directly, sharing the same backing array with callers. This created an aliasing bug with two symptoms:\n\n1. **Caller mutating store state** — writing to the returned slice modified the store's internal storage (the failing `TestCallerCannotMutateStore` test).\n2. **Mutations changing earlier snapshots** — subsequent `Add` calls could overwrite elements visible through previously-returned snapshots when `append` reused existing capacity (the `TestSnapshotIsStable` test only passed by luck due to reallocation).\n\n**Fix:** Return a defensive copy instead of the internal slice:\n\n```go\nfunc (s *Store) Snapshot() []string {\n    out := make([]string, len(s.items))\n    copy(out, s.items)\n    return out\n}\n```\n\nThis is the smallest correct change: it preserves the documented \"immutable point-in-time copy\" contract and the public API, while breaking the aliasing. The internal storage is no longer reachable through returned snapshots, so both later mutations and caller-side writes are isolated. All tests pass.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-0/held-out/go-slice-alias/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 9,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The fix is complete.\n\n## Summary\n\n**Root cause:** `Snapshot()` returned the store's internal `items` slice directly, sharing the same backing array with callers. This created an aliasing bug with two symptoms:\n\n1. **Caller mutating store state** — writing to the returned slice modified the store's internal storage (the failing `TestCallerCannotMutateStore` test).\n2. **Mutations changing earlier snapshots** — subsequent `Add` calls could overwrite elements visible through previously-returned snapshots when `append` reused existing capacity (the `TestSnapshotIsStable` test only passed by luck due to reallocation).\n\n**Fix:** Return a defensive copy instead of the internal slice:\n\n```go\nfunc (s *Store) Snapshot() []string {\n    out := make([]string, len(s.items))\n    copy(out, s.items)\n    return out\n}\n```\n\nThis is the smallest correct change: it preserves the documented \"immutable point-in-time copy\" contract and the public API, while breaking the aliasing. The internal storage is no longer reachable through returned snapshots, so both later mutations and caller-side writes are isolated. All tests pass.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-0/held-out/go-slice-alias/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-0/held-out/go-slice-alias/trace.jsonl"
+}

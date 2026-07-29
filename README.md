@@ -156,6 +156,7 @@ handling in `runner.js` (future work).
 - ✅ MCP Builder prospective comparison completed: paper gate accepted 21/24→23/24 held-in with held-out flat, but reliable promotion rejected one lost 3/3 task.
 - ✅ Final generic-skill promotion rule frozen as `reliable-task-set-v1`.
 - ✅ MCP Builder Round 1 produced `h1-stable`: 24/24 held-in, 6/12 held-out, no lost reliable task; redundant combinations were rejected.
+- ⚠ Systematic-debugging pilot was outcome-flat across no/minimal/full skill (14/16 held-in, 6/8 held-out); benchmark revision is required before Self-Harness proposals.
 - ⚠ MCP tool support not yet implemented (skill-only).
 - ⚠ references/scripts not yet editable surfaces (SKILL.md only).
 

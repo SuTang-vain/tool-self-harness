@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "py-condition-wait",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": " | ---------------------------------------------------------------------- | Ran 1 test in 0.041s |  | OK",
+  "runner": {
+    "steps": 10,
+    "final_answer": "## Summary\n\n### Diagnosis\n\nThe original `wait_until` was a **fixed one-shot wait**:\n\n```python\ndef wait_until(predicate, timeout, interval=0.01):\n    time.sleep(timeout)\n    return predicate()\n```\n\nIt slept the entire `timeout` duration and then sampled the predicate **exactly once** at the very end. This caused two forms of flakiness:\n\n1. **Never returns early** — even if the condition became true immediately, the caller always waited the full `timeout`. The test (`test_returns_early`) explicitly requires returning within 0.2s on a 0.5s timeout, which failed at 0.51s.\n2. **Misses transient conditions** — a condition that flips true and back to false *during* the wait would be missed, since the predicate was only evaluated at the terminal moment.\n\n### Fix\n\nReplaced the one-shot wait with **bounded condition polling** (smallest correct change, API preserved — same `wait_until(predicate, timeout, interval=0.01)` signature):\n\n- Compute a `deadline = time.monotonic() + timeout` once (monotonic clock avoids wall-clock jumps).\n- In a loop: check `predicate()` first; return `True` immediately when truthy (early return ✓).\n- If the deadline has passed, return `False` (bounded, no indefinite blocking ✓).\n- Otherwise sleep `min(interval, remaining)` before re-checking — this avoids busy-waiting and also avoids overshooting the timeout when `interval > remaining`.\n\n### Verification\n\n- `test_waiter.py` now passes in 0.045s (was failing at 0.51s).\n- Additional sanity checks confirm: immediate-return for already-true predicates, bounded ~`timeout` return for never-true predicates, catching conditions that become true mid-wait, large-interval edge case, and non-busy-wait behavior.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-0/held-out/py-condition-wait/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 10,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "## Summary\n\n### Diagnosis\n\nThe original `wait_until` was a **fixed one-shot wait**:\n\n```python\ndef wait_until(predicate, timeout, interval=0.01):\n    time.sleep(timeout)\n    return predicate()\n```\n\nIt slept the entire `timeout` duration and then sampled the predicate **exactly once** at the very end. This caused two forms of flakiness:\n\n1. **Never returns early** — even if the condition became true immediately, the caller always waited the full `timeout`. The test (`test_returns_early`) explicitly requires returning within 0.2s on a 0.5s timeout, which failed at 0.51s.\n2. **Misses transient conditions** — a condition that flips true and back to false *during* the wait would be missed, since the predicate was only evaluated at the terminal moment.\n\n### Fix\n\nReplaced the one-shot wait with **bounded condition polling** (smallest correct change, API preserved — same `wait_until(predicate, timeout, interval=0.01)` signature):\n\n- Compute a `deadline = time.monotonic() + timeout` once (monotonic clock avoids wall-clock jumps).\n- In a loop: check `predicate()` first; return `True` immediately when truthy (early return ✓).\n- If the deadline has passed, return `False` (bounded, no indefinite blocking ✓).\n- Otherwise sleep `min(interval, remaining)` before re-checking — this avoids busy-waiting and also avoids overshooting the timeout when `interval > remaining`.\n\n### Verification\n\n- `test_waiter.py` now passes in 0.045s (was failing at 0.51s).\n- Additional sanity checks confirm: immediate-return for already-true predicates, bounded ~`timeout` return for never-true predicates, catching conditions that become true mid-wait, large-interval edge case, and non-busy-wait behavior.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-0/held-out/py-condition-wait/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-0/held-out/py-condition-wait/trace.jsonl"
+}

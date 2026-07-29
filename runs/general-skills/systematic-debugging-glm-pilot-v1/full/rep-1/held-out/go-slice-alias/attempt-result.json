@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "go-slice-alias",
+  "repeat": 1,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "ok  \texample/snapshot\t0.169s | ok  \texample/snapshot\t(cached) | PASS go-slice-alias",
+  "runner": {
+    "steps": 11,
+    "final_answer": "## Summary\n\n**Root cause:** `Snapshot()` returned the store's internal `s.items` slice directly. In Go, a slice is a header (pointer + length + capacity) that shares its backing array. So the returned slice was **aliased** to the store's internal storage, violating the documented \"immutable point-in-time copy\" contract. This caused two failures:\n\n1. A caller mutating the returned slice (`x[0] = \"changed\"`) corrupted the store's internal `items` — this was the failing `TestCallerCannotMutateStore` test (`aliased`).\n2. Any future in-place growth of the store's slice (via `append` reusing spare capacity) could affect shared memory in earlier snapshots.\n\n**Fix (smallest correct change, API preserved):** `Snapshot()` now returns an independent defensive copy:\n```go\nfunc (s *Store) Snapshot() []string {\n    out := make([]string, len(s.items))\n    copy(out, s.items)\n    return out\n}\n```\n\nThe method name and signature `[]string` are unchanged. Each call to `Snapshot()` allocates a fresh backing array and copies the current contents, so neither caller mutations nor later `Add`s can affect previously-returned snapshots.\n\n**Verification:** `go vet`, `go build`, and the full test suite (`TestCallerCannotMutateStore` + `TestSnapshotIsStable`) all pass.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-1/held-out/go-slice-alias/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 13,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "## Summary\n\n**Root cause:** `Snapshot()` returned the store's internal `s.items` slice directly. In Go, a slice is a header (pointer + length + capacity) that shares its backing array. So the returned slice was **aliased** to the store's internal storage, violating the documented \"immutable point-in-time copy\" contract. This caused two failures:\n\n1. A caller mutating the returned slice (`x[0] = \"changed\"`) corrupted the store's internal `items` — this was the failing `TestCallerCannotMutateStore` test (`aliased`).\n2. Any future in-place growth of the store's slice (via `append` reusing spare capacity) could affect shared memory in earlier snapshots.\n\n**Fix (smallest correct change, API preserved):** `Snapshot()` now returns an independent defensive copy:\n```go\nfunc (s *Store) Snapshot() []string {\n    out := make([]string, len(s.items))\n    copy(out, s.items)\n    return out\n}\n```\n\nThe method name and signature `[]string` are unchanged. Each call to `Snapshot()` allocates a fresh backing array and copies the current contents, so neither caller mutations nor later `Add`s can affect previously-returned snapshots.\n\n**Verification:** `go vet`, `go build`, and the full test suite (`TestCallerCannotMutateStore` + `TestSnapshotIsStable`) all pass.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-1/held-out/go-slice-alias/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-1/held-out/go-slice-alias/trace.jsonl"
+}

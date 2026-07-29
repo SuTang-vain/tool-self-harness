@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "js-retry-budget",
+  "repeat": 1,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 51.496958 | PASS js-retry-budget",
+  "runner": {
+    "steps": 7,
+    "final_answer": "## Summary\n\n**Root cause:** The retry loop used `attempt <= maxAttempts`, an off-by-one error. With `maxAttempts = 3`, the loop iterated for `attempt = 0, 1, 2, 3` — that's **4 calls**, violating the documented attempt budget of 3. The success path masked the bug because it succeeded before reaching the surplus iteration; only the exhausted-error path surfaced it (test failed with `4 !== 3`).\n\n**Fix:** Changed the loop bound from `<=` to `<`, so the loop runs exactly `maxAttempts` times (attempts `0..maxAttempts-1`). This is the smallest correct change and leaves the API (`retry(operation, maxAttempts)`) and tests untouched.\n\n**Verification:**\n- `never exceeds maxAttempts` (exhausted-error behavior): calls reach exactly 3 before throwing ✔\n- `returns when an attempt succeeds` (success behavior): returns `'ok'` on the 2nd call ✔\n\nFull suite: 2 pass, 0 fail.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-1/held-out/js-retry-budget/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 10,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "## Summary\n\n**Root cause:** The retry loop used `attempt <= maxAttempts`, an off-by-one error. With `maxAttempts = 3`, the loop iterated for `attempt = 0, 1, 2, 3` — that's **4 calls**, violating the documented attempt budget of 3. The success path masked the bug because it succeeded before reaching the surplus iteration; only the exhausted-error path surfaced it (test failed with `4 !== 3`).\n\n**Fix:** Changed the loop bound from `<=` to `<`, so the loop runs exactly `maxAttempts` times (attempts `0..maxAttempts-1`). This is the smallest correct change and leaves the API (`retry(operation, maxAttempts)`) and tests untouched.\n\n**Verification:**\n- `never exceeds maxAttempts` (exhausted-error behavior): calls reach exactly 3 before throwing ✔\n- `returns when an attempt succeeds` (success behavior): returns `'ok'` on the 2nd call ✔\n\nFull suite: 2 pass, 0 fail.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-1/held-out/js-retry-budget/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-1/held-out/js-retry-budget/trace.jsonl"
+}

@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "js-retry-budget",
+  "repeat": 1,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 49.640333 | PASS js-retry-budget",
+  "runner": {
+    "steps": 8,
+    "final_answer": "## Summary\n\n**Problem:** The `retry` helper violated its documented attempt budget. The test `never exceeds maxAttempts` expected exactly `maxAttempts` (3) calls when an operation always fails, but the implementation called it 4 times.\n\n**Root cause:** The loop condition used `attempt <= maxAttempts`, producing `maxAttempts + 1` iterations (attempts `0, 1, 2, 3` for `maxAttempts = 3`).\n\n**Fix:** Changed the condition from `<=` to `<`, so the loop runs exactly `maxAttempts` times (attempts `0..maxAttempts-1`, exposed as call numbers `1..maxAttempts`). This is the smallest possible change.\n\n**Verification:**\n- ✅ `never exceeds maxAttempts` — with `maxAttempts=3` and an always-failing op, the op is now invoked exactly 3 times before `lastError` is thrown (exhausted-error behavior).\n- ✅ `returns when an attempt succeeds` — early `return` on success still works, so a success on the 2nd call yields `'ok'` after exactly 2 calls (success behavior).\n\nThe API and tests were left unchanged; only one operator in the loop condition was corrected.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-1/held-out/js-retry-budget/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 10,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "## Summary\n\n**Problem:** The `retry` helper violated its documented attempt budget. The test `never exceeds maxAttempts` expected exactly `maxAttempts` (3) calls when an operation always fails, but the implementation called it 4 times.\n\n**Root cause:** The loop condition used `attempt <= maxAttempts`, producing `maxAttempts + 1` iterations (attempts `0, 1, 2, 3` for `maxAttempts = 3`).\n\n**Fix:** Changed the condition from `<=` to `<`, so the loop runs exactly `maxAttempts` times (attempts `0..maxAttempts-1`, exposed as call numbers `1..maxAttempts`). This is the smallest possible change.\n\n**Verification:**\n- ✅ `never exceeds maxAttempts` — with `maxAttempts=3` and an always-failing op, the op is now invoked exactly 3 times before `lastError` is thrown (exhausted-error behavior).\n- ✅ `returns when an attempt succeeds` — early `return` on success still works, so a success on the 2nd call yields `'ok'` after exactly 2 calls (success behavior).\n\nThe API and tests were left unchanged; only one operator in the loop condition was corrected.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-1/held-out/js-retry-budget/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-1/held-out/js-retry-budget/trace.jsonl"
+}

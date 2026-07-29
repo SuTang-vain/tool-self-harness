@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "py-condition-wait",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": " | ---------------------------------------------------------------------- | Ran 1 test in 0.045s |  | OK",
+  "runner": {
+    "steps": 11,
+    "final_answer": "The full test suite passes. The diff shows only the targeted change to `waiter.py` (the `__pycache__` changes are just compiled bytecode from running the tests).\n\n## Summary\n\n**Reproduced the failure:** The test `test_returns_early` failed with `0.51s not less than 0.2s` — the helper slept the full timeout instead of returning early.\n\n**Root cause:** The original `wait_until` was a fixed one-shot wait:\n```python\ndef wait_until(predicate, timeout, interval=0.01):\n    time.sleep(timeout)\n    return predicate()\n```\nIt always blocked for the entire `timeout` and then checked the predicate exactly once. This made it flaky in two ways:\n1. It never returned early when the condition became true mid-window.\n2. It could miss a transient condition that was true during the window but false by the single check at the deadline.\n\n**Fix (bounded condition polling, smallest targeted change):**\n```python\ndef wait_until(predicate, timeout, interval=0.01):\n    deadline = time.monotonic() + timeout\n    while True:\n        if predicate():\n            return True\n        remaining = deadline - time.monotonic()\n        if remaining <= 0:\n            return predicate()\n        time.sleep(min(interval, remaining))\n```\n\nKey properties:\n- **Preserves the API** — same `wait_until(predicate, timeout, interval=0.01)` signature and boolean return.\n- **Returns early** as soon as the condition is true (test now passes in 0.045s).\n- **Catches transient conditions** by polling repeatedly rather than checking once at the deadline.\n- **Avoids busy-waiting** by sleeping `interval` between checks, and never oversleeps the deadline (`min(interval, remaining)`).\n- **Bounds total wait time** to `timeout` using a monotonic deadline, immune to clock skew.\n- **Final check at expiry** returns the predicate's actual value so the deadline semantics are exact (e.g., a never-true predicate returns `False` after ~timeout; an already-true predicate returns `True` immediately).",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/minimal/rep-0/held-out/py-condition-wait/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 13,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The full test suite passes. The diff shows only the targeted change to `waiter.py` (the `__pycache__` changes are just compiled bytecode from running the tests).\n\n## Summary\n\n**Reproduced the failure:** The test `test_returns_early` failed with `0.51s not less than 0.2s` — the helper slept the full timeout instead of returning early.\n\n**Root cause:** The original `wait_until` was a fixed one-shot wait:\n```python\ndef wait_until(predicate, timeout, interval=0.01):\n    time.sleep(timeout)\n    return predicate()\n```\nIt always blocked for the entire `timeout` and then checked the predicate exactly once. This made it flaky in two ways:\n1. It never returned early when the condition became true mid-window.\n2. It could miss a transient condition that was true during the window but false by the single check at the deadline.\n\n**Fix (bounded condition polling, smallest targeted change):**\n```python\ndef wait_until(predicate, timeout, interval=0.01):\n    deadline = time.monotonic() + timeout\n    while True:\n        if predicate():\n            return True\n        remaining = deadline - time.monotonic()\n        if remaining <= 0:\n            return predicate()\n        time.sleep(min(interval, remaining))\n```\n\nKey properties:\n- **Preserves the API** — same `wait_until(predicate, timeout, interval=0.01)` signature and boolean return.\n- **Returns early** as soon as the condition is true (test now passes in 0.045s).\n- **Catches transient conditions** by polling repeatedly rather than checking once at the deadline.\n- **Avoids busy-waiting** by sleeping `interval` between checks, and never oversleeps the deadline (`min(interval, remaining)`).\n- **Bounds total wait time** to `timeout` using a monotonic deadline, immune to clock skew.\n- **Final check at expiry** returns the predicate's actual value so the deadline semantics are exact (e.g., a never-true predicate returns `False` after ~timeout; an already-true predicate returns `True` immediately).",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/minimal/rep-0/held-out/py-condition-wait/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/minimal/rep-0/held-out/py-condition-wait/trace.jsonl"
+}

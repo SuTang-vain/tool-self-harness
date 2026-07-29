@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "go-slice-alias",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "ok  \texample/snapshot\t0.163s | ok  \texample/snapshot\t(cached) | PASS go-slice-alias",
+  "runner": {
+    "steps": 11,
+    "final_answer": "Done. Here's a summary of what I did, following the systematic-debugging skill:\n\n## Problem\n`Store.Snapshot()` was documented to return an immutable point-in-time copy, but it returned the store's internal slice directly:\n```go\nfunc(s *Store)Snapshot()[]string{return s.items}\n```\nThis caused two aliasing bugs:\n1. **Caller → store corruption**: callers could mutate the store's internal state via the returned slice.\n2. **Store → snapshot leakage**: later `Add` calls sharing spare capacity of the backing array could alter previously-returned snapshots.\n\n## Reproduction\n- `TestSnapshotIsStable` passed (only by luck — it checks length and index 0 which `append(\"b\")` didn't touch).\n- `TestCallerCannotMutateStore` **failed** with `\"aliased\"`: the caller's write to `x[0]` corrupted the store's data.\n\n## Root cause\nThe returned slice header shared the backing array with `s.items`, breaking the immutability contract.\n\n## Fix (smallest targeted change, API unchanged)\n```go\nfunc(s *Store)Snapshot()[]string{out:=make([]string,len(s.items));copy(out,s.items);return out}\n```\n`Snapshot()` now allocates an independent backing array and copies the contents, so the snapshot truly owns its data. The signature/contract is unchanged.\n\n## Verification\n- Failing test `TestCallerCannotMutateStore` → PASS\n- Full suite (`go test -v ./...`) → all PASS\n- `go vet ./...` clean, `go test -race ./...` clean",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/minimal/rep-0/held-out/go-slice-alias/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 13,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "Done. Here's a summary of what I did, following the systematic-debugging skill:\n\n## Problem\n`Store.Snapshot()` was documented to return an immutable point-in-time copy, but it returned the store's internal slice directly:\n```go\nfunc(s *Store)Snapshot()[]string{return s.items}\n```\nThis caused two aliasing bugs:\n1. **Caller → store corruption**: callers could mutate the store's internal state via the returned slice.\n2. **Store → snapshot leakage**: later `Add` calls sharing spare capacity of the backing array could alter previously-returned snapshots.\n\n## Reproduction\n- `TestSnapshotIsStable` passed (only by luck — it checks length and index 0 which `append(\"b\")` didn't touch).\n- `TestCallerCannotMutateStore` **failed** with `\"aliased\"`: the caller's write to `x[0]` corrupted the store's data.\n\n## Root cause\nThe returned slice header shared the backing array with `s.items`, breaking the immutability contract.\n\n## Fix (smallest targeted change, API unchanged)\n```go\nfunc(s *Store)Snapshot()[]string{out:=make([]string,len(s.items));copy(out,s.items);return out}\n```\n`Snapshot()` now allocates an independent backing array and copies the contents, so the snapshot truly owns its data. The signature/contract is unchanged.\n\n## Verification\n- Failing test `TestCallerCannotMutateStore` → PASS\n- Full suite (`go test -v ./...`) → all PASS\n- `go vet ./...` clean, `go test -race ./...` clean",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/minimal/rep-0/held-out/go-slice-alias/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/minimal/rep-0/held-out/go-slice-alias/trace.jsonl"
+}

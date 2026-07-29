@@ -1,0 +1,26 @@
+{
+  "split": "held-in",
+  "task_id": "js-event-listener",
+  "repeat": 1,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 50.722625 | PASS js-event-listener",
+  "runner": {
+    "steps": 7,
+    "final_answer": "## Summary\n\n**Problem:** The Node.js subscription helper delivered every event multiple times after reconnecting.\n\n**Reproduction:** `npm test` failed with `2 !== 1` — after calling the cleanup function (`close()`), emitting `'data'` still triggered the handler, proving the listener was never actually removed.\n\n**Root cause:** In `subscription.js`, `connect` registered the `onData` listener on the `'data'` event, but the returned disconnect function removed it from the `'close'` event:\n\n```js\nemitter.on('data', onData);\nreturn () => emitter.off('close', onData)  // wrong event\n```\n\nSince `onData` was never attached to `'close'`, `off('close', onData)` was a no-op. The `'data'` listener persisted. On reconnect (calling `connect` again on the same emitter), each call added another `onData` listener to `'data'`, so every emitted event was delivered once per accumulated listener — i.e., delivered multiple times.\n\n**Fix (smallest correct change):** The disconnect function must remove the listener from the *same event it was registered on*:\n\n```js\nreturn () => emitter.off('data', onData)\n```\n\nThis makes cleanup symmetrical with registration. After `close()`, the `'data'` listener is removed, so no duplicate deliveries accumulate across reconnects. The full test suite passes.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-1/held-in/js-event-listener/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 9,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "## Summary\n\n**Problem:** The Node.js subscription helper delivered every event multiple times after reconnecting.\n\n**Reproduction:** `npm test` failed with `2 !== 1` — after calling the cleanup function (`close()`), emitting `'data'` still triggered the handler, proving the listener was never actually removed.\n\n**Root cause:** In `subscription.js`, `connect` registered the `onData` listener on the `'data'` event, but the returned disconnect function removed it from the `'close'` event:\n\n```js\nemitter.on('data', onData);\nreturn () => emitter.off('close', onData)  // wrong event\n```\n\nSince `onData` was never attached to `'close'`, `off('close', onData)` was a no-op. The `'data'` listener persisted. On reconnect (calling `connect` again on the same emitter), each call added another `onData` listener to `'data'`, so every emitted event was delivered once per accumulated listener — i.e., delivered multiple times.\n\n**Fix (smallest correct change):** The disconnect function must remove the listener from the *same event it was registered on*:\n\n```js\nreturn () => emitter.off('data', onData)\n```\n\nThis makes cleanup symmetrical with registration. After `close()`, the `'data'` listener is removed, so no duplicate deliveries accumulate across reconnects. The full test suite passes.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-1/held-in/js-event-listener/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-1/held-in/js-event-listener/trace.jsonl"
+}

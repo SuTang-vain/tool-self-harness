@@ -1,0 +1,26 @@
+{
+  "split": "held-in",
+  "task_id": "js-event-listener",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 49.139541 | PASS js-event-listener",
+  "runner": {
+    "steps": 8,
+    "final_answer": "Done.\n\n## Summary\n\n**Problem:** After reconnecting, every event was delivered multiple times.\n\n**Reproduction:** `npm test` failed with `2 !== 1` — emitting `'data'` twice still triggered the callback twice after `close()` was called, proving the listener wasn't actually removed.\n\n**Root cause (listener lifecycle):** `connect` subscribed to `'data'`, but the returned cleanup detached from `'close'` (an event that was never subscribed to). The `close()` function was therefore a no-op. Each reconnect added another `'data'` listener on top of the previous one, so events were delivered once per accumulated stale listener — the \"every event multiple times after reconnect\" symptom.\n\n**Fix (smallest correct change):** In `subscription.js`, made the cleanup remove the same event/listener it registered:\n\n```diff\n-export function connect(emitter,onData){emitter.on('data',onData);return ()=>emitter.off('close',onData)}\n+export function connect(emitter,onData){emitter.on('data',onData);return ()=>emitter.off('data',onData)}\n```\n\n**Verification:**\n- `npm test` passes (cleanup removes the data listener).\n- An additional reconnect + cleanup simulation confirms: after `c1()` cleanup, reconnecting (`c2`) yields exactly one delivery per emit, and a post-`c2()` emit delivers nothing (`total deliveries = 2` as expected). No duplicate delivery on reconnect.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-0/held-in/js-event-listener/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 10,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "Done.\n\n## Summary\n\n**Problem:** After reconnecting, every event was delivered multiple times.\n\n**Reproduction:** `npm test` failed with `2 !== 1` — emitting `'data'` twice still triggered the callback twice after `close()` was called, proving the listener wasn't actually removed.\n\n**Root cause (listener lifecycle):** `connect` subscribed to `'data'`, but the returned cleanup detached from `'close'` (an event that was never subscribed to). The `close()` function was therefore a no-op. Each reconnect added another `'data'` listener on top of the previous one, so events were delivered once per accumulated stale listener — the \"every event multiple times after reconnect\" symptom.\n\n**Fix (smallest correct change):** In `subscription.js`, made the cleanup remove the same event/listener it registered:\n\n```diff\n-export function connect(emitter,onData){emitter.on('data',onData);return ()=>emitter.off('close',onData)}\n+export function connect(emitter,onData){emitter.on('data',onData);return ()=>emitter.off('data',onData)}\n```\n\n**Verification:**\n- `npm test` passes (cleanup removes the data listener).\n- An additional reconnect + cleanup simulation confirms: after `c1()` cleanup, reconnecting (`c2`) yields exactly one delivery per emit, and a post-`c2()` emit delivers nothing (`total deliveries = 2` as expected). No duplicate delivery on reconnect.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-0/held-in/js-event-listener/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-0/held-in/js-event-listener/trace.jsonl"
+}

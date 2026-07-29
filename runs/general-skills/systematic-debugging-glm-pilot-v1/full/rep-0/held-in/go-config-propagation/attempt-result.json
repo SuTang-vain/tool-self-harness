@@ -1,0 +1,26 @@
+{
+  "split": "held-in",
+  "task_id": "go-config-propagation",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "ok  \texample/configbug\t(cached) | ok  \texample/configbug\t0.346s | PASS go-config-propagation",
+  "runner": {
+    "steps": 10,
+    "final_answer": "All Go tests pass and `go vet` is clean.\n\n## Summary\n\n**Root cause:** `NewClient(cfg Config)` discarded the caller-provided `cfg`, calling `newHTTPClient()` with no arguments. That internal constructor hardcoded `Timeout: 30 * time.Second`, so the caller's `Config.Timeout` never propagated.\n\n**Fix (minimal, in production code):**\n- `NewClient` now threads `cfg` into `newHTTPClient(cfg)`.\n- `newHTTPClient` uses `cfg.Timeout`, falling back to the original `30s` default only when the caller didn't specify one (zero-value `time.Duration`).\n\nThis satisfies the constraints:\n- **No hardcoded test value** — the `2s` comes from the test's `Config`, not the production code.\n- **No public API change** — `NewClient(cfg Config) *Client` signature is unchanged.\n- **No regression** — the previous `30s` default is preserved when no timeout is provided.\n\n`go test ./...` passes (and `go vet` is clean).",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-0/held-in/go-config-propagation/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 11,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "All Go tests pass and `go vet` is clean.\n\n## Summary\n\n**Root cause:** `NewClient(cfg Config)` discarded the caller-provided `cfg`, calling `newHTTPClient()` with no arguments. That internal constructor hardcoded `Timeout: 30 * time.Second`, so the caller's `Config.Timeout` never propagated.\n\n**Fix (minimal, in production code):**\n- `NewClient` now threads `cfg` into `newHTTPClient(cfg)`.\n- `newHTTPClient` uses `cfg.Timeout`, falling back to the original `30s` default only when the caller didn't specify one (zero-value `time.Duration`).\n\nThis satisfies the constraints:\n- **No hardcoded test value** — the `2s` comes from the test's `Config`, not the production code.\n- **No public API change** — `NewClient(cfg Config) *Client` signature is unchanged.\n- **No regression** — the previous `30s` default is preserved when no timeout is provided.\n\n`go test ./...` passes (and `go vet` is clean).",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-0/held-in/go-config-propagation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/full/rep-0/held-in/go-config-propagation/trace.jsonl"
+}

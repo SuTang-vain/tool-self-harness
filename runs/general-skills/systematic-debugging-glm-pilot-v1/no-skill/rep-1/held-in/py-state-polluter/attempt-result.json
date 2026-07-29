@@ -1,0 +1,26 @@
+{
+  "split": "held-in",
+  "task_id": "py-state-polluter",
+  "repeat": 1,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": " | ---------------------------------------------------------------------- | Ran 2 tests in 0.000s |  | OK",
+  "runner": {
+    "steps": 12,
+    "final_answer": "## Summary\n\n**Problem reproduced:** The full suite failed with `test_fresh` getting `['a'] != []`. Each test passes in isolation, confirming order-dependence.\n\n**Root cause — shared mutable state:** `Registry.__init__` used the classic mutable default argument anti-pattern:\n\n```python\ndef __init__(self, tags=DEFAULT_TAGS): self.tags = tags\n```\n\n`DEFAULT_TAGS=[]` is a module-level list evaluated once. The default `tags` is bound to that *same* list object across all instances. `test_add`'s `r.add('a')` appends to `DEFAULT_TAGS` itself, so the next `Registry()` constructed in `test_fresh` started with `['a']`.\n\n**Smallest production fix (tests untouched):**\n\n```python\nDEFAULT_TAGS=[]\nclass Registry:\n def __init__(self,tags=None): self.tags=list(tags) if tags is not None else list(DEFAULT_TAGS)\n def add(self,tag): self.tags.append(tag)\n```\n\nEach instance now gets its own freshly-allocated list:\n- When `tags=None` (default): a fresh copy of `DEFAULT_TAGS`.\n- When `tags` is supplied: a fresh copy via `list(tags)`, preserving the caller's intent without aliasing their list (so internal `add` calls can't mutate the caller's list).\n\n**Verification:**\n- `test_add` alone → ok\n- `test_fresh` alone → ok\n- Full suite (default order, `test_add` then `test_fresh`) → ok\n- Full suite (reverse order) → ok\n\nThe suite is now order-independent and individual tests still pass.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-1/held-in/py-state-polluter/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 12,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "## Summary\n\n**Problem reproduced:** The full suite failed with `test_fresh` getting `['a'] != []`. Each test passes in isolation, confirming order-dependence.\n\n**Root cause — shared mutable state:** `Registry.__init__` used the classic mutable default argument anti-pattern:\n\n```python\ndef __init__(self, tags=DEFAULT_TAGS): self.tags = tags\n```\n\n`DEFAULT_TAGS=[]` is a module-level list evaluated once. The default `tags` is bound to that *same* list object across all instances. `test_add`'s `r.add('a')` appends to `DEFAULT_TAGS` itself, so the next `Registry()` constructed in `test_fresh` started with `['a']`.\n\n**Smallest production fix (tests untouched):**\n\n```python\nDEFAULT_TAGS=[]\nclass Registry:\n def __init__(self,tags=None): self.tags=list(tags) if tags is not None else list(DEFAULT_TAGS)\n def add(self,tag): self.tags.append(tag)\n```\n\nEach instance now gets its own freshly-allocated list:\n- When `tags=None` (default): a fresh copy of `DEFAULT_TAGS`.\n- When `tags` is supplied: a fresh copy via `list(tags)`, preserving the caller's intent without aliasing their list (so internal `add` calls can't mutate the caller's list).\n\n**Verification:**\n- `test_add` alone → ok\n- `test_fresh` alone → ok\n- Full suite (default order, `test_add` then `test_fresh`) → ok\n- Full suite (reverse order) → ok\n\nThe suite is now order-independent and individual tests still pass.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-1/held-in/py-state-polluter/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/systematic-debugging-glm-pilot-v1/no-skill/rep-1/held-in/py-state-polluter/trace.jsonl"
+}
