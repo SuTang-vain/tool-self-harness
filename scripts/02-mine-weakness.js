@@ -73,7 +73,9 @@ function main() {
       signatures.push({ task_id: r.task_id, split: r.split, passed: true });
       continue;
     }
-    const sig = trace.buildSignature(r.trace_path, r.verify.status);
+    // Pass the produced pack path so trace.js can detect provenance-missing
+    const producedPackPath = path.join(r.task_dir, 'input', 'lib', 'data', 'data.json');
+    const sig = trace.buildSignature(r.trace_path, r.verify.status, producedPackPath);
     signatures.push({
       task_id: r.task_id,
       split: r.split,

@@ -45,6 +45,12 @@ const HEURISTICS = [
     surface: 'workflow-section',
     note: 'extract ran but failed; config guidance may be unclear'
   },
+  // provenance entirely missing: workflow should mandate provenance stamping
+  {
+    match: (sig) => sig.provenance_missing && sig.terminal_cause === 'validate_failed',
+    surface: 'workflow-section',
+    note: 'provenance field entirely missing from produced pack; workflow must mandate provenance stamping as a mandatory step'
+  },
   // validate failed with E5/E7 (dangling refs) -> rule-cheat-sheet didn't warn enough
   {
     match: (sig) => sig.terminal_cause === 'validate_failed' && /E5|E7|E13/.test(sig.validate_errors || ''),
@@ -167,13 +173,26 @@ function attributeSurface(sig) {
 }
 
 // ---------- build a failure signature ----------
-function buildSignature(tracePath, verifyStatus) {
+// producedPackPath (optional): path to the model's produced data.json, used to
+// detect provenance-missing failures (which should attribute to workflow-section,
+// not rule-cheat-sheet, since the workflow should mandate provenance stamping).
+function buildSignature(tracePath, verifyStatus, producedPackPath) {
   const parsed = parseTrace(tracePath);
   const tc = terminalCause(parsed, verifyStatus);
 
   if (tc === 'pass') {
     return { passed: true, terminal_cause: 'pass', implicated_surface: null, agent_behavior: null, evidence: null, parsed };
   }
+
+  // Check if the produced pack is missing provenance entirely
+  let provenanceMissing = false;
+  if (producedPackPath) {
+    try {
+      const pack = JSON.parse(require('fs').readFileSync(producedPackPath, 'utf8'));
+      provenanceMissing = !pack.provenance || Object.keys(pack.provenance).length === 0;
+    } catch (e) { /* ignore */ }
+  }
+  parsed.provenance_missing = provenanceMissing;
 
   const sig = Object.assign({}, parsed, { terminal_cause: tc });
   const attr = attributeSurface(sig);

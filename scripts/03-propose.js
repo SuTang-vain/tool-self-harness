@@ -88,7 +88,7 @@ function loadModelConfig(configPath) {
     api_key: prov.options.apiKey,
     model: m.model || Object.keys(prov.models || {})[0],
     temperature: Number(m.temperature || 0),
-    max_tokens: Number(m.max_tokens || 8192),
+    max_tokens: Number(m.max_tokens || 16384),
     kind: prov.kind || 'openai'
   };
 }
@@ -97,7 +97,7 @@ function chatComplete(mc, messages) {
   const body = { model: mc.model, messages, temperature: mc.temperature, max_tokens: mc.max_tokens };
   const res = spawnSync('curl', ['-sS', mc.base_url.replace(/\/$/, '') + '/chat/completions',
     '-H', 'Content-Type: application/json', '-H', 'Authorization: Bearer ' + mc.api_key,
-    '-d', JSON.stringify(body), '--max-time', '240'], { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 });
+    '-d', JSON.stringify(body), '--max-time', '360'], { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 });
   if (res.status !== 0) throw new Error('curl failed: ' + (res.stderr || '').slice(0, 300));
   const json = JSON.parse(res.stdout);
   if (json.error) throw new Error('API error: ' + JSON.stringify(json.error).slice(0, 300));
@@ -144,11 +144,18 @@ function main() {
     '- id=' + s.id + ' type=' + s.type + (s.field ? ' field=' + s.field : '') + (s.heading ? ' heading="' + s.heading + '"' : '') + ' edit_kinds=[' + (Array.isArray(s.edit_kinds) ? s.edit_kinds.join(',') : s.edit_kinds) + ']'
   ).join('\n');
 
-  // Current content of each surface
-  const currentContents = surfaces.map(s => {
+  // Current content: only include surfaces that the evidence implicates,
+  // plus a few adjacent ones. Including ALL surfaces makes the prompt too long
+  // and leaves no room for the model to output the full new_content.
+  const implicatedSurfaces = new Set(evidence.clusters.map(c => c.implicated_surface));
+  // Always include these high-priority surfaces as fallback options
+  ['skill-description', 'workflow-section', 'rule-cheat-sheet', 'cli-section', 'core-concept'].forEach(s => implicatedSurfaces.add(s));
+  const currentContents = surfaces.filter(s => implicatedSurfaces.has(s.id)).map(s => {
     let content;
     try { content = patch.getSurface(currentSkillMd, s, sandboxPath); }
     catch (e) { content = '(unreadable: ' + e.message + ')'; }
+    // Truncate to 2500 chars to keep prompt manageable (leaves room for output)
+    if (content && content.length > 2500) content = content.slice(0, 2500) + '\n... (truncated, ' + content.length + ' chars total)';
     return '### ' + s.id + ' (current content):\n' + (content || '(empty)') + '\n';
   }).join('\n');
 
@@ -192,8 +199,20 @@ function main() {
     { role: 'system', content: 'You output strict JSON only. No prose, no markdown, no explanation. Return ONLY a JSON array literal.' },
     { role: 'user', content: proposerPrompt }
   ]);
+  // Debug: log what the API returned
+  const choice = resp.choices && resp.choices[0];
+  const msg = choice && choice.message;
+  console.log('  [debug] finish_reason:', choice && choice.finish_reason);
+  console.log('  [debug] content len:', (msg && msg.content || '').length);
+  console.log('  [debug] reasoning_content len:', (msg && msg.reasoning_content || '').length);
+  console.log('  [debug] usage:', JSON.stringify(resp.usage));
   // Strip reasoning_content if present (some models leak reasoning into content)
-  let content = (resp.choices && resp.choices[0] && resp.choices[0].message && resp.choices[0].message.content) || '';
+  let content = (msg && msg.content) || '';
+  // If content is empty but reasoning_content has JSON, extract from there
+  if (!content && msg && msg.reasoning_content) {
+    console.log('  [debug] content empty, trying reasoning_content...');
+    content = msg.reasoning_content;
+  }
   // Strip  思考 ...  blocks if model leaks its reasoning
   content = content.replace(/^\s*(?:<think>[\s\S]*?<\/think>\s*)+/i, '').trim();
 
@@ -244,7 +263,9 @@ function main() {
   if (!proposals) {
     console.error('Proposer did not return a valid JSON array. Response:');
     console.error(content.slice(0, 1500));
-    fs.writeFileSync(path.resolve(harnessRoot, paths.proposals || 'proposals', roundId, 'raw-response.txt'), content);
+    const errDir = path.resolve(harnessRoot, paths.proposals || 'proposals', roundId);
+    fs.mkdirSync(errDir, { recursive: true });
+    fs.writeFileSync(path.join(errDir, 'raw-response.txt'), content);
     process.exit(1);
   }
 
