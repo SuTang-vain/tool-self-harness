@@ -456,3 +456,27 @@ This is the clearest result of the extension so far: an aggregate pass-count gat
 candidate that exchanges one reliable task for another, while a task-set-aware gate detects the
 regression. The result supports the value of per-task acceptance, but does not yet demonstrate a
 positive Self-Harness lineage transition.
+
+### 7.1 Preregistered Three-Repeat Prospective Comparison
+
+We froze two lineages before collecting new outcomes: `h0-stable` retained `seed-h0`, while
+`h1-paper` contained the Round-0 Candidate 1 accepted only by the historical aggregate gate.
+Both were then evaluated on all 12 tasks with three fresh attempts per task (72 attempts total).
+
+| Lineage | Held-in attempts | Reliable held-in (3/3) | Held-out attempts | Reliable held-out (3/3) |
+|---|---:|---:|---:|---:|
+| `h0-stable` | 21/24 | 5/8 | 6/12 | 2/4 |
+| `h1-paper` | 23/24 | 7/8 | 6/12 | 2/4 |
+
+Thus the historical aggregate improvement reproduced prospectively: held-in increased by two
+attempt passes and held-out remained flat, so the preregistered paper gate accepts. However,
+`h1-paper` gained three reliable held-in tasks (`customer-directory`, `notes-store`, and
+`paginated-catalog`) while losing the previously reliable `file-metadata` task. The reliable
+non-regression gate therefore rejects promotion. At the paired-attempt level there were only
+four discordant outcomes (three favoring `h1-paper`, one favoring `h0-stable`; exact two-sided
+sign p=0.625), so this small pilot does not establish a statistically secure average effect.
+
+The correct conclusion is narrower than either a pure positive or pure negative result:
+Candidate 1 produces a reproducible aggregate improvement, but not a regression-free reliable
+Self-Harness lineage transition. The final protocol therefore reports the paper gate for
+comparability while using the reliable task-set gate for all promotion decisions.

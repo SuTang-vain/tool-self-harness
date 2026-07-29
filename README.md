@@ -125,7 +125,12 @@ node --test tests/acceptance.test.js
 ```
 
 The tests cover stable task-pass computation, unstable held-in/held-out improvements,
-stable acceptance, and rejection of legacy aggregate-only result records.
+stable acceptance, rejection of legacy aggregate-only records, and the generic reliable
+task-set promotion gate. Run both suites with:
+
+```bash
+node --test tests/acceptance.test.js tests/generic-acceptance.test.js
+```
 
 ## Retargeting
 
@@ -148,6 +153,8 @@ handling in `runner.js` (future work).
 - ✅ t01 confirmed solvable by the baseline harness (non-zero baseline).
 - ✅ All 5 expected packs pass their verifiers.
 - ✅ Per-task acceptance metadata and stability gate implemented; clean reruns of round-1/m3-2/ds-3/ds-4 accepted 0/8 candidates.
+- ✅ MCP Builder prospective comparison completed: paper gate accepted 21/24→23/24 held-in with held-out flat, but reliable promotion rejected one lost 3/3 task.
+- ✅ Final generic-skill promotion rule frozen as `reliable-task-set-v1`.
 - ⚠ MCP tool support not yet implemented (skill-only).
 - ⚠ references/scripts not yet editable surfaces (SKILL.md only).
 
