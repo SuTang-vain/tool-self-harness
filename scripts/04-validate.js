@@ -107,9 +107,17 @@ function main() {
 
   // Wrapper: run runSplit `evalRepeats` times, aggregate by taking max pass count
   // (best-of-N reduces variance from stochastic tool loops; matches paper §3.4)
+  // Also computes per-task stability: a task is "stable-pass" only if it passes
+  // in ALL repeats (not just best-of-N). This catches false-positive accepts
+  // where a task passes once by luck but fails consistently.
   function runSplitAggregated(configPath, harnessRoot, paths, roundId, sandboxDir, label, isCandidate) {
     if (evalRepeats === 1) {
-      return runSplit(configPath, harnessRoot, paths, roundId, sandboxDir, label, isCandidate);
+      const r = runSplit(configPath, harnessRoot, paths, roundId, sandboxDir, label, isCandidate);
+      // Single repeat: all passing tasks are "stable"
+      const stableIn = r.details.find(d=>d.split==='held-in').results.filter(t=>t.verify.status==='pass').map(t=>t.task_id);
+      const stableHo = r.details.find(d=>d.split==='held-out').results.filter(t=>t.verify.status==='pass').map(t=>t.task_id);
+      r.stable_in = stableIn; r.stable_ho = stableHo;
+      return r;
     }
     const repeats = [];
     for (let rep = 0; rep < evalRepeats; rep++) {
@@ -119,13 +127,26 @@ function main() {
     // Aggregate: max pass count across repeats (best-of-N)
     const pIn = Math.max(...repeats.map(r => r.p_in));
     const pHo = Math.max(...repeats.map(r => r.p_ho));
+
+    // Per-task stability: a task is "stable-pass" iff it passes in ALL repeats
+    const allInTasks = repeats[0].details.find(d => d.split === 'held-in').results.map(t => t.task_id);
+    const allHoTasks = repeats[0].details.find(d => d.split === 'held-out').results.map(t => t.task_id);
+    const stableIn = allInTasks.filter(tid =>
+      repeats.every(r => r.details.find(d => d.split === 'held-in').results.find(t => t.task_id === tid).verify.status === 'pass')
+    );
+    const stableHo = allHoTasks.filter(tid =>
+      repeats.every(r => r.details.find(d => d.split === 'held-out').results.find(t => t.task_id === tid).verify.status === 'pass')
+    );
+
     return {
       p_in: pIn, p_ho: pHo,
       in_total: repeats[0].in_total, ho_total: repeats[0].ho_total,
       details: repeats[0].details,
       repeats: repeats.map(r => ({ p_in: r.p_in, p_ho: r.p_ho })),
       variance: { p_in_range: Math.max(...repeats.map(r=>r.p_in)) - Math.min(...repeats.map(r=>r.p_in)),
-                  p_ho_range: Math.max(...repeats.map(r=>r.p_ho)) - Math.min(...repeats.map(r=>r.p_ho)) }
+                  p_ho_range: Math.max(...repeats.map(r=>r.p_ho)) - Math.min(...repeats.map(r=>r.p_ho)) },
+      stable_in: stableIn, stable_ho: stableHo,
+      stable_p_in: stableIn.length, stable_p_ho: stableHo.length
     };
   }
 
@@ -152,7 +173,8 @@ function main() {
   results.baseline = runSplitAggregated(configPath, harnessRoot, paths, roundId, sandboxPath, 'baseline', false);
   console.log('  P_in=' + results.baseline.p_in + '/' + results.baseline.in_total +
     '  P_ho=' + results.baseline.p_ho + '/' + results.baseline.ho_total +
-    (results.baseline.variance ? '  variance(in=' + results.baseline.variance.p_in_range + ',ho=' + results.baseline.variance.p_ho_range + ')' : ''));
+    (results.baseline.variance ? '  variance(in=' + results.baseline.variance.p_in_range + ',ho=' + results.baseline.variance.p_ho_range + ')' : '') +
+    (results.baseline.stable_p_in != null ? '  stable(in=' + results.baseline.stable_p_in + ',ho=' + results.baseline.stable_p_ho + ')' : ''));
 
   // 2. Each candidate: apply patch to a temp copy, run splits
   const currentSkillMd = fs.readFileSync(path.join(sandboxPath, 'SKILL.md'), 'utf8');
@@ -187,7 +209,8 @@ function main() {
     candResult.status = 'evaluated';
     console.log('  P_in=' + candResult.p_in + '/' + candResult.in_total +
       '  P_ho=' + candResult.p_ho + '/' + candResult.ho_total +
-      (candResult.variance ? '  variance(in=' + candResult.variance.p_in_range + ',ho=' + candResult.variance.p_ho_range + ')' : ''));
+      (candResult.variance ? '  variance(in=' + candResult.variance.p_in_range + ',ho=' + candResult.variance.p_ho_range + ')' : '') +
+      (candResult.stable_p_in != null ? '  stable(in=' + candResult.stable_p_in + ',ho=' + candResult.stable_p_ho + ')' : ''));
     results.candidates.push(candResult);
 
     // Cleanup temp sandbox

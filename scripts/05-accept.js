@@ -112,21 +112,51 @@ function main() {
     const improvesHo = cand.p_ho > baseline.p_ho;
     const degradesIn = cand.p_in < baseline.p_in;
     const degradesHo = cand.p_ho < baseline.p_ho;
-    const accept = (improvesIn && !degradesHo) || (improvesHo && !degradesIn);
+    const passRateAccept = (improvesIn && !degradesHo) || (improvesHo && !degradesIn);
+
+    // Per-task stability check: newly-passing tasks must be stable (pass in ALL repeats)
+    // This catches false-positive accepts where a task passes once by luck (variance)
+    // but isn't consistently fixed by the edit.
+    let perTaskAccept = true;
+    let perTaskReason = '';
+    if (passRateAccept && cand.stable_in && cand.stable_ho && baseline.stable_in && baseline.stable_ho) {
+      // Find newly-stable tasks (pass in candidate but not in baseline, stably)
+      const newStableIn = cand.stable_in.filter(t => !baseline.stable_in.includes(t));
+      const newStableHo = cand.stable_ho.filter(t => !baseline.stable_ho.includes(t));
+      // Find newly-passing tasks (in best-of-N) that are NOT stable
+      const candAllInTasks = (cand.details.find(d => d.split === 'held-in') || { results: [] }).results.map(t => t.task_id);
+      const baselineStableSet = new Set([...baseline.stable_in, ...baseline.stable_ho]);
+      const candStableSet = new Set([...cand.stable_in, ...cand.stable_ho]);
+      // Tasks that are "newly passing" in best-of-N but NOT in stable set = unstable improvements
+      const unstableIn = candAllInTasks.filter(t => cand.stable_in.includes(t) === false && baseline.stable_in.includes(t) === false);
+      if (unstableIn.length > 0 && (improvesIn || improvesHo)) {
+        perTaskAccept = false;
+        perTaskReason = 'unstable improvement: task(s) ' + unstableIn.join(',') + ' pass in best-of-N but not in all repeats';
+      }
+    }
+
+    const accept = passRateAccept && perTaskAccept;
     const decision = {
       j: cand.j, surface_id: cand.surface_id,
       p_in: cand.p_in, p_ho: cand.p_ho,
+      stable_p_in: cand.stable_p_in, stable_p_ho: cand.stable_p_ho,
       baseline_p_in: baseline.p_in, baseline_p_ho: baseline.p_ho,
+      baseline_stable_p_in: baseline.stable_p_in, baseline_stable_ho: baseline.stable_ho,
       improves_in: improvesIn, improves_ho: improvesHo,
       degrades_in: degradesIn, degrades_ho: degradesHo,
+      pass_rate_accept: passRateAccept,
+      per_task_accept: perTaskAccept,
       decision: accept ? 'accept' : 'reject',
-      reason: accept
-        ? (improvesIn && improvesHo ? 'improves both splits' : 'improves one split without degrading the other')
-        : (degradesIn || degradesHo ? 'degrades a split' : 'no improvement (trade-off or flat)')
+      reason: !passRateAccept
+        ? (degradesIn || degradesHo ? 'degrades a split' : 'no improvement (trade-off or flat)')
+        : !perTaskAccept ? perTaskReason
+        : (improvesIn && improvesHo ? 'improves both splits (stable)' : 'improves one split without degrading the other (stable)')
     };
     if (accept) accepted.push(decision); else rejected.push(decision);
     console.log('  candidate ' + cand.j + ' (' + cand.surface_id + '): P_in ' + cand.p_in + ' vs ' + baseline.p_in +
-      ', P_ho ' + cand.p_ho + ' vs ' + baseline.p_ho + ' -> ' + decision.decision.toUpperCase() + ' (' + decision.reason + ')');
+      ', P_ho ' + cand.p_ho + ' vs ' + baseline.p_ho +
+      (cand.stable_p_in != null ? '  stable(in=' + cand.stable_p_in + ',ho=' + cand.stable_p_ho + ')' : '') +
+      ' -> ' + decision.decision.toUpperCase() + ' (' + decision.reason + ')');
   }
 
   // Merge accepted edits (apply all to sandbox, single commit)
