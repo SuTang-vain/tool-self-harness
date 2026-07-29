@@ -19,6 +19,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 const patch = require('./lib/patch');
+const acceptance = require('./lib/acceptance');
 
 function readYAML(file) {
   const src = fs.readFileSync(file, 'utf8');
@@ -54,40 +55,63 @@ function readSurfaces(file) {
   return surfaces;
 }
 
-// Run 01-run-round on a given sandbox dir, return {p_in, p_ho, details}
-function runSplit(configPath, harnessRoot, paths, roundId, sandboxDir, label, isCandidate) {
+// Run 01-run-round on a given sandbox dir, return {p_in, p_ho, details}.
+// Infrastructure/API failures abort validation instead of becoming synthetic 0-pass runs.
+function runSplit(configPath, harnessRoot, paths, roundId, sandboxDir, label) {
   const tag = label + '-' + Date.now();
   const runScript = path.join(harnessRoot, 'scripts', '01-run-round.js');
   const tmpConfig = path.join(harnessRoot, '.tmp-config-' + tag + '.yaml');
   const cfgSrc = fs.readFileSync(configPath, 'utf8');
-  let cfgMod = cfgSrc.replace(/^(\s*sandbox:\s*).*/m, '$1' + sandboxDir);
+  const cfgMod = cfgSrc.replace(/^(\s*sandbox:\s*).*/m, '$1' + sandboxDir);
   fs.writeFileSync(tmpConfig, cfgMod);
 
   const out = [];
-  for (const split of ['held-in', 'held-out']) {
-    // Candidates must not use cache (different sandbox); baseline can cache
-    const args = [runScript, tmpConfig, roundId + '-' + tag, split, '--concurrency', '3'];
-    if (isCandidate) args.push('--no-cache');
-    const r = spawnSync(process.execPath, args, {
-      encoding: 'utf8', maxBuffer: 200 * 1024 * 1024
-    });
-    const resultsPath = path.resolve(harnessRoot, paths.runs || 'runs', roundId + '-' + tag, 'results.json');
-    let results = [];
-    if (fs.existsSync(resultsPath)) {
-      results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
-    } else {
-      console.log('  [' + label + '/' + split + '] no results.json (runner may have errored)');
-      console.log('    stderr: ' + (r.stderr || '').slice(0, 300));
-    }
-    out.push({ split, results });
-  }
-  fs.unlinkSync(tmpConfig);
+  try {
+    for (const split of ['held-in', 'held-out']) {
+      // Every validation repeat must be an independent model run. Reusing the
+      // baseline cache would make rep1 a copy of rep0 and invalidate stability.
+      const args = [runScript, tmpConfig, roundId + '-' + tag, split, '--concurrency', '3', '--no-cache'];
+      const r = spawnSync(process.execPath, args, {
+        encoding: 'utf8', maxBuffer: 200 * 1024 * 1024
+      });
+      const resultsPath = path.resolve(harnessRoot, paths.runs || 'runs', roundId + '-' + tag, 'results.json');
+      if (r.status !== 0 || !fs.existsSync(resultsPath)) {
+        throw new Error(
+          '[' + label + '/' + split + '] runner failed: ' +
+          ((r.stderr || r.stdout || 'no results.json').trim().slice(0, 500))
+        );
+      }
 
-  const pIn = out.find(o => o.split === 'held-in').results.filter(r => r.verify.status === 'pass').length;
-  const pHo = out.find(o => o.split === 'held-out').results.filter(r => r.verify.status === 'pass').length;
-  const inTotal = out.find(o => o.split === 'held-in').results.length;
-  const hoTotal = out.find(o => o.split === 'held-out').results.length;
-  return { p_in: pIn, p_ho: pHo, in_total: inTotal, ho_total: hoTotal, details: out };
+      const results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
+      if (results.length === 0) {
+        throw new Error('[' + label + '/' + split + '] runner returned zero task results');
+      }
+      const apiFailures = results.filter(result =>
+        result.runner && typeof result.runner.error === 'string' &&
+        result.runner.error.startsWith('api_error')
+      );
+      if (apiFailures.length > 0) {
+        const first = apiFailures[0];
+        throw new Error(
+          '[' + label + '/' + split + '] ' + apiFailures.length + ' API failure(s); first task ' +
+          first.task_id + ': ' + first.runner.error.slice(0, 500)
+        );
+      }
+      out.push({ split, results });
+    }
+  } finally {
+    if (fs.existsSync(tmpConfig)) fs.unlinkSync(tmpConfig);
+  }
+
+  const inResults = out.find(o => o.split === 'held-in').results;
+  const hoResults = out.find(o => o.split === 'held-out').results;
+  return {
+    p_in: inResults.filter(r => r.verify.status === 'pass').length,
+    p_ho: hoResults.filter(r => r.verify.status === 'pass').length,
+    in_total: inResults.length,
+    ho_total: hoResults.length,
+    details: out
+  };
 }
 
 function main() {
@@ -105,48 +129,57 @@ function main() {
   const surfaces = readSurfaces(surfacesPath);
   const evalRepeats = Number((config.loop || {}).eval_repeats || 1);
 
-  // Wrapper: run runSplit `evalRepeats` times, aggregate by taking max pass count
-  // (best-of-N reduces variance from stochastic tool loops; matches paper §3.4)
-  // Also computes per-task stability: a task is "stable-pass" only if it passes
-  // in ALL repeats (not just best-of-N). This catches false-positive accepts
-  // where a task passes once by luck but fails consistently.
-  function runSplitAggregated(configPath, harnessRoot, paths, roundId, sandboxDir, label, isCandidate) {
-    if (evalRepeats === 1) {
-      const r = runSplit(configPath, harnessRoot, paths, roundId, sandboxDir, label, isCandidate);
-      // Single repeat: all passing tasks are "stable"
-      const stableIn = r.details.find(d=>d.split==='held-in').results.filter(t=>t.verify.status==='pass').map(t=>t.task_id);
-      const stableHo = r.details.find(d=>d.split==='held-out').results.filter(t=>t.verify.status==='pass').map(t=>t.task_id);
-      r.stable_in = stableIn; r.stable_ho = stableHo;
-      return r;
-    }
+  // Run each repeat independently. Keep both aggregate counts and per-task
+  // pass sets so 05-accept can distinguish stable fixes from lucky passes.
+  function runSplitAggregated(configPath, harnessRoot, paths, roundId, sandboxDir, label) {
     const repeats = [];
-    for (let rep = 0; rep < evalRepeats; rep++) {
-      const r = runSplit(configPath, harnessRoot, paths, roundId, sandboxDir, label + '-rep' + rep, isCandidate);
+    const repeatCount = Math.max(1, evalRepeats);
+    for (let rep = 0; rep < repeatCount; rep++) {
+      const r = runSplit(
+        configPath,
+        harnessRoot,
+        paths,
+        roundId,
+        sandboxDir,
+        label + '-rep' + rep
+      );
       repeats.push(r);
     }
-    // Aggregate: max pass count across repeats (best-of-N)
+
     const pIn = Math.max(...repeats.map(r => r.p_in));
     const pHo = Math.max(...repeats.map(r => r.p_ho));
-
-    // Per-task stability: a task is "stable-pass" iff it passes in ALL repeats
-    const allInTasks = repeats[0].details.find(d => d.split === 'held-in').results.map(t => t.task_id);
-    const allHoTasks = repeats[0].details.find(d => d.split === 'held-out').results.map(t => t.task_id);
-    const stableIn = allInTasks.filter(tid =>
-      repeats.every(r => r.details.find(d => d.split === 'held-in').results.find(t => t.task_id === tid).verify.status === 'pass')
-    );
-    const stableHo = allHoTasks.filter(tid =>
-      repeats.every(r => r.details.find(d => d.split === 'held-out').results.find(t => t.task_id === tid).verify.status === 'pass')
-    );
+    const stableIn = acceptance.stableTaskIds(repeats, 'held-in');
+    const stableHo = acceptance.stableTaskIds(repeats, 'held-out');
+    const bestIn = acceptance.bestTaskIds(repeats, 'held-in');
+    const bestHo = acceptance.bestTaskIds(repeats, 'held-out');
+    const repeatResults = acceptance.summarizeRepeats(repeats);
 
     return {
-      p_in: pIn, p_ho: pHo,
-      in_total: repeats[0].in_total, ho_total: repeats[0].ho_total,
+      p_in: pIn,
+      p_ho: pHo,
+      in_total: repeats[0].in_total,
+      ho_total: repeats[0].ho_total,
+      // Preserve the first repeat for backwards-compatible trace inspection.
       details: repeats[0].details,
       repeats: repeats.map(r => ({ p_in: r.p_in, p_ho: r.p_ho })),
-      variance: { p_in_range: Math.max(...repeats.map(r=>r.p_in)) - Math.min(...repeats.map(r=>r.p_in)),
-                  p_ho_range: Math.max(...repeats.map(r=>r.p_ho)) - Math.min(...repeats.map(r=>r.p_ho)) },
-      stable_in: stableIn, stable_ho: stableHo,
-      stable_p_in: stableIn.length, stable_p_ho: stableHo.length
+      repeat_results: repeatResults,
+      best_pass_tasks: {
+        'held-in': bestIn,
+        'held-out': bestHo
+      },
+      stable_pass_tasks: {
+        'held-in': stableIn,
+        'held-out': stableHo
+      },
+      // Keep the old flat fields for consumers that already use them.
+      stable_in: stableIn,
+      stable_ho: stableHo,
+      stable_p_in: stableIn.length,
+      stable_p_ho: stableHo.length,
+      variance: {
+        p_in_range: Math.max(...repeats.map(r => r.p_in)) - Math.min(...repeats.map(r => r.p_in)),
+        p_ho_range: Math.max(...repeats.map(r => r.p_ho)) - Math.min(...repeats.map(r => r.p_ho))
+      }
     };
   }
 
@@ -170,7 +203,7 @@ function main() {
 
   // 1. Baseline: current sandbox (unpatched)
   console.log('=== Baseline (current harness, repeats=' + evalRepeats + ') ===');
-  results.baseline = runSplitAggregated(configPath, harnessRoot, paths, roundId, sandboxPath, 'baseline', false);
+  results.baseline = runSplitAggregated(configPath, harnessRoot, paths, roundId, sandboxPath, 'baseline');
   console.log('  P_in=' + results.baseline.p_in + '/' + results.baseline.in_total +
     '  P_ho=' + results.baseline.p_ho + '/' + results.baseline.ho_total +
     (results.baseline.variance ? '  variance(in=' + results.baseline.variance.p_in_range + ',ho=' + results.baseline.variance.p_ho_range + ')' : '') +
@@ -203,7 +236,7 @@ function main() {
       fs.writeFileSync(path.join(tmpSandbox, 'SKILL.md'), patchedMd);
     }
 
-    const candResult = runSplitAggregated(configPath, harnessRoot, paths, roundId, tmpSandbox, 'cand' + j, true);
+    const candResult = runSplitAggregated(configPath, harnessRoot, paths, roundId, tmpSandbox, 'cand' + j);
     candResult.j = Number(j);
     candResult.surface_id = pJson.surface_id;
     candResult.status = 'evaluated';
