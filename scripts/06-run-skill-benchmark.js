@@ -53,10 +53,20 @@ function initWorkspace(task, workspace) {
   spawnSync('git', ['init', '-q'], { cwd: workspace });
   spawnSync('git', ['add', '-A'], { cwd: workspace });
   spawnSync('git', ['-c', 'user.name=Self Harness', '-c', 'user.email=self-harness@example.invalid', 'commit', '-q', '-m', 'task baseline'], { cwd: workspace });
+  const setup = path.join(task.dir, 'setup.sh');
+  if (fs.existsSync(setup)) {
+    const result = spawnSync('bash', [setup, workspace], {
+      encoding: 'utf8', timeout: 120000, maxBuffer: 20 * 1024 * 1024
+    });
+    if (result.status !== 0) {
+      throw new Error('task setup failed for ' + task.id + ': ' +
+        ((result.stdout || '') + (result.stderr || '')).trim().slice(-2000));
+    }
+  }
 }
 
 function verifyAttempt(args, task, repeat, workspace, tracePath, summary) {
-  const verifier = spawnSync('bash', [path.join(task.dir, 'verify.sh'), workspace], {
+  const verifier = spawnSync('bash', [path.join(task.dir, 'verify.sh'), workspace, tracePath], {
     encoding: 'utf8', timeout: 120000, maxBuffer: 20 * 1024 * 1024
   });
   return {
@@ -104,7 +114,12 @@ function runAttempt(args, task, repeat) {
     }
     if (fs.existsSync(workspace)) fs.rmSync(workspace, { recursive: true, force: true });
     if (fs.existsSync(tracePath)) fs.rmSync(tracePath, { force: true });
-    initWorkspace(task, workspace);
+    try {
+      initWorkspace(task, workspace);
+    } catch (error) {
+      resolve({ fatal: true, task, repeat, error: String(error && error.message || error) });
+      return;
+    }
     const runner = path.join(args.root, 'scripts', 'lib', 'generic-runner.js');
     const child = spawn(process.execPath, [
       runner, args.modelConfig, args.skillRepo, path.join(task.dir, 'task.md'), workspace, tracePath, String(args.maxSteps)
