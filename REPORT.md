@@ -572,3 +572,34 @@ as a generally reliable MCP skill improvement. We therefore do not start expande
 MiniMax/DeepSeek runs yet. The next decision is whether to audit/revise task difficulty under a
 new preregistered version or retain this as a negative generalization result and perform an
 independent replication.
+
+## 9. Research Direction Reset: Layered Objectives
+
+The project no longer treats “self-evolution” as a single pass-rate objective. The primary
+claim is now **reliable capability evolution**: a candidate must increase the reliable task set,
+lose no reliable task, and avoid held-in/held-out aggregate regression. This is the capability
+lineage gate already implemented as `reliable-task-set-v1`.
+
+Three additional dimensions are reported separately:
+
+1. **Correctness/capability:** verifier-defined task completion;
+2. **Reliability:** repeated per-task success and task-set non-regression;
+3. **Efficiency:** tokens, tool calls, API calls, retries, latency, and cost proxies;
+4. **Human utility:** preference, clarification burden, takeover rate, completion time, and
+   control calibration.
+
+Efficiency and human utility cannot compensate for a capability or reliability regression. A
+weighted total score is therefore prohibited as the primary claim. The current evidence is
+classified as follows:
+
+| Evidence | Claim level |
+|---|---|
+| GLM MCP compact 12-task promotion | L1: reliable local promotion |
+| MiniMax/DeepSeek replication | rejects L2 model-replicated promotion |
+| GLM MCP 36-task expansion | rejects L3 distribution-general promotion |
+| systematic-debugging pilot | benchmark qualification, not Self-Harness evidence |
+
+The new runner records token usage when the provider returns it, API/tool-call counts, retries,
+and elapsed time for future efficiency analyses. Historical runs are not retroactively treated as
+usage-controlled efficiency experiments. Full policy is in `RESEARCH_CHARTER.md` and
+`experiments/general-skills/protocols/RESEARCH_EVALUATION_V2.md`.

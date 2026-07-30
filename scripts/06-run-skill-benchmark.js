@@ -186,6 +186,28 @@ async function main() {
       task_count: taskRows.length
     };
   };
+  const metricRows = results.map(r => r.runner && r.runner.metrics ? r.runner.metrics : {});
+  const sumMetric = key => metricRows.reduce((sum, row) => sum + Number(row[key] || 0), 0);
+  const totalTokens = sumMetric('total_tokens');
+  const totalPasses = results.filter(r => r.pass).length;
+  const totalStableTasks = perTask.filter(r => r.stable_pass).length;
+  const metrics = {
+    attempts: results.length,
+    usage_coverage: results.length ? metricRows.filter(row => row.usage_observations > 0).length / results.length : 0,
+    api_calls: sumMetric('api_calls'),
+    api_latency_ms: sumMetric('api_latency_ms'),
+    tool_calls: sumMetric('tool_calls'),
+    tool_call_retries: sumMetric('tool_call_retries'),
+    prompt_tokens: sumMetric('prompt_tokens'),
+    completion_tokens: sumMetric('completion_tokens'),
+    total_tokens: totalTokens,
+    elapsed_ms: sumMetric('elapsed_ms'),
+    mean_tokens_per_attempt: results.length ? totalTokens / results.length : 0,
+    mean_tool_calls_per_attempt: results.length ? sumMetric('tool_calls') / results.length : 0,
+    mean_elapsed_ms_per_attempt: results.length ? sumMetric('elapsed_ms') / results.length : 0,
+    tokens_per_successful_attempt: totalPasses ? totalTokens / totalPasses : null,
+    tokens_per_reliable_task: totalStableTasks ? totalTokens / totalStableTasks : null
+  };
   const report = {
     run_id: runId,
     variant,
@@ -195,6 +217,7 @@ async function main() {
     repeats,
     held_in: summarizeSplit('held-in'),
     held_out: summarizeSplit('held-out'),
+    metrics,
     behavior: {
       loaded_skill_rate: results.filter(r => r.behavior.loaded_skill).length / results.length,
       test_before_edit_rate: results.filter(r => r.behavior.test_before_first_edit).length / results.length,

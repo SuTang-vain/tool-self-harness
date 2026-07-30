@@ -236,10 +236,32 @@ async function main() {
   let finalAnswer = null;
   let errorState = null;
   let steps = 0;
+  const startedAt = Date.now();
+  const metrics = {
+    api_calls: 0,
+    api_latency_ms: 0,
+    tool_calls: 0,
+    tool_call_retries: 0,
+    prompt_tokens: 0,
+    completion_tokens: 0,
+    total_tokens: 0,
+    usage_observations: 0
+  };
   while (steps < maxSteps) {
     steps++;
     let response;
-    try { response = await chatComplete(model, messages, tools); }
+    const apiStartedAt = Date.now();
+    try {
+      response = await chatComplete(model, messages, tools);
+      metrics.api_calls++;
+      metrics.api_latency_ms += Date.now() - apiStartedAt;
+      if (response.usage) {
+        metrics.usage_observations++;
+        metrics.prompt_tokens += Number(response.usage.prompt_tokens || 0);
+        metrics.completion_tokens += Number(response.usage.completion_tokens || 0);
+        metrics.total_tokens += Number(response.usage.total_tokens || 0);
+      }
+    }
     catch (error) { errorState = 'api_error: ' + error.message; log({ type: 'api_error', step: steps, error: errorState }); break; }
     const choice = response.choices && response.choices[0];
     if (!choice) { errorState = 'no_choices'; break; }
@@ -263,12 +285,14 @@ async function main() {
       // reject the next request because its function arguments are invalid JSON.
       messages.push({ role: 'assistant', content: msg.content || 'The tool call was truncated.' });
       messages.push({ role: 'user', content: 'Your tool call was truncated or invalid. Retry with one concise, complete tool call. Do not repeat the analysis.' });
+      metrics.tool_call_retries++;
       log({ type: 'tool_call_retry', step: steps, reason: choice.finish_reason === 'length' ? 'length' : 'invalid_json' });
       continue;
     }
 
     messages.push({ role: 'assistant', content: msg.content || '', tool_calls: toolCalls });
     if (parsedCalls.length) {
+      metrics.tool_calls += parsedCalls.length;
       for (const { call, args: parsedArgs } of parsedCalls) {
         const result = execute(call.function.name, parsedArgs);
         messages.push({ role: 'tool', tool_call_id: call.id, content: JSON.stringify(result) });
@@ -288,9 +312,10 @@ async function main() {
     break;
   }
   if (!finalAnswer && !errorState) errorState = 'max_steps_reached';
-  log({ type: 'task_end', steps, final_answer: finalAnswer, error: errorState });
+  const finalMetrics = { ...metrics, elapsed_ms: Date.now() - startedAt, steps };
+  log({ type: 'task_end', steps, final_answer: finalAnswer, error: errorState, metrics: finalMetrics });
   trace.end();
-  console.log(JSON.stringify({ steps, final_answer: finalAnswer, error: errorState, trace_path: tracePath }));
+  console.log(JSON.stringify({ steps, final_answer: finalAnswer, error: errorState, trace_path: tracePath, metrics: finalMetrics }));
 }
 
 main().catch(error => { console.error(error.stack || error); process.exit(1); });

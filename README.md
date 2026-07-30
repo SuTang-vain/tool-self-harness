@@ -88,7 +88,7 @@ paper's **minimality** constraint (§3.3). Current surfaces for sg-data-pack:
 `skill-description`, `core-concept`, `cli-section`, `workflow-section`,
 `rule-cheat-sheet`, `crawl-pipeline-contract`, `deep-references`.
 
-### Acceptance rule (`scripts/05-accept.js`)
+### Capability acceptance rule (`scripts/05-accept.js`)
 
 ```
 accept(j) iff (P_in(j) > P_in(h_t)  AND  P_ho(j) >= P_ho(h_t))
@@ -147,6 +147,20 @@ For MCP tools, the loop is identical; only the runner's tool surface changes
 (MCP tool descriptions become editable surfaces). Add `target.kind: mcp`
 handling in `runner.js` (future work).
 
+## Research Direction
+
+The project now uses a layered objective system rather than a single self-improvement score:
+
+1. correctness/capability;
+2. reliable task-set non-regression;
+3. efficiency (tokens, tool calls, latency);
+4. human utility and preference.
+
+Capability and reliability are hard gates. Efficiency and preference are separate tracks and
+cannot compensate for a reliable-task regression. The active charter is
+[`RESEARCH_CHARTER.md`](RESEARCH_CHARTER.md), and the future-study protocol is
+[`experiments/general-skills/protocols/RESEARCH_EVALUATION_V2.md`](experiments/general-skills/protocols/RESEARCH_EVALUATION_V2.md).
+
 ## Status
 
 - ✅ End-to-end loop runs, produces trace/evidence/proposals/results/lineage.
@@ -157,7 +171,8 @@ handling in `runner.js` (future work).
 - ✅ Final generic-skill promotion rule frozen as `reliable-task-set-v1`.
 - ✅ MCP Builder Round 1 produced `h1-stable`: 24/24 held-in, 6/12 held-out, no lost reliable task; redundant combinations were rejected.
 - ⚠ Systematic-debugging pilot was outcome-flat across no/minimal/full skill (14/16 held-in, 6/8 held-out); benchmark revision is required before Self-Harness proposals.
-- ⚠ MCP `h1-stable` is model-specific: reliable for GLM, rejected for MiniMax (held-out regression) and DeepSeek (reliable-task exchange).
+- ⚠ MCP `h1-stable` is model-specific: reliable for GLM on the compact suite, rejected for MiniMax/DeepSeek, and rejected on the expanded GLM suite.
+- ✅ Research direction re-anchored around layered correctness, reliability, efficiency, and human-utility objectives.
 - ⚠ MCP tool support not yet implemented (skill-only).
 - ⚠ references/scripts not yet editable surfaces (SKILL.md only).
 
