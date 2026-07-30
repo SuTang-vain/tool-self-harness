@@ -1,22 +1,25 @@
-# Tool Self-Harness
+# Tool-Side Harness Research
 
-An implementation of the **Self-Harness** paradigm for tool-side harnesses
-(skills / MCP tools), based on the paper *"Self-Harness: Harnesses That Improve
-Themselves"*.
+This repository studies **tool-side harnesses**: the local descriptions, Markdown rules, schemas,
+workflow guidance, and deep resources through which models operate Skills, MCP systems, and CLI
+workflows. The active research program is organized around:
 
-Self-Harness enables a fixed LLM to improve the very harness (here: a skill's
-`SKILL.md`) through which it operates, **without human engineering or a stronger
-external agent**. It runs an iterative loop with three stages:
+1. a taxonomy of tool structures and failure signatures;
+2. four fitting paths for bounded harness changes;
+3. a four-dimensional outcome vector—correctness, reliability, efficiency, and human utility;
+4. a progressive evolution loop using one-surface patches, Q2-first gating, and lineage/conflict
+   records.
 
-1. **Weakness Mining** — run the current harness on a set of tasks, cluster
-   failed execution traces into failure signatures (verifier-grounded).
-2. **Harness Proposal** — the same model, in a proposer role, generates K
-   diverse yet minimal candidate edits, each bound to one editable surface.
-3. **Proposal Validation** — regression-test each candidate on held-in + held-out
-   splits; accept only if it improves ≥1 split without degrading the other.
+The repository began as a reproduction and extension of *Self-Harness: Harnesses That Improve
+Themselves*. That implementation and its historical experiments remain available, but the project
+no longer assumes that Self-Harness generally improves a skill. Current results show a compact
+GLM MCP gain that fails cross-model transfer and two expanded-distribution evaluations. These
+positive and negative results now motivate a narrower question: **which local intervention helps
+which tool structure, on which outcome dimension, and at what non-local cost?**
 
-The first target is the `sg-data-pack` skill, but the harness is target-agnostic:
-swap `config.yaml` + `surfaces.yaml` + `tasks/` to retarget it.
+Start with [`RESEARCH_CHARTER.md`](RESEARCH_CHARTER.md) and
+[`experiments/tool-side-harness/README.md`](experiments/tool-side-harness/README.md). The earlier
+general-skill studies are preserved under `experiments/general-skills/` as Stage-0 evidence.
 
 ## Quick start
 
@@ -90,15 +93,16 @@ paper's **minimality** constraint (§3.3). Current surfaces for sg-data-pack:
 
 ### Capability acceptance rule (`scripts/05-accept.js`)
 
-```
-accept(j) iff (P_in(j) > P_in(h_t)  AND  P_ho(j) >= P_ho(h_t))
-         OR   (P_ho(j) > P_ho(h_t)  AND  P_in(j) >= P_in(h_t))
-```
+The historical aggregate gate is still reported for comparison, but it cannot promote a lineage.
+The active Q2 rule is `reliable-task-set-v1`: a task is reliable only if it passes every fresh
+repeat, and a capability candidate must gain at least one reliable task, lose none, and avoid
+held-in/held-out aggregate or critical-verifier regression. This prevents variance-based false
+acceptance and task exchange.
 
-Pure trade-offs are rejected. Accepted edits merge into the sandbox as a git
-commit tagged `h<N>` in `lineage/`. Rejected edits are logged but do not change
-the harness. The target skill repo (`~/DEV/sg-data-pack`) is **read-only** —
-only the `sandbox/` copy is ever edited.
+Accepted edits merge into the sandbox as a git commit tagged `h<N>` in `lineage/`. Rejected edits
+are logged but do not change the harness. The target skill repo (`~/DEV/sg-data-pack`) is
+**read-only**—only the `sandbox/` copy is edited. New progressive studies additionally validate a
+one-surface candidate manifest with `scripts/11-validate-progressive-candidate.js`.
 
 ## Tasks
 
@@ -126,11 +130,14 @@ node --test tests/acceptance.test.js
 
 The tests cover stable task-pass computation, unstable held-in/held-out improvements,
 stable acceptance, rejection of legacy aggregate-only records, and the generic reliable
-task-set promotion gate. Run both suites with:
+task-set promotion gate. Run all protocol regression tests with:
 
 ```bash
-node --test tests/acceptance.test.js tests/generic-acceptance.test.js
+node --test tests/acceptance.test.js tests/generic-acceptance.test.js tests/progressive-candidate.test.js
 ```
+
+The progressive-candidate tests enforce one-surface scope, held-out hiding, formal repeat counts,
+and prospective freeze metadata.
 
 ## Retargeting
 
@@ -149,17 +156,20 @@ handling in `runner.js` (future work).
 
 ## Research Direction
 
-The project now uses a layered objective system rather than a single self-improvement score:
+The active framework treats Skill, MCP, and CLI harnesses as progressive structures:
 
-1. correctness/capability;
-2. reliable task-set non-regression;
-3. efficiency (tokens, tool calls, latency);
-4. human utility and preference.
+```text
+L0 trigger/description -> L1 main rules/schema/workflow -> L2 references/scripts/resources
+```
 
-Capability and reliability are hard gates. Efficiency and preference are separate tracks and
-cannot compensate for a reliable-task regression. The active charter is
-[`RESEARCH_CHARTER.md`](RESEARCH_CHARTER.md), and the future-study protocol is
-[`experiments/general-skills/protocols/RESEARCH_EVALUATION_V2.md`](experiments/general-skills/protocols/RESEARCH_EVALUATION_V2.md).
+Four candidate fitting paths are tested: interface constraints (A), state/recovery protocols (B),
+constraint-density pruning (C), and progressive exposure (D). Every result is reported as
+`[Q1 correctness, Q2 reliability, Q3 efficiency, Q4 human utility]`; these dimensions are not
+collapsed into a primary weighted score. Q2 remains the hard capability gate, while Q4 is
+`not_measured` until a separate human/expert protocol exists.
+
+The two source research outlines and the empirical corrections applied to them are reconciled in
+[`experiments/tool-side-harness/OUTLINE_ALIGNMENT.md`](experiments/tool-side-harness/OUTLINE_ALIGNMENT.md).
 
 ## Status
 
@@ -175,6 +185,9 @@ cannot compensate for a reliable-task regression. The active charter is
 - ✅ Research direction re-anchored around layered correctness, reliability, efficiency, and human-utility objectives.
 - ✅ Independent expanded GLM replication completed: h1 again rejected on held-out/reliable non-regression.
 - ✅ Targeted four-task edit ablation completed; no alternative edit was non-regressive on all diagnostic tasks.
+- ✅ Research redirected to the Tool-Side Harness taxonomy + 4D baseline + progressive evolution program.
+- ✅ Sample/evidence/conflict registries and the progressive single-surface manifest validator are in place.
+- ⏳ Next formal step: qualify a multi-form sample pool and calibrate benchmark-sensitive baselines before new broad evolution claims.
 - ⚠ MCP tool support not yet implemented (skill-only).
 - ⚠ references/scripts not yet editable surfaces (SKILL.md only).
 

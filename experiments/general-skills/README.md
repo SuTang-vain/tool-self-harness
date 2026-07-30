@@ -1,5 +1,10 @@
 # General-Skill Self-Harness Experiments
 
+> **Research status (2026-07-30):** This tree is preserved as Stage-0 empirical evidence for the
+> broader Tool-Side Harness program. New taxonomy, 4D-baseline, and single-surface studies are
+> governed from `experiments/tool-side-harness/README.md`. Historical results and frozen protocols
+> remain unchanged.
+
 This experiment track tests whether Self-Harness generalizes beyond the domain-specific
 `sg-data-pack` skill.
 

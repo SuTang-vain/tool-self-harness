@@ -1,5 +1,11 @@
 # Research Evaluation Protocol v2: Layered Self-Harness Objectives
 
+> **Scope note (2026-07-30):** This remains the historical Q1-Q4 reporting protocol for the
+> general-skill experiments. The active cross-form research design is defined by
+> `experiments/tool-side-harness/protocols/TAXONOMY_AND_4D_V1.md` and
+> `experiments/tool-side-harness/protocols/PROGRESSIVE_EVOLUTION_V1.md`. The Q2 acceptance rule is
+> unchanged.
+
 This document defines future-study reporting on top of the frozen capability acceptance rule in
 `FINAL_ACCEPTANCE.md`. It does not retroactively change any completed experiment.
 
@@ -43,6 +49,8 @@ reliability regression.
 
 ## Claim discipline
 
-Every conclusion must use one of: aggregate movement, reliable local promotion, model-replicated
-promotion, distribution-general promotion, or product utility improvement. The evidence must meet
-the corresponding claim level in `RESEARCH_CHARTER.md`.
+Completed reports may retain their historical L0-L4 labels. New cross-form studies use the active
+E0-E5 evidence levels in `RESEARCH_CHARTER.md`: observation, local path effect, reliable local
+evolution, replicated path effect, taxonomy-level claim, and product utility claim. In either
+system, every conclusion must name the measured dimension and must not call an aggregate task
+exchange a promotion.

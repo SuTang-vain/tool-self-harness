@@ -1,131 +1,188 @@
-# Self-Harness Research Charter: Layered Tool Evolution
+# Tool-Side Harness Research Charter
 
-Status: active direction reset on 2026-07-30.
+Status: redirected and frozen as the active research direction on 2026-07-30.
+
+Source framing: the aligned paper and research outlines titled *Tool-Side Harness for
+Progressive Tool Structures: Taxonomy, 4D Baseline Modeling, and Self-Evolution for Skills, MCP,
+and CLI Guidance*. Their alignment and empirical corrections are recorded in
+`experiments/tool-side-harness/OUTLINE_ALIGNMENT.md`.
 
 ## Core thesis
 
-Tool self-evolution is not a single-score optimization problem. A candidate can be more capable,
-more reliable, cheaper, or more preferred without being better on the other dimensions. The
-research therefore reports four separate layers:
+A tool-side harness is the local semantic adaptation layer that helps a model select, understand,
+and correctly operate a Skill, MCP interface, or CLI workflow. It may be expressed through
+frontmatter descriptions, Markdown instructions, schemas, prompts, command help, deep references,
+or sub-tools. It must therefore be studied as a progressive structure rather than as one undifferentiated
+prompt.
 
-1. **Correctness / capability** — can the agent complete the verifier-defined task?
-2. **Reliability** — does it complete the same task on every fresh repeat, without breaking tasks
-   that were already reliable?
-3. **Efficiency / deployability** — how many tokens, tool calls, API calls, and milliseconds are
-   spent per attempt, successful attempt, and reliable task?
-4. **Human utility / preference** — does the behavior fit a user's workflow, interaction style,
-   control expectations, and tolerance for clarification or latency?
-
-The first two layers are hard acceptance constraints for capability evolution. Efficiency and
-human utility are separate optimization tracks and must not compensate for a correctness or
-reliability regression.
+The project is no longer organized around the broad claim that Self-Harness generally improves a
+skill. Its primary objective is to explain and test **which bounded change, on which surface, for
+which tool structure, moves which outcome dimension, and with what non-local cost**.
 
 ## Research questions
 
-### Q1 — Reliable capability
+- **RQ1 — Taxonomy:** Can common tool-side harnesses be classified by dominant task structure and
+  failure signature?
+- **RQ2 — Fitting paths:** Do four bounded fitting paths explain the useful and harmful effects of
+  local Markdown, prompt, schema, and workflow edits?
+- **RQ3 — 4D drift:** Can each edit be represented as a measurable change in correctness,
+  reliability, efficiency, and human utility without hiding regressions in a weighted score?
+- **RQ4 — Progressive evolution:** Does single-surface attribution and patching, followed by a
+  cascaded gate and lineage update, yield safer evolution than aggregate or unrestricted editing?
 
-Does a bounded harness edit increase the reliable task set while preserving all previously
-reliable tasks and both held-in/held-out aggregate pass counts?
+## Taxonomy under test
 
-### Q2 — Generalization
+| Harness class | Dominant structure | Expected failure modes | Primary fitting path |
+|---|---|---|---|
+| Atomic transform / validation | explicit input-output contract | schema ambiguity, field fabrication, output drift | Path A: interface constraints and assertion hardening |
+| Multi-step workflow | ordered commands and state transitions | skipped preconditions, state confusion, blind retry | Path B: state transition and recovery protocol |
+| Knowledge-rule / policy | dense conditional guidance | rule conflict, attention dilution, hallucinated exceptions | Path C: constraint-density control and pruning |
+| Resource / event-stream interaction | dynamic tools, resources, prompts, events | discovery failure, boundary spillover, context inflation | Path D: progressive exposure and context reduction |
 
-Does the same edit survive a larger task distribution, a fresh task split, and independent model
-replication? A result that passes only one model and one compact suite is a **model-specific local
-improvement**, not a general Self-Harness claim.
+These classes and paths are hypotheses, not established universal categories. They become paper
+claims only after the registered sample pool contains representative systems and replicated
+failure signatures from more than one implementation per claimed class.
+
+## Progressive structure and editable surfaces
+
+The default structure is:
+
+```text
+Level 0: frontmatter / trigger description
+    -> Level 1: main instructions, schema guidance, workflow rules
+        -> Level 2: deep references, scripts, templates, resources, sub-tools
+```
+
+Every proposal must declare exactly one `surface_id`, one level, one fitting path, and one intended
+parameter movement. Cross-surface edits are separate ablations and cannot enter the primary
+lineage as if they were local patches.
+
+The initial parameterization is:
+
+- `P_schema`: schema and contract strictness;
+- `P_order`: workflow ordering and recovery rigidity;
+- `P_density`: rule and constraint density;
+- `P_prune`: removal or deferred loading of low-value context.
+
+Directional effects of these parameters are preregistered hypotheses, not monotonic laws. In
+particular, the completed expanded MCP studies show that increasing `P_schema` can reduce Q2 on
+unrelated task families; neither `P_schema` nor `P_prune` is treated as universally low risk.
+
+## Four-dimensional outcome vector
+
+For baseline or candidate `h`, report:
+
+```text
+V(h) = [Q1 correctness, Q2 reliability, Q3 efficiency, Q4 human utility]
+```
+
+The dimensions are not summed into a primary weighted score.
+
+### Q1 — Correctness
+
+Verifier-defined task completion, reported by split, task family, and attempt. Aggregate pass
+movement is evidence about Q1 only.
+
+### Q2 — Reliability
+
+Per-task success across fresh repeats, non-regression of the reliable task set, task exchange,
+and critical verifier regressions. Q2 is the hard capability-evolution gate.
 
 ### Q3 — Efficiency
 
-Conditional on Q1 passing, does the candidate reduce resource use or improve the cost of reliable
-success? Report tokens, tool calls, API calls, latency, and (when available) provider cost. Do not
-trade away reliable capability for efficiency unless an explicitly separate product policy allows
-it.
+Prompt/completion/total tokens, API and tool calls, retries, latency, and normalized cost per
+successful attempt or reliable task. Q3 is interpreted only after Q1/Q2 are non-regressive unless
+a separately labeled efficiency-only study was preregistered.
 
 ### Q4 — Human utility
 
-Conditional on Q1 passing, does the candidate improve user preference, clarification quality,
-control calibration, handoff frequency, completion time, or interaction burden? Human utility is
-measured in a separate study; verifier outcomes cannot be used as a proxy for preference.
+Preference, clarification burden, user correction/takeover, completion time, perceived control,
+and maintainability. Q4 requires a separate human or expert protocol; verifier outcomes are not a
+proxy for it.
 
-## Lexicographic evaluation policy
+## Cascaded gate
 
-Evaluation proceeds in this order:
+### Gate 0 — Protocol integrity
 
-### Gate 0 — Safety and protocol integrity
+Abort rather than score provider, API, infrastructure, leakage, or verifier-integrity failures.
+Held-out evidence remains hidden from proposal generation.
 
-Reject on any critical safety, protocol, data-integrity, or infrastructure violation. API and
-infrastructure errors are aborted, not scored as task failures.
+### Gate 1 — Q2 reliable non-regression
 
-### Gate 1 — Reliable capability
+Use the frozen `reliable-task-set-v1` rule:
 
-Use `reliable-task-set-v1`:
+- gain at least one reliable task for a capability promotion;
+- lose no previously reliable task on either split;
+- do not decrease held-in or held-out aggregate pass count;
+- introduce no critical verifier regression.
 
-- gain at least one reliable task;
-- lose no reliable task;
-- held-in aggregate does not decrease;
-- held-out aggregate does not decrease;
-- no critical verifier failure increases.
+A structural or efficiency candidate that gains no reliable task may proceed only in a separately
+preregistered non-capability track and must preserve all reliable tasks and aggregates.
 
-This is the only gate that promotes a capability lineage.
+### Gate 2 — Q1 classification
 
-### Gate 2 — Efficiency track
+After Q2 passes, classify the change as a local capability gain, distribution-replicated gain, or
+no capability change. Aggregate gains that fail Q2 are task exchanges, not evolution.
 
-An efficiency-only candidate may be reported as an efficiency improvement only when the reliable
-task set and aggregate capability are unchanged or improved. It must meet a threshold declared
-before evaluation, such as:
+### Gate 3 — Q3 efficiency
 
-- at least 10% lower median total tokens per attempt; or
-- at least 10% lower median wall-clock latency; or
-- at least 10% fewer tool calls per successful attempt.
+Compare preregistered efficiency measures. Efficiency cannot compensate for a Q1/Q2 regression.
 
-No efficiency-only candidate is promoted when it loses a reliable task. Efficiency metrics are
-currently instrumentation/reporting targets; thresholds must be preregistered for each future
-study.
+### Gate 4 — Q4 human utility
 
-### Gate 3 — Human utility track
+Run only under a separate preregistered human/expert evaluation. Human preference cannot erase a
+critical correctness or reliability regression.
 
-Report preference win rate, clarification count, user takeover rate, completion time, and
-interaction burden separately. A preference win is not a capability promotion unless Gates 0–1
-also pass.
+## Evolution loop
 
-## Claim levels
+1. **Attribution:** map a held-in failure signature to Level 0, 1, or 2 and to one fitting path.
+2. **Proposal:** create a bounded patch on one registered surface; state expected Q1-Q4 movement
+   and regression mechanism before evaluation.
+3. **Gate:** run at least three fresh repeats on the complete frozen held-in and held-out suite and
+   apply Gates 0-4 in order.
+4. **Lineage:** promote only a passing patch. Record rejected patches, task exchanges, and affected
+   families in the attention-conflict matrix.
 
-Use the narrowest claim supported by evidence:
+## Evidence and claim levels
 
-- **L0 — Aggregate movement:** split-level pass counts changed.
-- **L1 — Reliable local promotion:** Gates 0–1 pass on one model and one frozen suite.
-- **L2 — Model-replicated promotion:** Gate 1 passes independently on at least two models.
-- **L3 — Distribution-general promotion:** Gate 1 passes on an expanded or independent task
-  distribution and at least two models.
-- **L4 — Product utility improvement:** L3 plus preregistered efficiency and/or human-utility
-  evidence with no capability/reliability regression.
+- **E0 — Observation:** a failure signature or aggregate movement in one run.
+- **E1 — Local path effect:** a bounded patch produces a repeatable 4D movement on one model and
+  one frozen suite; it need not be a promotion.
+- **E2 — Reliable local evolution:** Gate 1 passes on one model and one frozen suite.
+- **E3 — Replicated path effect:** the direction and mechanism replicate across an independent
+  task distribution or model.
+- **E4 — Taxonomy-level claim:** the fitting-path prediction holds across representative systems
+  in the relevant class, with registered counterexamples and boundary conditions.
+- **E5 — Product utility claim:** E3/E4 evidence plus preregistered Q3 and Q4 benefit without
+  Q1/Q2 regression.
 
-The current GLM MCP 12-task result is **L1**. The expanded 36-task result rejects promotion, so
-it is not L3. MiniMax and DeepSeek results do not support L2 for the same edit.
+Use the narrowest supported level. “Better” is prohibited unless the dimension and claim level are
+specified.
 
-## Interpretation of current evidence
+## Current evidence under the redirected framing
 
-- The per-task acceptance rule is a methodological contribution because it rejects aggregate
-  task exchanges and variance-based false positives.
-- The compact GLM MCP result demonstrates a local reliable promotion.
-- The expanded GLM result shows that the promotion is not robust to the current expanded task
-  distribution.
-- MiniMax and DeepSeek show that the edit is model-specific rather than universal.
-- The systematic-debugging pilot is outcome-flat and should be treated as benchmark qualification,
-  not Self-Harness evidence.
+1. The compact GLM MCP edit is an **E2 local Path-A evolution** on the original 12-task suite.
+2. MiniMax and DeepSeek reject model transfer of that edit; it is not a model-general promotion.
+3. Two independent expanded GLM evaluations reject promotion and expose task exchange and
+   non-local regressions. This is **E3 mechanism evidence about Path-A over-constraint risk**, not
+   evidence of a generally better MCP harness.
+4. The targeted description/body/checklist ablation shows that surface placement changes the
+   4D outcome, but no tested variant is non-regressive. It is diagnostic E1 evidence only.
+5. The systematic-debugging pilot is outcome-flat and does not yet qualify as a process-sensitive
+   Path-B/C benchmark.
+6. No current experiment establishes the four-class taxonomy, Path B/C/D effectiveness, or Q4.
 
-## Planned research tracks
+## Active work packages
 
-1. **Capability track:** keep the frozen reliable gate and audit the expanded MCP suite.
-2. **Efficiency track:** use the new runner metrics on future fresh evaluations; do not backfill
-   old traces as if they had pre-registered usage accounting.
-3. **Generalization track:** perform an independent GLM replication of the expanded suite before
-   spending more cross-model quota. If it reproduces the rejection, retain the negative result.
-4. **Human-utility track:** design a separate human or preference benchmark only after the
-   capability protocol is stable.
+- **WP1 — Taxonomy inventory:** freeze a labeled sample pool spanning Skill, MCP, and CLI forms.
+- **WP2 — 4D baseline calibration:** measure baseline vectors and verify that each benchmark is
+  sensitive to its intended failure signatures.
+- **WP3 — Progressive evolution prototypes:** run registered single-surface loops on 2-3 qualified
+  representative targets.
+- **WP4 — Method ablations:** compare Q2/no-Q2, bounded/unrestricted patches, local/deep-reference
+  changes, and lineage/no-lineage reporting.
+- **WP5 — Replication and utility:** expand models and distributions only after a local path effect
+  is stable; defer Q4 until the capability protocol is mature.
 
-## Reporting rule
-
-Every result table must label which layer it measures. Never summarize a candidate as “better”
-without specifying whether the claim is about correctness, reliability, efficiency, or preference.
-A single weighted score is prohibited for the primary research claim because it can hide a
-critical reliability regression behind a token or latency reduction.
+The executable research program, registries, and protocol links live in
+`experiments/tool-side-harness/README.md`.

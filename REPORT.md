@@ -652,3 +652,44 @@ This is mechanism evidence, not a capability result: the task subset was selecte
 regressions. The next candidate should explicitly separate strict schema guidance from lifecycle,
 state, and prompt behavior, then be evaluated on the full 36-task suite under a new
 preregistration.
+
+## 12. Redirection: Tool-Side Harness Taxonomy and Progressive Evolution
+
+On 2026-07-30 the project was redirected from a broad Self-Harness generalization study to a
+more falsifiable tool-side harness program. The unit of analysis is now a bounded surface in a
+progressive Skill, MCP, or CLI structure. The central question is not whether an entire harness is
+“better,” but which local fitting path moves correctness, reliability, efficiency, or human
+utility and where non-local costs appear.
+
+The redirected framework has four candidate harness classes and fitting paths:
+
+| Class | Primary path | Current evidence |
+|---|---|---|
+| atomic transform / validation | Path A: interface constraints | partial MCP evidence; standalone target pending |
+| multi-step workflow | Path B: state and recovery | CLI target pending |
+| knowledge-rule / policy | Path C: density and pruning | systematic-debugging benchmark needs redesign |
+| resource / event interaction | Path D: progressive exposure | MCP anchor available; direct Path-D experiment pending |
+
+Existing MCP results are reinterpreted rather than discarded. The compact GLM strict-schema edit
+is a reliable local Path-A promotion, while MiniMax/DeepSeek and two expanded GLM runs establish a
+boundary condition: a global schema instruction can exchange reliable tasks and create non-local
+state, prompt, pagination, or concurrency regressions. The targeted surface-placement ablation is
+post hoc mechanism evidence and does not promote any variant.
+
+The four-dimensional vector is now explicitly
+`[Q1 correctness, Q2 reliability, Q3 efficiency, Q4 human utility]`. Q2 remains the hard gate;
+the dimensions are not collapsed into a weighted primary score. Q4 is marked `not_measured` until
+a separate human/expert protocol is run.
+
+The immediate work order changes accordingly:
+
+1. qualify and freeze a sample pool spanning Skill, MCP, and CLI forms;
+2. calibrate benchmark-sensitive 4D baselines before generating candidates;
+3. register progressive surfaces and generate single-surface patches only;
+4. evaluate with at least three fresh repeats and Q2-first cascaded gating;
+5. record rejected edits in an attention-conflict matrix;
+6. run bounded/unrestricted and surface-placement ablations before taxonomy-level claims;
+7. expand models only after a local path effect is stable.
+
+The active charter is `RESEARCH_CHARTER.md`; executable protocols and machine-readable registries
+are under `experiments/tool-side-harness/`.
