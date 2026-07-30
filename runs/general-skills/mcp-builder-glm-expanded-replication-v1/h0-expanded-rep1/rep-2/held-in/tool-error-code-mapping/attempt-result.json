@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "tool-error-code-mapping",
+  "repeat": 2,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 50.989916 | PASS tool-error-code-mapping",
+  "runner": {
+    "steps": 10,
+    "final_answer": "Done. I implemented the `tool-error-code-mapping` MCP server in `server.mjs`.\n\n## Summary\n\nThe original `server.mjs` was a stub (`listTools()` returned `[]`, `callTool()` threw \"not implemented\"). I replaced it with the full implementation:\n\n**`listTools()`** — advertises the `lookup_invoice` tool with an explicit JSON schema requiring `invoice_id` (string).\n\n**`callTool(name, args)`** — with the exact error-code mapping requested:\n- Unknown tool name → throws `Error` with `err.code = 'UNKNOWN_TOOL'`\n- Missing/non-string `invoice_id` → `INVALID_ARGUMENT`\n- Valid id but not in the store → `NOT_FOUND`\n- Found `inv-1` → returns MCP content with JSON text: `{\"invoice_id\":\"inv-1\",\"status\":\"paid\",\"total\":100,\"currency\":\"USD\"}`\n\nA small `fail(code, message)` helper attaches the semantic code directly to the `Error` object, which `protocol.mjs` already reads via `error.code` to populate the JSON-RPC `error.code` field — so the codes flow cleanly through the protocol layer (verified end-to-end).\n\n## Verification\n- The existing test (`codes`, asserting `INVALID_ARGUMENT` on missing input) passes.\n- Manual checks confirmed: success returns JSON text, missing/invalid input → `INVALID_ARGUMENT`, unknown invoice → `NOT_FOUND`, unknown tool → `UNKNOWN_TOOL`.\n- JSON-RPC round-trip through `protocol.mjs` correctly surfaces each semantic code in the `error.code` field.\n- Full test suite (`node --test`): 1 pass, 0 fail.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-2/held-in/tool-error-code-mapping/trace.jsonl",
+    "metrics": {
+      "api_calls": 10,
+      "api_latency_ms": 95209,
+      "tool_calls": 14,
+      "tool_call_retries": 0,
+      "prompt_tokens": 23230,
+      "completion_tokens": 3911,
+      "total_tokens": 27141,
+      "usage_observations": 10,
+      "elapsed_ms": 96172,
+      "steps": 10
+    }
+  },
+  "behavior": {
+    "steps": 14,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "Done. I implemented the `tool-error-code-mapping` MCP server in `server.mjs`.\n\n## Summary\n\nThe original `server.mjs` was a stub (`listTools()` returned `[]`, `callTool()` threw \"not implemented\"). I replaced it with the full implementation:\n\n**`listTools()`** — advertises the `lookup_invoice` tool with an explicit JSON schema requiring `invoice_id` (string).\n\n**`callTool(name, args)`** — with the exact error-code mapping requested:\n- Unknown tool name → throws `Error` with `err.code = 'UNKNOWN_TOOL'`\n- Missing/non-string `invoice_id` → `INVALID_ARGUMENT`\n- Valid id but not in the store → `NOT_FOUND`\n- Found `inv-1` → returns MCP content with JSON text: `{\"invoice_id\":\"inv-1\",\"status\":\"paid\",\"total\":100,\"currency\":\"USD\"}`\n\nA small `fail(code, message)` helper attaches the semantic code directly to the `Error` object, which `protocol.mjs` already reads via `error.code` to populate the JSON-RPC `error.code` field — so the codes flow cleanly through the protocol layer (verified end-to-end).\n\n## Verification\n- The existing test (`codes`, asserting `INVALID_ARGUMENT` on missing input) passes.\n- Manual checks confirmed: success returns JSON text, missing/invalid input → `INVALID_ARGUMENT`, unknown invoice → `NOT_FOUND`, unknown tool → `UNKNOWN_TOOL`.\n- JSON-RPC round-trip through `protocol.mjs` correctly surfaces each semantic code in the `error.code` field.\n- Full test suite (`node --test`): 1 pass, 0 fail.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-2/held-in/tool-error-code-mapping/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-2/held-in/tool-error-code-mapping/trace.jsonl"
+}

@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "transport-framing",
+  "repeat": 2,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 50.622583 | PASS transport-framing",
+  "runner": {
+    "steps": 11,
+    "final_answer": "Everything is complete. Here's a summary of what I did:\n\n## Changes\n\n### `server.mjs` — implemented the echo tool\n- **`listTools()`** now returns an `echo` tool with a strict `inputSchema`: `type: object`, a required `message` string property, and `additionalProperties: false` (as required by the skill).\n- **`callTool(name, args)`** validates that:\n  - `args` is a plain object,\n  - `message` is present and a string,\n  - no extra/unknown arguments are supplied,\n  - returning `{content:[{type:'text',text:args.message}]}` on success.\n- Unknown tools throw an error tagged with JSON-RPC code `-32601` (method not found); invalid arguments use `-32602` (invalid params).\n\n### `protocol.mjs` — made the transport framing robust\n- Moved `JSON.parse` inside a `try/catch` so a malformed line emits a single `-32700` \"Parse error\" response line and **continues** processing subsequent lines (previously one bad line crashed the whole stream with a stack trace on stdout).\n- Tagged the \"Method not found\" path with code `-32601`.\n- The loop continues to read line-by-line, emitting exactly one JSON response line per request, and never writes anything but JSON to stdout.\n\n## Verification\n- The provided test (`echo`) passes.\n- Manual multi-line run confirmed: each request produces exactly one valid JSON line, missing-arg and unknown-tool cases return proper error objects, malformed JSON returns a parse-error response without crashing, stderr stays empty, and the process exits 0.\n\nFull test suite result: **1 test, 1 pass, 0 fail**.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h1-expanded-rep1/rep-2/held-out/transport-framing/trace.jsonl",
+    "metrics": {
+      "api_calls": 11,
+      "api_latency_ms": 133308,
+      "tool_calls": 14,
+      "tool_call_retries": 0,
+      "prompt_tokens": 27013,
+      "completion_tokens": 6322,
+      "total_tokens": 33335,
+      "usage_observations": 11,
+      "elapsed_ms": 134616,
+      "steps": 11
+    }
+  },
+  "behavior": {
+    "steps": 14,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "Everything is complete. Here's a summary of what I did:\n\n## Changes\n\n### `server.mjs` — implemented the echo tool\n- **`listTools()`** now returns an `echo` tool with a strict `inputSchema`: `type: object`, a required `message` string property, and `additionalProperties: false` (as required by the skill).\n- **`callTool(name, args)`** validates that:\n  - `args` is a plain object,\n  - `message` is present and a string,\n  - no extra/unknown arguments are supplied,\n  - returning `{content:[{type:'text',text:args.message}]}` on success.\n- Unknown tools throw an error tagged with JSON-RPC code `-32601` (method not found); invalid arguments use `-32602` (invalid params).\n\n### `protocol.mjs` — made the transport framing robust\n- Moved `JSON.parse` inside a `try/catch` so a malformed line emits a single `-32700` \"Parse error\" response line and **continues** processing subsequent lines (previously one bad line crashed the whole stream with a stack trace on stdout).\n- Tagged the \"Method not found\" path with code `-32601`.\n- The loop continues to read line-by-line, emitting exactly one JSON response line per request, and never writes anything but JSON to stdout.\n\n## Verification\n- The provided test (`echo`) passes.\n- Manual multi-line run confirmed: each request produces exactly one valid JSON line, missing-arg and unknown-tool cases return proper error objects, malformed JSON returns a parse-error response without crashing, stderr stays empty, and the process exits 0.\n\nFull test suite result: **1 test, 1 pass, 0 fail**.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h1-expanded-rep1/rep-2/held-out/transport-framing/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h1-expanded-rep1/rep-2/held-out/transport-framing/trace.jsonl"
+}

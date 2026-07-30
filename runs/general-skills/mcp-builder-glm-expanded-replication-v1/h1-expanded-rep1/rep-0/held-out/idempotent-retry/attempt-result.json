@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "idempotent-retry",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 54.380083 | PASS idempotent-retry",
+  "runner": {
+    "steps": 7,
+    "final_answer": "The implementation is complete. Here's a summary of what I built:\n\n## Implementation\n\nThe `server.mjs` file now implements an **idempotent-retry MCP server** with a single `charge` tool:\n\n### `listTools()`\nReturns the `charge` tool with a strict input schema:\n- `request_id` (string, required) — the idempotency key\n- `cents` (integer, required) — must be > 0\n- `additionalProperties: false` to reject extra arguments at the schema level\n\n### `callTool(name, args)`\n- **Unknown tool** → throws with `-32601`\n- **Extra arguments** → throws with `-32602`\n- **Invalid `request_id`** (missing/empty/non-string) → throws with `-32602`\n- **Invalid `cents`** (missing, ≤ 0, or non-integer) → throws with `-32602`\n- **First request with a `request_id`** → creates a new charge `{ charged: true, charge_id: \"ch1\" }`, stored in a `Map` keyed by `request_id`, and returns it\n- **Repeated `request_id`** → returns the exact same stored charge **without** incrementing the counter (no duplicate charge created)\n- **Different `request_id`** → creates a separate charge with the next id (`ch2`, `ch3`, …)\n\n### Verification\n- The provided test `idempotent` passes ✅\n- Manual checks confirmed: first charge is `ch1`, repeat returns identical `ch1` without increment, new request_id yields `ch2`, and all invalid/extra/unknown cases are rejected ✅",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h1-expanded-rep1/rep-0/held-out/idempotent-retry/trace.jsonl",
+    "metrics": {
+      "api_calls": 7,
+      "api_latency_ms": 47257,
+      "tool_calls": 10,
+      "tool_call_retries": 0,
+      "prompt_tokens": 13882,
+      "completion_tokens": 1612,
+      "total_tokens": 15494,
+      "usage_observations": 7,
+      "elapsed_ms": 47855,
+      "steps": 7
+    }
+  },
+  "behavior": {
+    "steps": 10,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete. Here's a summary of what I built:\n\n## Implementation\n\nThe `server.mjs` file now implements an **idempotent-retry MCP server** with a single `charge` tool:\n\n### `listTools()`\nReturns the `charge` tool with a strict input schema:\n- `request_id` (string, required) — the idempotency key\n- `cents` (integer, required) — must be > 0\n- `additionalProperties: false` to reject extra arguments at the schema level\n\n### `callTool(name, args)`\n- **Unknown tool** → throws with `-32601`\n- **Extra arguments** → throws with `-32602`\n- **Invalid `request_id`** (missing/empty/non-string) → throws with `-32602`\n- **Invalid `cents`** (missing, ≤ 0, or non-integer) → throws with `-32602`\n- **First request with a `request_id`** → creates a new charge `{ charged: true, charge_id: \"ch1\" }`, stored in a `Map` keyed by `request_id`, and returns it\n- **Repeated `request_id`** → returns the exact same stored charge **without** incrementing the counter (no duplicate charge created)\n- **Different `request_id`** → creates a separate charge with the next id (`ch2`, `ch3`, …)\n\n### Verification\n- The provided test `idempotent` passes ✅\n- Manual checks confirmed: first charge is `ch1`, repeat returns identical `ch1` without increment, new request_id yields `ch2`, and all invalid/extra/unknown cases are rejected ✅",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h1-expanded-rep1/rep-0/held-out/idempotent-retry/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h1-expanded-rep1/rep-0/held-out/idempotent-retry/trace.jsonl"
+}

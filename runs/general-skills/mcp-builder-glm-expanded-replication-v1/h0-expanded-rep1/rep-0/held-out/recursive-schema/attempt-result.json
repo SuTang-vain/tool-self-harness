@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "recursive-schema",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 50.185083 | PASS recursive-schema",
+  "runner": {
+    "steps": 9,
+    "final_answer": "The recursive-schema MCP server is implemented and tests pass. Here's a summary of what I did:\n\n## Changes\n\nReplaced the stub `server.mjs` with a complete implementation:\n\n### Tool: `tree_sum`\n- **Recursive sum** — walks every node, summing `value` plus all descendants' values, returned as text (`String(total)`).\n\n### Strict validation (`validateTree`)\nEach node must be an object with:\n- **`value`** — required, must be an integer (rejects floats like `1.5`).\n- **`children`** — optional, must be an array; each element is recursively validated.\n- **No extra fields** — any key other than `value`/`children` is rejected (`additionalProperties: false` semantically enforced at runtime).\n- **Depth guard** — caps nesting at 100 to prevent runaway recursion.\n- Non-object trees, non-array children, and missing `value` are all rejected with clear `JSON-RPC -32602` errors.\n\n### Advertised schema\n`listTools()` returns the `tree_sum` tool whose `inputSchema` is a self-referential JSON Schema (draft 2020-12) using `$defs/treeNode` with `$ref`. It advertises:\n- strict object properties (`additionalProperties: false`),\n- `value: { type: 'integer' }` (required),\n- `children: { type: 'array', items: { $ref: '#/$defs/treeNode' } }` — array items guidance pointing back at the same node definition, so the recursive structure is discoverable.\n\n### Behavior verified\n- Deep recursion (`1 + 2 + 3 + 4 = 10`), single node (`42`), negatives (`-2`).\n- Malformed inputs all rejected: extra fields, non-integer value, missing value, non-array children, non-object tree, missing argument, unknown tool.\n\nThe full test suite passes (`1 pass, 0 fail`).",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-0/held-out/recursive-schema/trace.jsonl",
+    "metrics": {
+      "api_calls": 9,
+      "api_latency_ms": 57194,
+      "tool_calls": 12,
+      "tool_call_retries": 0,
+      "prompt_tokens": 22364,
+      "completion_tokens": 2151,
+      "total_tokens": 24515,
+      "usage_observations": 9,
+      "elapsed_ms": 58053,
+      "steps": 9
+    }
+  },
+  "behavior": {
+    "steps": 12,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The recursive-schema MCP server is implemented and tests pass. Here's a summary of what I did:\n\n## Changes\n\nReplaced the stub `server.mjs` with a complete implementation:\n\n### Tool: `tree_sum`\n- **Recursive sum** — walks every node, summing `value` plus all descendants' values, returned as text (`String(total)`).\n\n### Strict validation (`validateTree`)\nEach node must be an object with:\n- **`value`** — required, must be an integer (rejects floats like `1.5`).\n- **`children`** — optional, must be an array; each element is recursively validated.\n- **No extra fields** — any key other than `value`/`children` is rejected (`additionalProperties: false` semantically enforced at runtime).\n- **Depth guard** — caps nesting at 100 to prevent runaway recursion.\n- Non-object trees, non-array children, and missing `value` are all rejected with clear `JSON-RPC -32602` errors.\n\n### Advertised schema\n`listTools()` returns the `tree_sum` tool whose `inputSchema` is a self-referential JSON Schema (draft 2020-12) using `$defs/treeNode` with `$ref`. It advertises:\n- strict object properties (`additionalProperties: false`),\n- `value: { type: 'integer' }` (required),\n- `children: { type: 'array', items: { $ref: '#/$defs/treeNode' } }` — array items guidance pointing back at the same node definition, so the recursive structure is discoverable.\n\n### Behavior verified\n- Deep recursion (`1 + 2 + 3 + 4 = 10`), single node (`42`), negatives (`-2`).\n- Malformed inputs all rejected: extra fields, non-integer value, missing value, non-array children, non-object tree, missing argument, unknown tool.\n\nThe full test suite passes (`1 pass, 0 fail`).",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-0/held-out/recursive-schema/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-0/held-out/recursive-schema/trace.jsonl"
+}

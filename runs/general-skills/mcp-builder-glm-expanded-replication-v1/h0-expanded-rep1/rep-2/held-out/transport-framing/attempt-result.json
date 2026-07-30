@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "transport-framing",
+  "repeat": 2,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 54.010334 | PASS transport-framing",
+  "runner": {
+    "steps": 10,
+    "final_answer": "All tests pass. Here's a summary of the changes I made.\n\n## Changes\n\n### `server.mjs` — Implemented the `echo` tool\n- `listTools()` now returns the `echo` tool with an explicit input schema requiring a `message` string.\n- `callTool(name, args)` validates the tool name and arguments:\n  - For `echo`: rejects non-string `message` with a `-32602` (invalid params) error; otherwise returns `{ content: [{ type: 'text', text: args.message }] }`.\n  - For any other tool name: throws a `-32601` (method not found / unknown tool) error.\n\n### `protocol.mjs` — Hardened the transport framing\nThe original adapter parsed JSON **outside** the try/catch, so a malformed line would throw an uncaught exception and crash the process. I moved parsing inside the try/catch and added explicit framing guarantees:\n\n- **Exactly one valid JSON response line per request** — each non-empty input line produces exactly one `JSON.stringify(...)+'\\n'` write, for both success and error paths.\n- **Multiple separate-line requests** — handled by the existing `readline` loop, one iteration per line.\n- **Never prints diagnostics to stdout** — all output is JSON-RPC; no `console.*` calls, and errors become structured `{jsonrpc,id,error:{code,message}}` lines. Verified stderr is empty.\n- **Rejects invalid arguments** (`-32602`), **unknown tools** (`-32601`), **unknown methods** (`-32601`), and **malformed/non-JSON lines** (`-32603` with `id: null`) — each as a single valid response line.\n\n## Verification\n- The unit test passes (`echo` returns the echoed text).\n- Manual multi-line test: 6 inputs → 6 valid JSON output lines; invalid args, unknown tool, unknown method, and a garbage line all produce a single well-formed error response line each.\n- Confirmed 3-in/3-out line count and empty stderr.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-2/held-out/transport-framing/trace.jsonl",
+    "metrics": {
+      "api_calls": 10,
+      "api_latency_ms": 78353,
+      "tool_calls": 13,
+      "tool_call_retries": 0,
+      "prompt_tokens": 23226,
+      "completion_tokens": 3663,
+      "total_tokens": 26889,
+      "usage_observations": 10,
+      "elapsed_ms": 79565,
+      "steps": 10
+    }
+  },
+  "behavior": {
+    "steps": 13,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "All tests pass. Here's a summary of the changes I made.\n\n## Changes\n\n### `server.mjs` — Implemented the `echo` tool\n- `listTools()` now returns the `echo` tool with an explicit input schema requiring a `message` string.\n- `callTool(name, args)` validates the tool name and arguments:\n  - For `echo`: rejects non-string `message` with a `-32602` (invalid params) error; otherwise returns `{ content: [{ type: 'text', text: args.message }] }`.\n  - For any other tool name: throws a `-32601` (method not found / unknown tool) error.\n\n### `protocol.mjs` — Hardened the transport framing\nThe original adapter parsed JSON **outside** the try/catch, so a malformed line would throw an uncaught exception and crash the process. I moved parsing inside the try/catch and added explicit framing guarantees:\n\n- **Exactly one valid JSON response line per request** — each non-empty input line produces exactly one `JSON.stringify(...)+'\\n'` write, for both success and error paths.\n- **Multiple separate-line requests** — handled by the existing `readline` loop, one iteration per line.\n- **Never prints diagnostics to stdout** — all output is JSON-RPC; no `console.*` calls, and errors become structured `{jsonrpc,id,error:{code,message}}` lines. Verified stderr is empty.\n- **Rejects invalid arguments** (`-32602`), **unknown tools** (`-32601`), **unknown methods** (`-32601`), and **malformed/non-JSON lines** (`-32603` with `id: null`) — each as a single valid response line.\n\n## Verification\n- The unit test passes (`echo` returns the echoed text).\n- Manual multi-line test: 6 inputs → 6 valid JSON output lines; invalid args, unknown tool, unknown method, and a garbage line all produce a single well-formed error response line each.\n- Confirmed 3-in/3-out line count and empty stderr.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-2/held-out/transport-framing/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-2/held-out/transport-framing/trace.jsonl"
+}

@@ -603,3 +603,30 @@ The new runner records token usage when the provider returns it, API/tool-call c
 and elapsed time for future efficiency analyses. Historical runs are not retroactively treated as
 usage-controlled efficiency experiments. Full policy is in `RESEARCH_CHARTER.md` and
 `experiments/general-skills/protocols/RESEARCH_EVALUATION_V2.md`.
+
+## 10. Independent Expanded GLM Replication
+
+We preregistered and completed an independent replication on the frozen 36-task suite using a
+seeded task order and three fresh repeats per lineage (216 attempts). The result again rejects
+`h1-expanded`:
+
+| Lineage | Held-in | Reliable held-in | Held-out | Reliable held-out |
+|---|---:|---:|---:|---:|
+| `h0-expanded-rep1` | 67/72 | 21/24 | 24/36 | 7/12 |
+| `h1-expanded-rep1` | 68/72 | 21/24 | 22/36 | 5/12 |
+
+The aggregate gate rejects because held-out decreases by two. The reliable gate rejects because
+`h1` loses reliable `concurrent-state-isolation`, `cursor-pagination`, `prompt-template-render`,
+`order-status`, and `recursive-schema`, despite gaining `customer-directory`, `notes-store`, and
+`safe-calculator` on held-in. The paired attempt comparison has 7 candidate wins and 8 baseline
+wins (exact two-sided sign p=1).
+
+The replication also illustrates why efficiency must remain a separate layer. In this run `h1`
+used approximately 6.9% fewer total tokens and 6.7% fewer tool calls, but it had a held-out and
+reliable-task regression. This is an efficiency movement, not an overall improvement. The
+family-level audit and all metric summaries are stored in the replication directory.
+
+The prior expanded run and this independent replication both reject the same lineage, although
+the exact regression tasks vary. `concurrent-state-isolation` and `prompt-template-render` are
+recurring regression signals and will be investigated with a preregistered ablation before any
+new proposal or expanded cross-model run.

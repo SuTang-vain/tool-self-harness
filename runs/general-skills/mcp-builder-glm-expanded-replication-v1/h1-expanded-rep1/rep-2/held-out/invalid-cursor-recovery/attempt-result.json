@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "invalid-cursor-recovery",
+  "repeat": 2,
+  "pass": false,
+  "verify_exit": 1,
+  "verify_msg": "TypeError: Cannot read properties of undefined (reading '0') |     at file:///Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h1-expanded-rep1/rep-2/held-out/invalid-cursor-recovery/workspace/[eval1]:4:66 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |  | Node.js v22.23.0",
+  "runner": {
+    "steps": 14,
+    "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Summary\n\nI implemented an **invalid-cursor-recovery** MCP server in `server.mjs` with a single `page` tool over `rows.json`.\n\n### Key behaviors\n\n**Paging** — `page` takes a required `limit` (integer 1 or 2) and an optional `cursor`. It returns `{ rows, next_cursor }`, where `next_cursor` is present only when more rows remain. The cursor is an opaque base64url-encoded `{ offset }` JSON blob.\n\n**Cursor validation (the core requirement)** — Invalid or stale cursors throw an `Error` with `code: 'INVALID_CURSOR'` rather than silently restarting:\n- Non-string / empty cursor\n- Malformed base64url or non-JSON content (e.g. `'stale'`)\n- Valid JSON but missing/wrong-typed `offset`\n- A cursor whose offset points *past* the end of the data (stale) — explicitly checked so it never silently restarts from row 0\n\n**Argument validation** — Rejects:\n- Missing `limit`, non-integer `limit`, `limit` outside 1..2\n- Unknown/extra arguments (enforced at runtime to match `additionalProperties: false`)\n- Non-object arguments\n\n**Unknown tools** — Rejected with `code: -32601`.\n\n**Schema** — The `inputSchema` includes `type`, `properties`, `required: ['limit']`, and `additionalProperties: false` as required by the skill.\n\nThe test suite (`npm test`) passes, and I verified the full paging flow (limit 2 → last row, limit 1 chain) plus all rejection paths manually.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h1-expanded-rep1/rep-2/held-out/invalid-cursor-recovery/trace.jsonl",
+    "metrics": {
+      "api_calls": 14,
+      "api_latency_ms": 243817,
+      "tool_calls": 18,
+      "tool_call_retries": 0,
+      "prompt_tokens": 46989,
+      "completion_tokens": 14510,
+      "total_tokens": 61499,
+      "usage_observations": 14,
+      "elapsed_ms": 245534,
+      "steps": 14
+    }
+  },
+  "behavior": {
+    "steps": 18,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Summary\n\nI implemented an **invalid-cursor-recovery** MCP server in `server.mjs` with a single `page` tool over `rows.json`.\n\n### Key behaviors\n\n**Paging** — `page` takes a required `limit` (integer 1 or 2) and an optional `cursor`. It returns `{ rows, next_cursor }`, where `next_cursor` is present only when more rows remain. The cursor is an opaque base64url-encoded `{ offset }` JSON blob.\n\n**Cursor validation (the core requirement)** — Invalid or stale cursors throw an `Error` with `code: 'INVALID_CURSOR'` rather than silently restarting:\n- Non-string / empty cursor\n- Malformed base64url or non-JSON content (e.g. `'stale'`)\n- Valid JSON but missing/wrong-typed `offset`\n- A cursor whose offset points *past* the end of the data (stale) — explicitly checked so it never silently restarts from row 0\n\n**Argument validation** — Rejects:\n- Missing `limit`, non-integer `limit`, `limit` outside 1..2\n- Unknown/extra arguments (enforced at runtime to match `additionalProperties: false`)\n- Non-object arguments\n\n**Unknown tools** — Rejected with `code: -32601`.\n\n**Schema** — The `inputSchema` includes `type`, `properties`, `required: ['limit']`, and `additionalProperties: false` as required by the skill.\n\nThe test suite (`npm test`) passes, and I verified the full paging flow (limit 2 → last row, limit 1 chain) plus all rejection paths manually.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h1-expanded-rep1/rep-2/held-out/invalid-cursor-recovery/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h1-expanded-rep1/rep-2/held-out/invalid-cursor-recovery/trace.jsonl"
+}

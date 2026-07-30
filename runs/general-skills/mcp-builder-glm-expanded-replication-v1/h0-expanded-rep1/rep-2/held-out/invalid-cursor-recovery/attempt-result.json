@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "invalid-cursor-recovery",
+  "repeat": 2,
+  "pass": false,
+  "verify_exit": 1,
+  "verify_msg": "TypeError: Cannot read properties of undefined (reading '0') |     at file:///Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-2/held-out/invalid-cursor-recovery/workspace/[eval1]:4:66 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |  | Node.js v22.23.0",
+  "runner": {
+    "steps": 12,
+    "final_answer": "The implementation is complete. Let me summarize what I built:\n\n## Summary\n\nI implemented the `invalid-cursor-recovery` MCP server in `server.mjs`. The server exposes a single `page` tool that pages over `rows.json`.\n\n### Key behaviors\n\n**`listTools()`** — returns the discoverable `page` tool with an explicit JSON schema:\n- `limit`: required integer, range 1..2\n- `cursor`: optional string\n- `additionalProperties: false`\n\n**`callTool(name, args)`** — validates and dispatches:\n\n1. **Unknown tool** → throws `Error` with `code: -32601` (\"Unknown tool\").\n2. **Non-object args** → throws with `code: -32602`.\n3. **Unknown arguments** (not `limit`/`cursor`) → throws with `code: -32602`.\n4. **Invalid `limit`** (missing, non-integer, or out of 1..2) → throws with `code: -32602`.\n5. **Cursor handling**:\n   - Optional — omitted starts at offset 0.\n   - A valid cursor is a base64url-encoded JSON `{o: offset}` with an in-range integer offset; it returns `{rows, next_cursor}` (next_cursor is `null` at end).\n   - **Invalid or stale cursor** (unparseable, wrong shape, out-of-range offset, or empty string) → throws `Error` with `code: 'INVALID_CURSOR'`. It never silently restarts at offset 0.\n\n### Verification\n\n- The provided test (`cursor` stale → `INVALID_CURSOR`) passes.\n- Manually verified all edge cases: unknown tool, missing/out-of-range `limit`, paging through both pages (offset 0→2→end with `next_cursor: null`), stale cursors, malformed cursors, out-of-bounds offset cursors, empty string cursors, and unknown extra arguments.\n- Full test suite (`node --test`) passes with 1 test passing, 0 failures.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-2/held-out/invalid-cursor-recovery/trace.jsonl",
+    "metrics": {
+      "api_calls": 12,
+      "api_latency_ms": 86202,
+      "tool_calls": 17,
+      "tool_call_retries": 0,
+      "prompt_tokens": 33780,
+      "completion_tokens": 4562,
+      "total_tokens": 38342,
+      "usage_observations": 12,
+      "elapsed_ms": 87174,
+      "steps": 12
+    }
+  },
+  "behavior": {
+    "steps": 17,
+    "loaded_skill": true,
+    "read_skill_reference": true,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete. Let me summarize what I built:\n\n## Summary\n\nI implemented the `invalid-cursor-recovery` MCP server in `server.mjs`. The server exposes a single `page` tool that pages over `rows.json`.\n\n### Key behaviors\n\n**`listTools()`** — returns the discoverable `page` tool with an explicit JSON schema:\n- `limit`: required integer, range 1..2\n- `cursor`: optional string\n- `additionalProperties: false`\n\n**`callTool(name, args)`** — validates and dispatches:\n\n1. **Unknown tool** → throws `Error` with `code: -32601` (\"Unknown tool\").\n2. **Non-object args** → throws with `code: -32602`.\n3. **Unknown arguments** (not `limit`/`cursor`) → throws with `code: -32602`.\n4. **Invalid `limit`** (missing, non-integer, or out of 1..2) → throws with `code: -32602`.\n5. **Cursor handling**:\n   - Optional — omitted starts at offset 0.\n   - A valid cursor is a base64url-encoded JSON `{o: offset}` with an in-range integer offset; it returns `{rows, next_cursor}` (next_cursor is `null` at end).\n   - **Invalid or stale cursor** (unparseable, wrong shape, out-of-range offset, or empty string) → throws `Error` with `code: 'INVALID_CURSOR'`. It never silently restarts at offset 0.\n\n### Verification\n\n- The provided test (`cursor` stale → `INVALID_CURSOR`) passes.\n- Manually verified all edge cases: unknown tool, missing/out-of-range `limit`, paging through both pages (offset 0→2→end with `next_cursor: null`), stale cursors, malformed cursors, out-of-bounds offset cursors, empty string cursors, and unknown extra arguments.\n- Full test suite (`node --test`) passes with 1 test passing, 0 failures.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-2/held-out/invalid-cursor-recovery/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-replication-v1/h0-expanded-rep1/rep-2/held-out/invalid-cursor-recovery/trace.jsonl"
+}
