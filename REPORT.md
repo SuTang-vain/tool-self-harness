@@ -693,3 +693,36 @@ The immediate work order changes accordingly:
 
 The active charter is `RESEARCH_CHARTER.md`; executable protocols and machine-readable registries
 are under `experiments/tool-side-harness/`.
+
+## 13. Tool-Side Qualification: Path B and Path C
+
+The redirected program selected two permissively licensed targets before evaluation:
+`obra/superpowers/using-git-worktrees` for Path B and
+`github/awesome-copilot/security-review` for Path C. Both 4+2 fixture suites passed the authoring
+check: untouched inputs fail and external reference outputs pass.
+
+The Security Review diagnostic stopped after one repeat. No-skill, minimal, and official-full all
+scored 5/6; the only failure was a category-name alias rather than a missed vulnerability. The
+full skill read three deep references and used far more tokens without changing verifier outcomes,
+so the current suite is near-ceiling and not qualified for formal Self-Harness work.
+
+The Git Worktrees suite required two transparent verifier revisions: v1 confused a shell wrapper's
+exit code with the inner test result, and v2 accepted only the literal command `npm test`. Neither
+version was pooled into the final analysis. In preregistered v3, the three-repeat result was:
+
+| Variant | Held-in | Reliable held-in | Held-out | Reliable held-out |
+|---|---:|---:|---:|---:|
+| no-skill | 9/12 | 3/4 | 3/6 | 1/2 |
+| minimal | 9/12 | 3/4 | 4/6 | 1/2 |
+| official-full | 12/12 | 4/4 | 3/6 | 1/2 |
+
+Official-full gains reliable `default-hidden` without losing a reliable task or decreasing either
+aggregate, so the static reliable gate accepts it relative to no-skill. The exact paired sign test
+has three official-full wins and zero no-skill wins (two-sided p=0.25); the small pilot supports a
+local benchmark-sensitive Path-B effect, not a taxonomy-level claim.
+
+The minimal variant is frozen as `h0` for evolution. It has the same reliable task sets as
+no-skill, a stable 0/3 held-in failure on `default-hidden`, and substantially less context than the
+full skill. In all three failures it created the correct worktree and ran tests but used
+`.git/info/exclude` instead of committing `.worktrees/` to `.gitignore`. Round-1 proposal evidence
+contains only this held-in mechanism; held-out results and official-full content remain hidden.
