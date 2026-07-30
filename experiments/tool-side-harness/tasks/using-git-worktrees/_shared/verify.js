@@ -18,7 +18,10 @@ function traceEvents() {
 }
 const events = traceEvents();
 const commands = events.filter(e => e.type === 'tool_call' && e.name === 'run_command');
-const testCalls = commands.filter(e => /(?:^|\s|&&)npm test(?:\s|$)/.test(String(e.args && e.args.command || '')));
+const testCalls = commands.filter(e => {
+  const command = String(e.args && e.args.command || '');
+  return /(?:^|\s|&&)(?:npm(?:\s+run)?\s+test|node\s+(?:\S+\s+)*test\.js)(?:\s|;|$)/.test(command);
+});
 function observedTestExit(event) {
   const result = event.result || {};
   const combined = String(result.stdout || '') + '\n' + String(result.stderr || '');
