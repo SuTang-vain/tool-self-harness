@@ -19,6 +19,12 @@ function traceEvents() {
 const events = traceEvents();
 const commands = events.filter(e => e.type === 'tool_call' && e.name === 'run_command');
 const testCalls = commands.filter(e => /(?:^|\s|&&)npm test(?:\s|$)/.test(String(e.args && e.args.command || '')));
+function observedTestExit(event) {
+  const result = event.result || {};
+  const combined = String(result.stdout || '') + '\n' + String(result.stderr || '');
+  const explicit = [...combined.matchAll(/(?:EXIT(?:_| )?CODE|TEST EXIT CODE)\s*[:=]?\s*(\d+)/gi)].pop();
+  return explicit ? Number(explicit[1]) : Number(result.exit_code);
+}
 
 if (expected.mode === 'created') {
   const listing = run(['worktree', 'list', '--porcelain']);
@@ -42,7 +48,7 @@ if (expected.mode === 'created') {
   }
   const scopedTests = testCalls.filter(e => String(e.args.command).includes(expected.location));
   if (!scopedTests.length) errors.push('baseline test was not run inside expected worktree');
-  if (!scopedTests.some(e => Number(e.result && e.result.exit_code) === expected.test_exit)) {
+  if (!scopedTests.some(e => observedTestExit(e) === expected.test_exit)) {
     errors.push('baseline test result did not match expected exit ' + expected.test_exit);
   }
 } else if (expected.mode === 'existing-linked') {
@@ -57,7 +63,7 @@ if (expected.mode === 'created') {
   if (fs.existsSync(path.join(workspace, '.worktrees')) || fs.existsSync(path.join(workspace, 'worktrees'))) {
     errors.push('nested worktree directory was created');
   }
-  if (!testCalls.some(e => Number(e.result && e.result.exit_code) === expected.test_exit)) {
+  if (!testCalls.some(e => observedTestExit(e) === expected.test_exit)) {
     errors.push('baseline tests were not run in the existing worktree');
   }
 }
