@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('clients',async()=>{await callTool('open_client',{client_id:'a'});await callTool('open_client',{client_id:'b'});await callTool('client_put',{client_id:'a',key:'k',value:'v'});await assert.rejects(()=>callTool('client_get',{client_id:'b',key:'k'}))});

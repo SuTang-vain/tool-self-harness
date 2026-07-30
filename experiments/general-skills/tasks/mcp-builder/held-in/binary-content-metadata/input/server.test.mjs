@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('asset',async()=>{const r=await callTool('download_asset',{asset_id:'a1'});assert.equal(r.content[0].type,'resource')});

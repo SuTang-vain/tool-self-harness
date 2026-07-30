@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('timeout',async()=>{await assert.rejects(()=>callTool('slow_operation',{request_id:'r2',delay_ms:51}),e=>e.code==='TIMEOUT')});

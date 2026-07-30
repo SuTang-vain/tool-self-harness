@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('cancel',async()=>{await callTool('start_job',{job_id:'j1'});assert.match((await callTool('cancel_job',{job_id:'j1'})).content[0].text,/cancelled/)});

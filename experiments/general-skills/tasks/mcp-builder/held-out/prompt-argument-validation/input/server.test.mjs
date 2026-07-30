@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {getPrompt} from './server.mjs';test('prompt args',async()=>{assert.equal((await getPrompt('deploy_notice',{service:'api',version:'1'})).messages.length,2)});

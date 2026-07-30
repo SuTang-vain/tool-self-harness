@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {getPrompt} from './server.mjs';test('prompt',async()=>{assert.match((await getPrompt('summarize',{topic:'MCP'})).messages[0].content.text,/MCP/)});

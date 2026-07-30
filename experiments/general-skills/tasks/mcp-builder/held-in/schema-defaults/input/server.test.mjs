@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {listTools,callTool} from './server.mjs';test('defaults',async()=>{assert.equal((await listTools())[0].inputSchema.properties.limit.default,2);assert.ok(JSON.parse((await callTool('search_records',{query:'a'})).content[0].text).records.length<=2)});

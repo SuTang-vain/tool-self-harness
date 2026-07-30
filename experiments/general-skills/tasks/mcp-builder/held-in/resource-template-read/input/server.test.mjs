@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {listResources,readResource} from './server.mjs';test('resource',async()=>{assert.equal((await listResources()).resourceTemplates[0].uriTemplate,'users/{user_id}/profile');assert.equal((await readResource('users/u1/profile')).contents[0].text,'Ada Lovelace')});

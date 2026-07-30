@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('page',async()=>{const r=JSON.parse((await callTool('audit_page',{limit:2})).content[0].text);assert.equal(r.records.length,2);assert.ok(r.next_cursor)});

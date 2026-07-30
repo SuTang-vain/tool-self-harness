@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('progress',async()=>{const v=[];await callTool('run_with_progress',{steps:2},{onProgress:x=>v.push(x)});assert.deepEqual(v,[0,0.5,1])});

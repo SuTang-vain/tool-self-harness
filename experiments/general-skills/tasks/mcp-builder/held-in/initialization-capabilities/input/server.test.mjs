@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {getCapabilities,listTools} from './server.mjs';test('capabilities',async()=>{assert.equal((await getCapabilities()).tools.listChanged,false);assert.equal((await listTools())[0].name,'health_check')});

@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('cursor',async()=>{await assert.rejects(()=>callTool('page',{limit:2,cursor:'stale'}),e=>e.code==='INVALID_CURSOR')});

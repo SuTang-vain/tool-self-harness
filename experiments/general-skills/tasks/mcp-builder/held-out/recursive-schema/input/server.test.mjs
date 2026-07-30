@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('tree',async()=>{assert.equal((await callTool('tree_sum',{tree:{value:2,children:[{value:3}]}})).content[0].text,'5')});

@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('idempotent',async()=>{const a=JSON.parse((await callTool('charge',{request_id:'r1',cents:100})).content[0].text);const b=JSON.parse((await callTool('charge',{request_id:'r1',cents:100})).content[0].text);assert.deepEqual(a,b)});

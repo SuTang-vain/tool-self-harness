@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {listTools,callTool} from './server.mjs';test('format',async()=>{assert.equal((await callTool('format_value',{value:'abc',kind:'text'})).content[0].text,'ABC');const [t]=await listTools();assert.deepEqual(t.inputSchema.properties.kind.enum,['text','integer'])});

@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('shared',async()=>{const a=JSON.parse((await callTool('item_create',{name:'a'})).content[0].text);await callTool('item_update',{item_id:a.item_id,tag:'y'});assert.equal(JSON.parse((await callTool('item_get',{item_id:a.item_id})).content[0].text).tag,'y')});

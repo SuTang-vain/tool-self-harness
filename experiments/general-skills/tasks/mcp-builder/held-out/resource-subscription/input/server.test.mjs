@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {subscribeResource,unsubscribeResource} from './server.mjs';test('subscription',async()=>{await subscribeResource('res://a');assert.equal((await unsubscribeResource('res://a')).unsubscribed,true)});

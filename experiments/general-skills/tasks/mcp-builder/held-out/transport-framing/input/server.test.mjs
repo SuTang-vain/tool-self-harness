@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('echo',async()=>{assert.equal((await callTool('echo',{message:'x'})).content[0].text,'x')});

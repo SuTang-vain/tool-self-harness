@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('codes',async()=>{await assert.rejects(()=>callTool('lookup_invoice',{}),e=>e.code==='INVALID_ARGUMENT')});

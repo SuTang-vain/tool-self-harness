@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('log',async()=>{assert.equal((await callTool('emit_log',{message:'x',level:'info'})).content[0].text,'logged')});

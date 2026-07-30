@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('partial',async()=>{const r=JSON.parse((await callTool('batch_lookup',{ids:['a','x']})).content[0].text);assert.deepEqual(r.results.map(x=>x.ok),[true,false])});

@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {callTool} from './server.mjs';test('isolation',async()=>{await callTool('begin_session',{session_id:'s1'});await callTool('begin_session',{session_id:'s2'});await callTool('put_value',{session_id:'s1',key:'k',value:'one'});await assert.rejects(()=>callTool('get_value',{session_id:'s2',key:'k'}))});

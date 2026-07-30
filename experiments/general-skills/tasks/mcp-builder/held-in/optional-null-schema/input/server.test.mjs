@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {listTools,callTool} from './server.mjs';test('nullable',async()=>{assert.equal(JSON.parse((await callTool('user_note',{user_id:'u1',note:null})).content[0].text).note,null);const [t]=await listTools();assert.ok(t.inputSchema.properties.note.anyOf)});
