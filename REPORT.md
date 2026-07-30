@@ -627,9 +627,9 @@ reliable-task regression. This is an efficiency movement, not an overall improve
 family-level audit and all metric summaries are stored in the replication directory.
 
 The prior expanded run and this independent replication both reject the same lineage, although
-the exact regression tasks vary. `concurrent-state-isolation` and `prompt-template-render` are
-recurring regression signals and will be investigated with a preregistered ablation before any
-new proposal or expanded cross-model run.
+the exact regression tasks vary. `concurrent-state-isolation` and `prompt-template-render` were
+therefore selected for the targeted ablation below before any new proposal or expanded cross-model
+run.
 
 ## 11. Targeted Edit Ablation
 

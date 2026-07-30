@@ -173,6 +173,8 @@ cannot compensate for a reliable-task regression. The active charter is
 - ⚠ Systematic-debugging pilot was outcome-flat across no/minimal/full skill (14/16 held-in, 6/8 held-out); benchmark revision is required before Self-Harness proposals.
 - ⚠ MCP `h1-stable` is model-specific: reliable for GLM on the compact suite, rejected for MiniMax/DeepSeek, and rejected on the expanded GLM suite.
 - ✅ Research direction re-anchored around layered correctness, reliability, efficiency, and human-utility objectives.
+- ✅ Independent expanded GLM replication completed: h1 again rejected on held-out/reliable non-regression.
+- ✅ Targeted four-task edit ablation completed; no alternative edit was non-regressive on all diagnostic tasks.
 - ⚠ MCP tool support not yet implemented (skill-only).
 - ⚠ references/scripts not yet editable surfaces (SKILL.md only).
 
