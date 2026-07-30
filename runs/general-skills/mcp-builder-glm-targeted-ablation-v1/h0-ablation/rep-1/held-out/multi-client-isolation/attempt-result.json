@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "multi-client-isolation",
+  "repeat": 1,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 49.183042 | PASS multi-client-isolation",
+  "runner": {
+    "steps": 7,
+    "final_answer": "The MCP server is implemented and all tests pass. Here's a summary of what I did:\n\n## Summary\n\nI implemented `server.mjs` with three tools backed by per-client isolated key/value maps:\n\n### Implementation details\n\n- **`open_client({client_id})`** — registers a client_id with its own fresh `Map`. Requires a non-empty `client_id`. Re-opening an existing client is idempotent (preserves its data).\n- **`client_put({client_id, key, value})`** — requires non-empty `client_id`, `key`, `value`; requires the client to be known; stores `value` in that client's map.\n- **`client_get({client_id, key})`** — requires non-empty `client_id`, `key`; requires the client to be known; throws `unknown key` if the key isn't present in that client's map.\n\n### Requirements met\n\n- **Isolation**: data lives in `clients.get(client_id)`, so a value written by client `a` cannot be read by client `b` (verified: client `b` getting `a`'s key is rejected).\n- **Non-empty strings**: `client_id`, `key`, and `value` are all validated to be non-empty strings.\n- **Reject unknown clients**: any `client_put`/`client_get` against an unopened `client_id` throws `unknown client`.\n- **Reject unknown tools**: the `default` branch of `callTool` throws `unknown tool`.\n- **Discoverable tools**: `listTools()` returns the three tools with explicit JSON-Schema `inputSchema` definitions.\n- **Clean protocol output**: tool results use the `{content:[{type:'text',text}]}` shape consistent with MCP; the existing `protocol.mjs` dispatcher was left unchanged.\n\nThe full test suite (`npm test`) passes, and additional manual checks for all rejection paths and isolation behavior also pass.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-1/held-out/multi-client-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 7,
+      "api_latency_ms": 88923,
+      "tool_calls": 11,
+      "tool_call_retries": 0,
+      "prompt_tokens": 14566,
+      "completion_tokens": 5746,
+      "total_tokens": 20312,
+      "usage_observations": 7,
+      "elapsed_ms": 89910,
+      "steps": 7
+    }
+  },
+  "behavior": {
+    "steps": 11,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The MCP server is implemented and all tests pass. Here's a summary of what I did:\n\n## Summary\n\nI implemented `server.mjs` with three tools backed by per-client isolated key/value maps:\n\n### Implementation details\n\n- **`open_client({client_id})`** — registers a client_id with its own fresh `Map`. Requires a non-empty `client_id`. Re-opening an existing client is idempotent (preserves its data).\n- **`client_put({client_id, key, value})`** — requires non-empty `client_id`, `key`, `value`; requires the client to be known; stores `value` in that client's map.\n- **`client_get({client_id, key})`** — requires non-empty `client_id`, `key`; requires the client to be known; throws `unknown key` if the key isn't present in that client's map.\n\n### Requirements met\n\n- **Isolation**: data lives in `clients.get(client_id)`, so a value written by client `a` cannot be read by client `b` (verified: client `b` getting `a`'s key is rejected).\n- **Non-empty strings**: `client_id`, `key`, and `value` are all validated to be non-empty strings.\n- **Reject unknown clients**: any `client_put`/`client_get` against an unopened `client_id` throws `unknown client`.\n- **Reject unknown tools**: the `default` branch of `callTool` throws `unknown tool`.\n- **Discoverable tools**: `listTools()` returns the three tools with explicit JSON-Schema `inputSchema` definitions.\n- **Clean protocol output**: tool results use the `{content:[{type:'text',text}]}` shape consistent with MCP; the existing `protocol.mjs` dispatcher was left unchanged.\n\nThe full test suite (`npm test`) passes, and additional manual checks for all rejection paths and isolation behavior also pass.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-1/held-out/multi-client-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-1/held-out/multi-client-isolation/trace.jsonl"
+}

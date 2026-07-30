@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "multi-client-isolation",
+  "repeat": 3,
+  "pass": false,
+  "verify_exit": 1,
+  "verify_msg": "TypeError: Cannot read properties of undefined (reading '0') |     at file:///Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-3/held-out/multi-client-isolation/workspace/[eval1]:4:231 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |  | Node.js v22.23.0",
+  "runner": {
+    "steps": 7,
+    "final_answer": "The implementation is complete and the test suite passes. Here's a summary of what I built in `server.mjs`:\n\n## Implementation\n\n**State:** A single `clients` Map keyed by `client_id`, where each entry holds an independent `Map(key, value)`. This guarantees per-client isolation — a value written by client `a` lives only in `a`'s map and is invisible to client `b`.\n\n**`listTools()`** advertises three discoverable tools, each with an explicit JSON input schema:\n- `open_client` — requires `client_id`\n- `client_put` — requires `client_id`, `key`, `value`\n- `client_get` — requires `client_id`, `key`\n\n**`callTool(name, args)`** validates inputs and enforces the rules:\n- **Non-empty strings:** Every `client_id`, `key`, and `value` must be a non-empty string, otherwise throws `-32602` (invalid params).\n- **Unknown clients:** `client_put`/`client_get` reject any `client_id` not previously opened via `open_client`.\n- **Unknown tools:** Any tool name outside the three known ones throws `-32601` (method not found).\n- **Isolation:** `open_client` creates a fresh independent map per id; reads/writes are scoped to that client's map only.\n\n## Verification\n- The provided `server.test.mjs` passes (client `a`'s key is rejected when read by client `b`).\n- Additional manual checks confirm: unknown clients are rejected, unknown tools are rejected, and empty `client_id`/`key`/`value` are all rejected.\n- Full test suite: `node --test` → **1 pass, 0 fail**.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-3/held-out/multi-client-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 7,
+      "api_latency_ms": 39381,
+      "tool_calls": 11,
+      "tool_call_retries": 0,
+      "prompt_tokens": 15511,
+      "completion_tokens": 2570,
+      "total_tokens": 18081,
+      "usage_observations": 7,
+      "elapsed_ms": 40480,
+      "steps": 7
+    }
+  },
+  "behavior": {
+    "steps": 11,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete and the test suite passes. Here's a summary of what I built in `server.mjs`:\n\n## Implementation\n\n**State:** A single `clients` Map keyed by `client_id`, where each entry holds an independent `Map(key, value)`. This guarantees per-client isolation — a value written by client `a` lives only in `a`'s map and is invisible to client `b`.\n\n**`listTools()`** advertises three discoverable tools, each with an explicit JSON input schema:\n- `open_client` — requires `client_id`\n- `client_put` — requires `client_id`, `key`, `value`\n- `client_get` — requires `client_id`, `key`\n\n**`callTool(name, args)`** validates inputs and enforces the rules:\n- **Non-empty strings:** Every `client_id`, `key`, and `value` must be a non-empty string, otherwise throws `-32602` (invalid params).\n- **Unknown clients:** `client_put`/`client_get` reject any `client_id` not previously opened via `open_client`.\n- **Unknown tools:** Any tool name outside the three known ones throws `-32601` (method not found).\n- **Isolation:** `open_client` creates a fresh independent map per id; reads/writes are scoped to that client's map only.\n\n## Verification\n- The provided `server.test.mjs` passes (client `a`'s key is rejected when read by client `b`).\n- Additional manual checks confirm: unknown clients are rejected, unknown tools are rejected, and empty `client_id`/`key`/`value` are all rejected.\n- Full test suite: `node --test` → **1 pass, 0 fail**.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-3/held-out/multi-client-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-3/held-out/multi-client-isolation/trace.jsonl"
+}

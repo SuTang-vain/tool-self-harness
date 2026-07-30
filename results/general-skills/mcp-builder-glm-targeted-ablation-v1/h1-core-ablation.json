@@ -1,0 +1,856 @@
+{
+  "run_id": "mcp-builder-glm-targeted-ablation-v1",
+  "variant": "h1-core-ablation",
+  "model_config": "/Users/tangyaoyue/DEV/tool-self-harness/config.yaml",
+  "skill_repo": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/general-skills/lineages/mcp-builder/stable/h1",
+  "suite": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/general-skills/tasks/mcp-builder",
+  "repeats": 5,
+  "task_order_seed": 20260731,
+  "task_filter": [
+    "cancellation-cleanup",
+    "concurrent-state-isolation",
+    "multi-client-isolation",
+    "prompt-template-render"
+  ],
+  "held_in": {
+    "passes": 12,
+    "attempts": 15,
+    "pass_rate": 0.8,
+    "stable_tasks": [
+      "cancellation-cleanup"
+    ],
+    "stable_task_count": 1,
+    "task_count": 3
+  },
+  "held_out": {
+    "passes": 5,
+    "attempts": 5,
+    "pass_rate": 1,
+    "stable_tasks": [
+      "multi-client-isolation"
+    ],
+    "stable_task_count": 1,
+    "task_count": 1
+  },
+  "metrics": {
+    "attempts": 20,
+    "usage_coverage": 1,
+    "api_calls": 170,
+    "api_latency_ms": 1140024,
+    "tool_calls": 232,
+    "tool_call_retries": 0,
+    "prompt_tokens": 386839,
+    "completion_tokens": 69438,
+    "total_tokens": 456277,
+    "elapsed_ms": 1158048,
+    "mean_tokens_per_attempt": 22813.85,
+    "mean_tool_calls_per_attempt": 11.6,
+    "mean_elapsed_ms_per_attempt": 57902.4,
+    "tokens_per_successful_attempt": 26839.823529411766,
+    "tokens_per_reliable_task": 228138.5
+  },
+  "behavior": {
+    "loaded_skill_rate": 1,
+    "test_before_edit_rate": 0.15,
+    "test_after_edit_rate": 1
+  },
+  "per_task": [
+    {
+      "split": "held-in",
+      "task_id": "cancellation-cleanup",
+      "passes": 5,
+      "attempts": 5,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "cancellation-cleanup",
+          "repeat": 3,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 60.697125 | PASS cancellation-cleanup",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The implementation is complete and the test suite passes. Here's a summary of what I built:\n\n## Cancellation-Cleanup MCP Server\n\nI implemented `start_job` and `cancel_job` tools in `server.mjs`:\n\n**State management:** An in-memory `Map` tracks each job's status (`running` → `cancelled`). No timers are used, so nothing is left running.\n\n**`start_job`:**\n- Requires a non-empty `job_id` string (rejects otherwise with a `-32602` error).\n- Sets the job to `running` and returns a \"running\" status.\n- Rejects duplicate active jobs (a job already in `running` state) with a clear error.\n\n**`cancel_job`:**\n- Requires a non-empty `job_id` string.\n- Rejects missing jobs (unknown id) with a \"not found\" error.\n- Rejects repeated cancellation (job already `cancelled`) with an \"already cancelled\" error.\n- Changes an active (`running`) job to `cancelled` and returns a \"cancelled\" status.\n\n**Schemas:** Both tool `inputSchema` definitions include `type`, `properties`, `required`, and `additionalProperties: false` per the skill's requirements.\n\n**Verification:**\n- The provided test (`cancel`) passes.\n- Manual checks confirmed: duplicate start rejection, missing-job rejection on cancel, repeated-cancellation rejection, and invalid-argument rejection all behave correctly.\n\nThe change is minimal — only `server.mjs` was modified, replacing the two stub exports with the full implementation.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/cancellation-cleanup/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 45107,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 13667,
+              "completion_tokens": 2706,
+              "total_tokens": 16373,
+              "usage_observations": 7,
+              "elapsed_ms": 45817,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The implementation is complete and the test suite passes. Here's a summary of what I built:\n\n## Cancellation-Cleanup MCP Server\n\nI implemented `start_job` and `cancel_job` tools in `server.mjs`:\n\n**State management:** An in-memory `Map` tracks each job's status (`running` → `cancelled`). No timers are used, so nothing is left running.\n\n**`start_job`:**\n- Requires a non-empty `job_id` string (rejects otherwise with a `-32602` error).\n- Sets the job to `running` and returns a \"running\" status.\n- Rejects duplicate active jobs (a job already in `running` state) with a clear error.\n\n**`cancel_job`:**\n- Requires a non-empty `job_id` string.\n- Rejects missing jobs (unknown id) with a \"not found\" error.\n- Rejects repeated cancellation (job already `cancelled`) with an \"already cancelled\" error.\n- Changes an active (`running`) job to `cancelled` and returns a \"cancelled\" status.\n\n**Schemas:** Both tool `inputSchema` definitions include `type`, `properties`, `required`, and `additionalProperties: false` per the skill's requirements.\n\n**Verification:**\n- The provided test (`cancel`) passes.\n- Manual checks confirmed: duplicate start rejection, missing-job rejection on cancel, repeated-cancellation rejection, and invalid-argument rejection all behave correctly.\n\nThe change is minimal — only `server.mjs` was modified, replacing the two stub exports with the full implementation.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/cancellation-cleanup/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/cancellation-cleanup/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "cancellation-cleanup",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 59.285459 | PASS cancellation-cleanup",
+          "runner": {
+            "steps": 8,
+            "final_answer": "Done. Here's a summary of the implementation.\n\n## What was built\n\nI implemented the `cancellation-cleanup` MCP server in `server.mjs` with two tools:\n\n### `start_job`\n- Requires `job_id` (non-empty string).\n- Sets job state to `running` and returns a `running` status message.\n- **Rejects duplicate active jobs** — if a job with the same id is already `running`, throws an error.\n\n### `cancel_job`\n- Requires `job_id` (non-empty string).\n- Changes an active (`running`) job to `cancelled` and returns a `cancelled` status message.\n- **Rejects missing jobs** — throws an error if the job id is unknown.\n- **Rejects repeated cancellation** — throws an error if the job is already `cancelled`.\n\n### Implementation notes\n- State is kept in an in-memory `Map` (no persistence, fresh per process).\n- **No timers are used**, so nothing keeps the Node event loop alive — the process exits cleanly.\n- Both tools expose an `inputSchema` with `type`, `properties`, `required`, and `additionalProperties: false`, as required by the skill.\n- Errors carry a `-32602` code so the protocol layer returns a clean JSON-RPC error.\n\n## Verification\n- The provided test (`cancel`) passes.\n- Manually verified edge cases: duplicate start is rejected, cancelling a missing job is rejected, and repeated cancellation is rejected.\n- Full suite (`npm test`) passes: 1 pass / 0 fail.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-in/cancellation-cleanup/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 35432,
+              "tool_calls": 11,
+              "tool_call_retries": 0,
+              "prompt_tokens": 16468,
+              "completion_tokens": 1613,
+              "total_tokens": 18081,
+              "usage_observations": 8,
+              "elapsed_ms": 36834,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "Done. Here's a summary of the implementation.\n\n## What was built\n\nI implemented the `cancellation-cleanup` MCP server in `server.mjs` with two tools:\n\n### `start_job`\n- Requires `job_id` (non-empty string).\n- Sets job state to `running` and returns a `running` status message.\n- **Rejects duplicate active jobs** — if a job with the same id is already `running`, throws an error.\n\n### `cancel_job`\n- Requires `job_id` (non-empty string).\n- Changes an active (`running`) job to `cancelled` and returns a `cancelled` status message.\n- **Rejects missing jobs** — throws an error if the job id is unknown.\n- **Rejects repeated cancellation** — throws an error if the job is already `cancelled`.\n\n### Implementation notes\n- State is kept in an in-memory `Map` (no persistence, fresh per process).\n- **No timers are used**, so nothing keeps the Node event loop alive — the process exits cleanly.\n- Both tools expose an `inputSchema` with `type`, `properties`, `required`, and `additionalProperties: false`, as required by the skill.\n- Errors carry a `-32602` code so the protocol layer returns a clean JSON-RPC error.\n\n## Verification\n- The provided test (`cancel`) passes.\n- Manually verified edge cases: duplicate start is rejected, cancelling a missing job is rejected, and repeated cancellation is rejected.\n- Full suite (`npm test`) passes: 1 pass / 0 fail.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-in/cancellation-cleanup/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-in/cancellation-cleanup/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "cancellation-cleanup",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 53.024875 | PASS cancellation-cleanup",
+          "runner": {
+            "steps": 7,
+            "final_answer": "## Summary\n\nI implemented the cancellation-cleanup MCP server in `server.mjs`. The implementation:\n\n### Tools (via `listTools`)\n- **`start_job`** — requires `job_id`, returns a `running` status, and rejects duplicate active jobs.\n- **`cancel_job`** — requires `job_id`, changes an active job to `cancelled`, and rejects missing jobs or repeated cancellation.\n\nBoth tool `inputSchema`s include `\"additionalProperties\": false` alongside `type`, `properties`, and `required`, per the skill's requirements.\n\n### State management (`callTool` -> `startJob`/`cancelJob`)\n- **In-memory state** — a module-level `Map` holds only active (`running`) jobs keyed by `job_id`. No timers or background handles are ever created, so nothing can be left running.\n- **`start_job`** validates the `job_id`, rejects if the job is already active, otherwise records it as `running` and returns the status.\n- **`cancel_job`** validates the `job_id`, rejects if the job isn't currently active (missing or already cancelled), otherwise deletes it from the map and returns `cancelled`. Deleting the entry both marks the job as no-longer-active and means a subsequent restart is allowed.\n- **Errors** throw `Error` objects carrying a JSON-RPC `code` (e.g. `-32602` for invalid params, `-32601` for unknown tools), which the existing `protocol.mjs` loop surfaces as proper error responses.\n\n### Verification\n- The provided test suite passes (`node --test` → 1 pass, 0 fail).\n- Additional edge-case checks confirm: duplicate active jobs are rejected, repeated cancellation is rejected, cancelling a missing job is rejected, unknown tools are rejected, and a job can be restarted after cancellation.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-in/cancellation-cleanup/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 27973,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 13499,
+              "completion_tokens": 1530,
+              "total_tokens": 15029,
+              "usage_observations": 7,
+              "elapsed_ms": 28425,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "## Summary\n\nI implemented the cancellation-cleanup MCP server in `server.mjs`. The implementation:\n\n### Tools (via `listTools`)\n- **`start_job`** — requires `job_id`, returns a `running` status, and rejects duplicate active jobs.\n- **`cancel_job`** — requires `job_id`, changes an active job to `cancelled`, and rejects missing jobs or repeated cancellation.\n\nBoth tool `inputSchema`s include `\"additionalProperties\": false` alongside `type`, `properties`, and `required`, per the skill's requirements.\n\n### State management (`callTool` -> `startJob`/`cancelJob`)\n- **In-memory state** — a module-level `Map` holds only active (`running`) jobs keyed by `job_id`. No timers or background handles are ever created, so nothing can be left running.\n- **`start_job`** validates the `job_id`, rejects if the job is already active, otherwise records it as `running` and returns the status.\n- **`cancel_job`** validates the `job_id`, rejects if the job isn't currently active (missing or already cancelled), otherwise deletes it from the map and returns `cancelled`. Deleting the entry both marks the job as no-longer-active and means a subsequent restart is allowed.\n- **Errors** throw `Error` objects carrying a JSON-RPC `code` (e.g. `-32602` for invalid params, `-32601` for unknown tools), which the existing `protocol.mjs` loop surfaces as proper error responses.\n\n### Verification\n- The provided test suite passes (`node --test` → 1 pass, 0 fail).\n- Additional edge-case checks confirm: duplicate active jobs are rejected, repeated cancellation is rejected, cancelling a missing job is rejected, unknown tools are rejected, and a job can be restarted after cancellation.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-in/cancellation-cleanup/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-in/cancellation-cleanup/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "cancellation-cleanup",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 52.16175 | PASS cancellation-cleanup",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Done. The cancellation-cleanup MCP server is implemented and all tests pass.\n\n## Summary\n\nI replaced the stub `server.mjs` with a working implementation:\n\n**State** — A single in-memory `Map` (`job_id` → `'running' | 'cancelled'`). No timers or intervals are created, so nothing pins the event loop; the process exits naturally.\n\n**`start_job(job_id)`** — Validates `job_id` (non-empty string), sets the job to `running`, and returns `job <id> running`. Throws an error (rejected) if a job with that id is already `running`.\n\n**`cancel_job(job_id)`** — Validates `job_id`, then:\n- rejects **missing** jobs (`job not found`),\n- rejects **repeated cancellation** of an already-cancelled job (`job already cancelled`),\n- otherwise transitions the active job to `cancelled` and returns `job <id> cancelled`.\n\n**`listTools()`** — Returns `start_job` and `cancel_job` with explicit `inputSchema` objects that each include `type`, `properties`, `required`, and the mandated `additionalProperties: false`.\n\n**`callTool(name, args)`** — Dispatches to the handlers, throwing a JSON-RPC-error-shaped error (with `code`) for unknown tools, which `protocol.mjs` already converts into a clean `error` response.\n\n**Errors** are thrown as `Error` objects carrying a numeric `code` (default `-32602`), matching the convention in `protocol.mjs`, so failures surface cleanly both to direct callers and over the protocol.\n\nThe full test suite passes (`✔ cancel`), and I verified all the required edge cases manually: duplicate active-job rejection, missing-job rejection, repeated-cancellation rejection, invalid `job_id` rejection, schema `additionalProperties: false`, and clean process exit with no lingering timers.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-in/cancellation-cleanup/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 129530,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 15024,
+              "completion_tokens": 8061,
+              "total_tokens": 23085,
+              "usage_observations": 7,
+              "elapsed_ms": 130531,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "Done. The cancellation-cleanup MCP server is implemented and all tests pass.\n\n## Summary\n\nI replaced the stub `server.mjs` with a working implementation:\n\n**State** — A single in-memory `Map` (`job_id` → `'running' | 'cancelled'`). No timers or intervals are created, so nothing pins the event loop; the process exits naturally.\n\n**`start_job(job_id)`** — Validates `job_id` (non-empty string), sets the job to `running`, and returns `job <id> running`. Throws an error (rejected) if a job with that id is already `running`.\n\n**`cancel_job(job_id)`** — Validates `job_id`, then:\n- rejects **missing** jobs (`job not found`),\n- rejects **repeated cancellation** of an already-cancelled job (`job already cancelled`),\n- otherwise transitions the active job to `cancelled` and returns `job <id> cancelled`.\n\n**`listTools()`** — Returns `start_job` and `cancel_job` with explicit `inputSchema` objects that each include `type`, `properties`, `required`, and the mandated `additionalProperties: false`.\n\n**`callTool(name, args)`** — Dispatches to the handlers, throwing a JSON-RPC-error-shaped error (with `code`) for unknown tools, which `protocol.mjs` already converts into a clean `error` response.\n\n**Errors** are thrown as `Error` objects carrying a numeric `code` (default `-32602`), matching the convention in `protocol.mjs`, so failures surface cleanly both to direct callers and over the protocol.\n\nThe full test suite passes (`✔ cancel`), and I verified all the required edge cases manually: duplicate active-job rejection, missing-job rejection, repeated-cancellation rejection, invalid `job_id` rejection, schema `additionalProperties: false`, and clean process exit with no lingering timers.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-in/cancellation-cleanup/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-in/cancellation-cleanup/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "cancellation-cleanup",
+          "repeat": 4,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 53.801958 | PASS cancellation-cleanup",
+          "runner": {
+            "steps": 9,
+            "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Summary\n\nI implemented a cancellation-cleanup MCP server in `server.mjs` with two tools:\n\n### `start_job`\n- Requires `job_id` (validated as a non-empty string)\n- Returns `running` status on success\n- Rejects duplicate active jobs (if a job with that id is already `running`, throws an error)\n\n### `cancel_job`\n- Requires `job_id` (validated as a non-empty string)\n- Changes an active job to `cancelled`\n- Rejects missing jobs (job_id not in state)\n- Rejects repeated cancellation (job already `cancelled`)\n\n### Design choices\n- **In-memory state**: A single `Map` (`job_id` → `'running' | 'cancelled'`) holds all state.\n- **No timers**: Nothing is scheduled, so nothing is left running — satisfying the cleanup requirement.\n- **Validated inputs**: Each tool's `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` per the MCP builder skill.\n- **Clean errors**: Failures throw errors with `code: -32602` so the protocol layer (in `protocol.mjs`) returns proper JSON-RPC error responses.\n- **Output**: Both tools return MCP-format `{ content: [{ type: 'text', text: ... }] }` responses, matching what the test asserts.\n\nThe full test suite passes (1/1), and I verified all edge cases (duplicate start, missing-job cancel, repeated cancel, invalid args, unknown tool) behave correctly.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-in/cancellation-cleanup/trace.jsonl",
+            "metrics": {
+              "api_calls": 9,
+              "api_latency_ms": 41743,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 21087,
+              "completion_tokens": 1806,
+              "total_tokens": 22893,
+              "usage_observations": 9,
+              "elapsed_ms": 42770,
+              "steps": 9
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Summary\n\nI implemented a cancellation-cleanup MCP server in `server.mjs` with two tools:\n\n### `start_job`\n- Requires `job_id` (validated as a non-empty string)\n- Returns `running` status on success\n- Rejects duplicate active jobs (if a job with that id is already `running`, throws an error)\n\n### `cancel_job`\n- Requires `job_id` (validated as a non-empty string)\n- Changes an active job to `cancelled`\n- Rejects missing jobs (job_id not in state)\n- Rejects repeated cancellation (job already `cancelled`)\n\n### Design choices\n- **In-memory state**: A single `Map` (`job_id` → `'running' | 'cancelled'`) holds all state.\n- **No timers**: Nothing is scheduled, so nothing is left running — satisfying the cleanup requirement.\n- **Validated inputs**: Each tool's `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` per the MCP builder skill.\n- **Clean errors**: Failures throw errors with `code: -32602` so the protocol layer (in `protocol.mjs`) returns proper JSON-RPC error responses.\n- **Output**: Both tools return MCP-format `{ content: [{ type: 'text', text: ... }] }` responses, matching what the test asserts.\n\nThe full test suite passes (1/1), and I verified all edge cases (duplicate start, missing-job cancel, repeated cancel, invalid args, unknown tool) behave correctly.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-in/cancellation-cleanup/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-in/cancellation-cleanup/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "concurrent-state-isolation",
+      "passes": 4,
+      "attempts": 5,
+      "stable_pass": false,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "concurrent-state-isolation",
+          "repeat": 3,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 49.5305 | PASS concurrent-state-isolation",
+          "runner": {
+            "steps": 12,
+            "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Implementation Summary\n\nI implemented the `concurrent-state-isolation` MCP server in `server.mjs` with three tools:\n\n**`begin_session`** — creates (or re-uses) an isolated key-value store keyed by `session_id`. Requires a non-empty string `session_id`.\n\n**`put_value`** — stores a `value` under a `key` within a session's store. Requires non-empty string `session_id` and `key`, and a string `value`. Rejects if the session hasn't been begun.\n\n**`get_value`** — retrieves a value by `key` from a session's store. Requires non-empty string `session_id` and `key`. Rejects if the session is missing or the key doesn't exist in that session.\n\n### Key design points\n\n- **Session isolation**: Each `session_id` maps to its own `Map`. A write under `s1` is invisible to `s2`, so `get_value` on `s2` for a key only written under `s1` rejects (the test's core assertion).\n- **Explicit input schemas**: Every tool's `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` as required by the skill.\n- **Argument validation** (`validateArgs`): rejects extra/unknown arguments, missing required arguments, empty strings for `session_id`/`key`, and non-string `value`.\n- **Missing sessions**: `put_value`/`get_value` reject with an error if the `session_id` was never begun.\n- **Unknown tools**: `callTool` rejects with code `-32601` for tools not in the registry.\n- Errors carry JSON-RPC error codes (`-32602` for invalid params, `-32601` for unknown tool/method) so `protocol.mjs` returns proper error responses.\n\n### Test results\n- Official suite: `✔ isolation` — **1 pass, 0 fail**\n- Additional manual edge-case checks (unknown tool, missing session, missing/empty/extra/typed args, isolation both directions) — **all passed**.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/concurrent-state-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 12,
+              "api_latency_ms": 119770,
+              "tool_calls": 14,
+              "tool_call_retries": 0,
+              "prompt_tokens": 30304,
+              "completion_tokens": 7876,
+              "total_tokens": 38180,
+              "usage_observations": 12,
+              "elapsed_ms": 120590,
+              "steps": 12
+            }
+          },
+          "behavior": {
+            "steps": 14,
+            "loaded_skill": true,
+            "read_skill_reference": true,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Implementation Summary\n\nI implemented the `concurrent-state-isolation` MCP server in `server.mjs` with three tools:\n\n**`begin_session`** — creates (or re-uses) an isolated key-value store keyed by `session_id`. Requires a non-empty string `session_id`.\n\n**`put_value`** — stores a `value` under a `key` within a session's store. Requires non-empty string `session_id` and `key`, and a string `value`. Rejects if the session hasn't been begun.\n\n**`get_value`** — retrieves a value by `key` from a session's store. Requires non-empty string `session_id` and `key`. Rejects if the session is missing or the key doesn't exist in that session.\n\n### Key design points\n\n- **Session isolation**: Each `session_id` maps to its own `Map`. A write under `s1` is invisible to `s2`, so `get_value` on `s2` for a key only written under `s1` rejects (the test's core assertion).\n- **Explicit input schemas**: Every tool's `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` as required by the skill.\n- **Argument validation** (`validateArgs`): rejects extra/unknown arguments, missing required arguments, empty strings for `session_id`/`key`, and non-string `value`.\n- **Missing sessions**: `put_value`/`get_value` reject with an error if the `session_id` was never begun.\n- **Unknown tools**: `callTool` rejects with code `-32601` for tools not in the registry.\n- Errors carry JSON-RPC error codes (`-32602` for invalid params, `-32601` for unknown tool/method) so `protocol.mjs` returns proper error responses.\n\n### Test results\n- Official suite: `✔ isolation` — **1 pass, 0 fail**\n- Additional manual edge-case checks (unknown tool, missing session, missing/empty/extra/typed args, isolation both directions) — **all passed**.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/concurrent-state-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/concurrent-state-isolation/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "concurrent-state-isolation",
+          "repeat": 0,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "TypeError: Cannot read properties of undefined (reading '0') |     at file:///Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-in/concurrent-state-isolation/workspace/[eval1]:4:243 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |  | Node.js v22.23.0",
+          "runner": {
+            "steps": 9,
+            "final_answer": "All behaviors check out:\n\n- **Isolation**: writes in `s1` are not readable from `s2` (the held-in `isolation` test passes; cross-session reads reject).\n- **Validation**: non-empty string `session_id` and `key` enforced; `put_value` requires string `value`.\n- **Missing session / missing key**: rejected with clear `-32602` errors.\n- **Extra arguments**: rejected at runtime (e.g. `extra`), in addition to each tool's `inputSchema` declaring `\"additionalProperties\": false`.\n- **Unknown tools**: rejected with `-32601`.\n- **Schemas**: all three tools declare `type`, `properties`, `required`, and `additionalProperties:false`.\n\nFinal test run: `tests 1, pass 1, fail 0`.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-in/concurrent-state-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 9,
+              "api_latency_ms": 48977,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 20847,
+              "completion_tokens": 2739,
+              "total_tokens": 23586,
+              "usage_observations": 9,
+              "elapsed_ms": 49668,
+              "steps": 9
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "All behaviors check out:\n\n- **Isolation**: writes in `s1` are not readable from `s2` (the held-in `isolation` test passes; cross-session reads reject).\n- **Validation**: non-empty string `session_id` and `key` enforced; `put_value` requires string `value`.\n- **Missing session / missing key**: rejected with clear `-32602` errors.\n- **Extra arguments**: rejected at runtime (e.g. `extra`), in addition to each tool's `inputSchema` declaring `\"additionalProperties\": false`.\n- **Unknown tools**: rejected with `-32601`.\n- **Schemas**: all three tools declare `type`, `properties`, `required`, and `additionalProperties:false`.\n\nFinal test run: `tests 1, pass 1, fail 0`.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-in/concurrent-state-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-in/concurrent-state-isolation/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "concurrent-state-isolation",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 52.429875 | PASS concurrent-state-isolation",
+          "runner": {
+            "steps": 5,
+            "final_answer": "The test passes. Let me verify my implementation handles all the edge cases by reviewing the requirements once more:\n\n1. ✅ **Three tools**: `begin_session`, `put_value`, `get_value` defined in `listTools()`\n2. ✅ **Session isolation**: Each session has its own `Map`, so writes in `s1` cannot be read from `s2`\n3. ✅ **Non-empty string session_id and key**: validated with `typeof === 'string'` and `!== ''`\n4. ✅ **put requires string value**: validated (must be a string, can be empty since spec only says \"string\")\n5. ✅ **Reject missing sessions**: `put_value`/`get_value` throw \"session not found\" if session not begun\n6. ✅ **Reject invalid/extra arguments**: `validateArgs` checks for missing and unexpected args, plus `additionalProperties: false` in schemas\n7. ✅ **Reject unknown tools**: throws \"unknown tool\"\n\nThe single isolation test passes. The implementation correctly isolates state by session_id — a value written to `s1` is not retrievable from `s2` (the test asserts that `get_value` on `s2` rejects).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-in/concurrent-state-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 5,
+              "api_latency_ms": 21067,
+              "tool_calls": 8,
+              "tool_call_retries": 0,
+              "prompt_tokens": 8164,
+              "completion_tokens": 1280,
+              "total_tokens": 9444,
+              "usage_observations": 5,
+              "elapsed_ms": 21401,
+              "steps": 5
+            }
+          },
+          "behavior": {
+            "steps": 8,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The test passes. Let me verify my implementation handles all the edge cases by reviewing the requirements once more:\n\n1. ✅ **Three tools**: `begin_session`, `put_value`, `get_value` defined in `listTools()`\n2. ✅ **Session isolation**: Each session has its own `Map`, so writes in `s1` cannot be read from `s2`\n3. ✅ **Non-empty string session_id and key**: validated with `typeof === 'string'` and `!== ''`\n4. ✅ **put requires string value**: validated (must be a string, can be empty since spec only says \"string\")\n5. ✅ **Reject missing sessions**: `put_value`/`get_value` throw \"session not found\" if session not begun\n6. ✅ **Reject invalid/extra arguments**: `validateArgs` checks for missing and unexpected args, plus `additionalProperties: false` in schemas\n7. ✅ **Reject unknown tools**: throws \"unknown tool\"\n\nThe single isolation test passes. The implementation correctly isolates state by session_id — a value written to `s1` is not retrievable from `s2` (the test asserts that `get_value` on `s2` rejects).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-in/concurrent-state-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-in/concurrent-state-isolation/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "concurrent-state-isolation",
+          "repeat": 4,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 51.946792 | PASS concurrent-state-isolation",
+          "runner": {
+            "steps": 8,
+            "final_answer": "The MCP server is implemented and all tests pass. Here's a summary of what I built in `server.mjs`:\n\n## Implementation\n\n**Three tools** with explicit `additionalProperties: false` input schemas:\n- `begin_session` — requires `session_id` (non-empty string)\n- `put_value` — requires `session_id` (non-empty string), `key` (non-empty string), and `value` (string)\n- `get_value` — requires `session_id` (non-empty string) and `key` (non-empty string)\n\n**State isolation:** Each session gets its own `Map` inside a `sessions` Map keyed by `session_id`. Writes to `s1` cannot be read from `s2` because they're stored in distinct per-session maps.\n\n**Validation layer** (applied before dispatch):\n1. **Unknown tools** rejected (`-32601`)\n2. **Extra arguments** rejected (`-32602`) — enforced via `additionalProperties: false` schema plus explicit checking\n3. **Missing required arguments** rejected (`-32602`)\n4. **Type checks** — ensures `session_id`, `key`, `value` are strings when present\n\n**Per-tool semantics:**\n- `begin_session` rejects empty/non-string `session_id`\n- `put_value`/`get_value` reject operations on sessions that were never begun (missing session), empty keys, and non-string values (`put` only)\n- `get_value` rejects reads of keys that don't exist within that session\n\nThe full test suite (1 test) plus an additional sanity sweep covering unknown tools, missing/empty args, extra args, missing sessions, non-string values, and cross-session isolation all pass.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-in/concurrent-state-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 40947,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 16462,
+              "completion_tokens": 2314,
+              "total_tokens": 18776,
+              "usage_observations": 8,
+              "elapsed_ms": 41615,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The MCP server is implemented and all tests pass. Here's a summary of what I built in `server.mjs`:\n\n## Implementation\n\n**Three tools** with explicit `additionalProperties: false` input schemas:\n- `begin_session` — requires `session_id` (non-empty string)\n- `put_value` — requires `session_id` (non-empty string), `key` (non-empty string), and `value` (string)\n- `get_value` — requires `session_id` (non-empty string) and `key` (non-empty string)\n\n**State isolation:** Each session gets its own `Map` inside a `sessions` Map keyed by `session_id`. Writes to `s1` cannot be read from `s2` because they're stored in distinct per-session maps.\n\n**Validation layer** (applied before dispatch):\n1. **Unknown tools** rejected (`-32601`)\n2. **Extra arguments** rejected (`-32602`) — enforced via `additionalProperties: false` schema plus explicit checking\n3. **Missing required arguments** rejected (`-32602`)\n4. **Type checks** — ensures `session_id`, `key`, `value` are strings when present\n\n**Per-tool semantics:**\n- `begin_session` rejects empty/non-string `session_id`\n- `put_value`/`get_value` reject operations on sessions that were never begun (missing session), empty keys, and non-string values (`put` only)\n- `get_value` rejects reads of keys that don't exist within that session\n\nThe full test suite (1 test) plus an additional sanity sweep covering unknown tools, missing/empty args, extra args, missing sessions, non-string values, and cross-session isolation all pass.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-in/concurrent-state-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-in/concurrent-state-isolation/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "concurrent-state-isolation",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 51.546375 | PASS concurrent-state-isolation",
+          "runner": {
+            "steps": 8,
+            "final_answer": "The implementation is complete and all tests pass.\n\n## Summary\n\nI implemented the concurrent-state-isolation MCP server in `server.mjs`:\n\n**Three tools:**\n- `begin_session` — creates (or reuses) an isolated per-session key/value store keyed by `session_id`\n- `put_value` — stores a string `value` under `key` in the given session\n- `get_value` — retrieves the value for `key` from the given session\n\n**Isolation:** Each session owns its own `Map`. A `put_value` to `s1` writes only into `s1`'s map, so a `get_value` from `s2` rejects (session `s2` either doesn't exist or doesn't contain that key) — writes in s1 cannot be read from s2.\n\n**Validation (per the skill's requirements):**\n- Every tool's `inputSchema` includes `\"additionalProperties\": false` alongside `type`, `properties`, and `required`\n- `session_id` and `key` must be non-empty strings; `put_value`'s `value` must be a string\n- Missing required arguments are rejected\n- Extra/unknown arguments are rejected\n- Unknown tool names are rejected (with JSON-RPC error code `-32601`)\n- Operations on a non-existent session (`get_value`/`put_value` before `begin_session`) are rejected\n\nThe test suite passes (`✔ isolation`), and I verified the additional rejection paths (unknown tool, extra args, missing args, empty/invalid types, missing session) with a quick manual check.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-in/concurrent-state-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 59136,
+              "tool_calls": 11,
+              "tool_call_retries": 0,
+              "prompt_tokens": 19845,
+              "completion_tokens": 4088,
+              "total_tokens": 23933,
+              "usage_observations": 8,
+              "elapsed_ms": 59861,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The implementation is complete and all tests pass.\n\n## Summary\n\nI implemented the concurrent-state-isolation MCP server in `server.mjs`:\n\n**Three tools:**\n- `begin_session` — creates (or reuses) an isolated per-session key/value store keyed by `session_id`\n- `put_value` — stores a string `value` under `key` in the given session\n- `get_value` — retrieves the value for `key` from the given session\n\n**Isolation:** Each session owns its own `Map`. A `put_value` to `s1` writes only into `s1`'s map, so a `get_value` from `s2` rejects (session `s2` either doesn't exist or doesn't contain that key) — writes in s1 cannot be read from s2.\n\n**Validation (per the skill's requirements):**\n- Every tool's `inputSchema` includes `\"additionalProperties\": false` alongside `type`, `properties`, and `required`\n- `session_id` and `key` must be non-empty strings; `put_value`'s `value` must be a string\n- Missing required arguments are rejected\n- Extra/unknown arguments are rejected\n- Unknown tool names are rejected (with JSON-RPC error code `-32601`)\n- Operations on a non-existent session (`get_value`/`put_value` before `begin_session`) are rejected\n\nThe test suite passes (`✔ isolation`), and I verified the additional rejection paths (unknown tool, extra args, missing args, empty/invalid types, missing session) with a quick manual check.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-in/concurrent-state-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-in/concurrent-state-isolation/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "prompt-template-render",
+      "passes": 3,
+      "attempts": 5,
+      "stable_pass": false,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "prompt-template-render",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 99.403375 | PASS prompt-template-render",
+          "runner": {
+            "steps": 13,
+            "final_answer": "Done. Here's a summary of what I implemented.\n\n## Changes\n\n### `server.mjs`\nAdded `listPrompts` and `getPrompt`, preserving the existing `listTools`/`callTool` stubs:\n\n- **`listPrompts()`** advertises a single `summarize` prompt with two arguments:\n  - `topic` — `required: true`\n  - `audience` — `required: false` (optional, defaults to `general`)\n- **`getPrompt(name, args)`**:\n  - Rejects **unknown prompts** (`name !== 'summarize'`) with a JSON-RPC `-32602` error.\n  - Rejects **extra/unknown arguments** (any key not in `{topic, audience}`).\n  - Rejects **missing required `topic`**.\n  - Defaults `audience` to `'general'` when omitted.\n  - Returns a single **user** message whose text content includes **both** `topic` and `audience`.\n\n### `protocol.mjs`\nWired up the wire protocol so the server actually serves the new functionality over stdio:\n- Imported `listPrompts` / `getPrompt`.\n- Declared `prompts: {}` capability in the `initialize` response.\n- Routed `prompts/list` → `listPrompts()` and `prompts/get` → `getPrompt(...)`.\n\n## Verification\n- `npm test` (the provided suite) passes: ✔ prompt.\n- Manual checks confirmed: default `audience=general`, the returned user message contains both values, and missing `topic`, extra args, and unknown prompts are all rejected with `-32602`.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-in/prompt-template-render/trace.jsonl",
+            "metrics": {
+              "api_calls": 13,
+              "api_latency_ms": 65401,
+              "tool_calls": 15,
+              "tool_call_retries": 0,
+              "prompt_tokens": 28055,
+              "completion_tokens": 3503,
+              "total_tokens": 31558,
+              "usage_observations": 13,
+              "elapsed_ms": 67344,
+              "steps": 13
+            }
+          },
+          "behavior": {
+            "steps": 15,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "Done. Here's a summary of what I implemented.\n\n## Changes\n\n### `server.mjs`\nAdded `listPrompts` and `getPrompt`, preserving the existing `listTools`/`callTool` stubs:\n\n- **`listPrompts()`** advertises a single `summarize` prompt with two arguments:\n  - `topic` — `required: true`\n  - `audience` — `required: false` (optional, defaults to `general`)\n- **`getPrompt(name, args)`**:\n  - Rejects **unknown prompts** (`name !== 'summarize'`) with a JSON-RPC `-32602` error.\n  - Rejects **extra/unknown arguments** (any key not in `{topic, audience}`).\n  - Rejects **missing required `topic`**.\n  - Defaults `audience` to `'general'` when omitted.\n  - Returns a single **user** message whose text content includes **both** `topic` and `audience`.\n\n### `protocol.mjs`\nWired up the wire protocol so the server actually serves the new functionality over stdio:\n- Imported `listPrompts` / `getPrompt`.\n- Declared `prompts: {}` capability in the `initialize` response.\n- Routed `prompts/list` → `listPrompts()` and `prompts/get` → `getPrompt(...)`.\n\n## Verification\n- `npm test` (the provided suite) passes: ✔ prompt.\n- Manual checks confirmed: default `audience=general`, the returned user message contains both values, and missing `topic`, extra args, and unknown prompts are all rejected with `-32602`.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-in/prompt-template-render/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-in/prompt-template-render/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "prompt-template-render",
+          "repeat": 3,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "TypeError: Cannot read properties of undefined (reading 'name') |     at file:///Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/prompt-template-render/workspace/[eval1]:4:39 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |  | Node.js v22.23.0",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Done. The `prompt-template-render` MCP server is implemented:\n\n## Changes\n\n**`server.mjs`** — added `listPrompts` and `getPrompt`:\n- `listPrompts()` advertises the `summarize` prompt with `topic` (required) and `audience` (optional)\n- `getPrompt(name, args)`:\n  - Rejects unknown prompts with `-32602`\n  - Rejects extra/unknown arguments with `-32602`\n  - Rejects missing required `topic` with `-32602`\n  - Defaults `audience` to `general` when omitted\n  - Returns a `user` message whose `content.text` contains **both** values (e.g. `Summarize the topic: MCP. Target audience: general.`)\n\n**`protocol.mjs`** — wired up the JSON-RPC dispatch:\n- Added `prompts/list` and `prompts/get` methods\n- Updated `initialize` capabilities to advertise `prompts: {}`\n\n## Validation\n- `npm test` passes (1/1)\n- Manual checks confirm: missing args, extra args, and unknown prompts all return `-32602`; the returned message contains both `topic` and `audience`; default audience is `general`.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/prompt-template-render/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 48296,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 14749,
+              "completion_tokens": 3116,
+              "total_tokens": 17865,
+              "usage_observations": 7,
+              "elapsed_ms": 49311,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "Done. The `prompt-template-render` MCP server is implemented:\n\n## Changes\n\n**`server.mjs`** — added `listPrompts` and `getPrompt`:\n- `listPrompts()` advertises the `summarize` prompt with `topic` (required) and `audience` (optional)\n- `getPrompt(name, args)`:\n  - Rejects unknown prompts with `-32602`\n  - Rejects extra/unknown arguments with `-32602`\n  - Rejects missing required `topic` with `-32602`\n  - Defaults `audience` to `general` when omitted\n  - Returns a `user` message whose `content.text` contains **both** values (e.g. `Summarize the topic: MCP. Target audience: general.`)\n\n**`protocol.mjs`** — wired up the JSON-RPC dispatch:\n- Added `prompts/list` and `prompts/get` methods\n- Updated `initialize` capabilities to advertise `prompts: {}`\n\n## Validation\n- `npm test` passes (1/1)\n- Manual checks confirm: missing args, extra args, and unknown prompts all return `-32602`; the returned message contains both `topic` and `audience`; default audience is `general`.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/prompt-template-render/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/prompt-template-render/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "prompt-template-render",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 66.235917 | PASS prompt-template-render",
+          "runner": {
+            "steps": 12,
+            "final_answer": "Everything is working. Here's a summary of what I implemented:\n\n## Summary\n\nI built a prompt-template-render MCP server in `server.mjs` and wired it into the protocol layer in `protocol.mjs`.\n\n### `server.mjs`\n\n- **`listPrompts()`** — Advertises the `summarize` prompt with two arguments:\n  - `topic` — required\n  - `audience` — optional (defaults to `general` when omitted)\n- **`getPrompt(name, args)`** — Validates and renders the prompt:\n  - Rejects **unknown prompts** (`Unknown prompt: ...`)\n  - Rejects **extra/unknown arguments** (`Unknown argument: ...`)\n  - Rejects **missing required arguments** (`Missing required argument: topic`)\n  - Returns a single `user` message whose text content contains **both** the topic and the audience (audience defaults to `general`)\n  - Errors carry `code: -32602` (invalid params) so the protocol layer emits proper JSON-RPC errors\n- Kept the existing `listTools`/`callTool` stubs intact.\n\n### `protocol.mjs`\n\n- Imported `listPrompts` and `getPrompt`\n- Added routing for `prompts/list` and `prompts/get`\n- Advertised the `prompts` capability in `initialize` and renamed the server to `prompt-template-render`\n\n### Tests (`server.test.mjs`)\n\nExpanded from the single provided test to cover all requirements: prompt advertising (required/optional flags), message structure/role/content, default audience, missing-topic rejection, extra-argument rejection, and unknown-prompt rejection.\n\nAll 7 tests pass, and smoke-testing the protocol over stdin confirms both the success path and the three error paths return clean JSON-RPC responses.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-in/prompt-template-render/trace.jsonl",
+            "metrics": {
+              "api_calls": 12,
+              "api_latency_ms": 54981,
+              "tool_calls": 15,
+              "tool_call_retries": 0,
+              "prompt_tokens": 33595,
+              "completion_tokens": 3272,
+              "total_tokens": 36867,
+              "usage_observations": 12,
+              "elapsed_ms": 56909,
+              "steps": 12
+            }
+          },
+          "behavior": {
+            "steps": 15,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "Everything is working. Here's a summary of what I implemented:\n\n## Summary\n\nI built a prompt-template-render MCP server in `server.mjs` and wired it into the protocol layer in `protocol.mjs`.\n\n### `server.mjs`\n\n- **`listPrompts()`** — Advertises the `summarize` prompt with two arguments:\n  - `topic` — required\n  - `audience` — optional (defaults to `general` when omitted)\n- **`getPrompt(name, args)`** — Validates and renders the prompt:\n  - Rejects **unknown prompts** (`Unknown prompt: ...`)\n  - Rejects **extra/unknown arguments** (`Unknown argument: ...`)\n  - Rejects **missing required arguments** (`Missing required argument: topic`)\n  - Returns a single `user` message whose text content contains **both** the topic and the audience (audience defaults to `general`)\n  - Errors carry `code: -32602` (invalid params) so the protocol layer emits proper JSON-RPC errors\n- Kept the existing `listTools`/`callTool` stubs intact.\n\n### `protocol.mjs`\n\n- Imported `listPrompts` and `getPrompt`\n- Added routing for `prompts/list` and `prompts/get`\n- Advertised the `prompts` capability in `initialize` and renamed the server to `prompt-template-render`\n\n### Tests (`server.test.mjs`)\n\nExpanded from the single provided test to cover all requirements: prompt advertising (required/optional flags), message structure/role/content, default audience, missing-topic rejection, extra-argument rejection, and unknown-prompt rejection.\n\nAll 7 tests pass, and smoke-testing the protocol over stdin confirms both the success path and the three error paths return clean JSON-RPC responses.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-in/prompt-template-render/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-in/prompt-template-render/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "prompt-template-render",
+          "repeat": 4,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "TypeError: Cannot read properties of undefined (reading 'name') |     at file:///Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-in/prompt-template-render/workspace/[eval1]:4:39 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |  | Node.js v22.23.0",
+          "runner": {
+            "steps": 8,
+            "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I did:\n\n## Changes to `server.mjs`\n\nI implemented the prompt-template-render MCP server with `listPrompts` and `getPrompt`:\n\n1. **`listPrompts()`** — advertises a single `summarize` prompt with:\n   - `topic` (required)\n   - `audience` (optional, defaults to `general`)\n\n2. **`getPrompt(name, args)`** — validates and renders:\n   - **Unknown prompt** → `-32602` error\n   - **Missing required `topic`** → `-32602` error\n   - **Extra/unknown arguments** → `-32602` error\n   - On success, returns a `user` message containing both `topic` and `audience` (defaulting `audience` to `general` when not supplied)\n\n## Test results\n\nThe full test suite passes (1/1). I also verified the edge cases manually — unknown prompt, missing `topic`, extra argument, default audience, and explicit audience all behave correctly, with clean JSON-RPC error codes.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-in/prompt-template-render/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 46629,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 14152,
+              "completion_tokens": 2623,
+              "total_tokens": 16775,
+              "usage_observations": 8,
+              "elapsed_ms": 47304,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I did:\n\n## Changes to `server.mjs`\n\nI implemented the prompt-template-render MCP server with `listPrompts` and `getPrompt`:\n\n1. **`listPrompts()`** — advertises a single `summarize` prompt with:\n   - `topic` (required)\n   - `audience` (optional, defaults to `general`)\n\n2. **`getPrompt(name, args)`** — validates and renders:\n   - **Unknown prompt** → `-32602` error\n   - **Missing required `topic`** → `-32602` error\n   - **Extra/unknown arguments** → `-32602` error\n   - On success, returns a `user` message containing both `topic` and `audience` (defaulting `audience` to `general` when not supplied)\n\n## Test results\n\nThe full test suite passes (1/1). I also verified the edge cases manually — unknown prompt, missing `topic`, extra argument, default audience, and explicit audience all behave correctly, with clean JSON-RPC error codes.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-in/prompt-template-render/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-in/prompt-template-render/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "prompt-template-render",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 50.872125 | PASS prompt-template-render",
+          "runner": {
+            "steps": 9,
+            "final_answer": "The implementation is complete and the full test suite passes.\n\n## Summary\n\nI implemented `listPrompts` and `getPrompt` in `server.mjs` for the prompt-template-render MCP server:\n\n**`listPrompts()`** — Advertises the `summarize` prompt with:\n- `topic` (required) — the topic to summarize\n- `audience` (optional) — the target audience\n\n**`getPrompt(name, args)`** — Returns a prompt result with a single user message containing both values:\n- The message text renders both `topic` and `audience`, e.g. `Summarize the topic \"MCP\" for a general audience.`\n- `audience` defaults to `\"general\"` when omitted\n- **Rejects missing required arguments** (`topic`) with a `-32602` error\n- **Rejects extra/unknown arguments** with a `-32602` error\n- **Rejects unknown prompts** with a `-32602` error\n- Also validates that argument values are strings\n\nThe returned structure follows the MCP prompt spec: `{ description, messages: [{ role: 'user', content: { type: 'text', text } }] }`.\n\nThe test suite passes (1 test), and I verified all the edge-case requirements (unknown prompt, missing argument, extra argument) behave correctly via manual checks.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-in/prompt-template-render/trace.jsonl",
+            "metrics": {
+              "api_calls": 9,
+              "api_latency_ms": 47604,
+              "tool_calls": 13,
+              "tool_call_retries": 0,
+              "prompt_tokens": 18573,
+              "completion_tokens": 2751,
+              "total_tokens": 21324,
+              "usage_observations": 9,
+              "elapsed_ms": 48343,
+              "steps": 9
+            }
+          },
+          "behavior": {
+            "steps": 13,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The implementation is complete and the full test suite passes.\n\n## Summary\n\nI implemented `listPrompts` and `getPrompt` in `server.mjs` for the prompt-template-render MCP server:\n\n**`listPrompts()`** — Advertises the `summarize` prompt with:\n- `topic` (required) — the topic to summarize\n- `audience` (optional) — the target audience\n\n**`getPrompt(name, args)`** — Returns a prompt result with a single user message containing both values:\n- The message text renders both `topic` and `audience`, e.g. `Summarize the topic \"MCP\" for a general audience.`\n- `audience` defaults to `\"general\"` when omitted\n- **Rejects missing required arguments** (`topic`) with a `-32602` error\n- **Rejects extra/unknown arguments** with a `-32602` error\n- **Rejects unknown prompts** with a `-32602` error\n- Also validates that argument values are strings\n\nThe returned structure follows the MCP prompt spec: `{ description, messages: [{ role: 'user', content: { type: 'text', text } }] }`.\n\nThe test suite passes (1 test), and I verified all the edge-case requirements (unknown prompt, missing argument, extra argument) behave correctly via manual checks.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-in/prompt-template-render/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-in/prompt-template-render/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "multi-client-isolation",
+      "passes": 5,
+      "attempts": 5,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "multi-client-isolation",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 50.263375 | PASS multi-client-isolation",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Summary\n\nI replaced the stub `server.mjs` with a multi-client-isolation MCP server implementing three tools:\n\n### Tools\n1. **`open_client`** — registers a client and creates its own private key/value `Map` (idempotent: re-opening is a no-op)\n2. **`client_put`** — stores a `key`/`value` pair into the caller's own map\n3. **`client_get`** — retrieves a value from the caller's own map\n\n### Key design points (addressing every requirement)\n- **Independent maps / isolation:** `clients` is `Map<client_id, Map<key, value>>`. `client_get` only ever looks inside the map for the given `client_id`, so a value written by `a` is physically unreachable by `b` (the test asserts `b` cannot read `a`'s key, and the protocol smoke test shows `unknown client: b`).\n- **Non-empty strings:** every argument is validated via `isNonEmptyString` (typeof string + length > 0), covering `client_id`, `key`, and `value`.\n- **Reject unknown clients:** `client_put`/`client_get` throw `unknown client: <id>` when the client hasn't been opened.\n- **Reject unknown tools:** `validate` throws `unknown tool: <name>` when no tool definition matches, plus a defensive final throw in `callTool`.\n- **Schema correctness:** each `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` (per the skill), and extra/missing arguments are rejected.\n\n### Test results\n- `node --test` → **1/1 passing** ✔\n- Protocol smoke test confirms correct `tools/list` output, successful round-trip within a client, and the isolation error for an unopened client.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-out/multi-client-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 61038,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 16084,
+              "completion_tokens": 4096,
+              "total_tokens": 20180,
+              "usage_observations": 7,
+              "elapsed_ms": 61467,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Summary\n\nI replaced the stub `server.mjs` with a multi-client-isolation MCP server implementing three tools:\n\n### Tools\n1. **`open_client`** — registers a client and creates its own private key/value `Map` (idempotent: re-opening is a no-op)\n2. **`client_put`** — stores a `key`/`value` pair into the caller's own map\n3. **`client_get`** — retrieves a value from the caller's own map\n\n### Key design points (addressing every requirement)\n- **Independent maps / isolation:** `clients` is `Map<client_id, Map<key, value>>`. `client_get` only ever looks inside the map for the given `client_id`, so a value written by `a` is physically unreachable by `b` (the test asserts `b` cannot read `a`'s key, and the protocol smoke test shows `unknown client: b`).\n- **Non-empty strings:** every argument is validated via `isNonEmptyString` (typeof string + length > 0), covering `client_id`, `key`, and `value`.\n- **Reject unknown clients:** `client_put`/`client_get` throw `unknown client: <id>` when the client hasn't been opened.\n- **Reject unknown tools:** `validate` throws `unknown tool: <name>` when no tool definition matches, plus a defensive final throw in `callTool`.\n- **Schema correctness:** each `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` (per the skill), and extra/missing arguments are rejected.\n\n### Test results\n- `node --test` → **1/1 passing** ✔\n- Protocol smoke test confirms correct `tools/list` output, successful round-trip within a client, and the isolation error for an unopened client.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-out/multi-client-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-1/held-out/multi-client-isolation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "multi-client-isolation",
+          "repeat": 4,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 48.935792 | PASS multi-client-isolation",
+          "runner": {
+            "steps": 7,
+            "final_answer": "I've implemented the multi-client-isolation MCP server. Here's a summary of what I built in `server.mjs`:\n\n## Implementation\n\n**State model:** A `Map<client_id, Map<key, value>>` provides each client with its own isolated key/value store. A value written by client `a` lives in `a`'s map and is never accessible to client `b`.\n\n**Three tools:**\n\n1. **`open_client`** — creates (or no-ops for) an isolated map for the given `client_id`. Requires a non-empty string `client_id`.\n2. **`client_put`** — stores a `key`/`value` pair into the client's own map. Requires `client_id`, `key`, and `value` to all be non-empty strings, and rejects unknown (un-opened) clients.\n3. **`client_get`** — retrieves a value by `key` from the client's own map. Requires non-empty `client_id`/`key`, rejects unknown clients and unknown keys.\n\n**Requirements covered:**\n- **Independent maps per client** — isolation enforced by per-client `Map`; `client b` cannot see `a`'s keys (test confirms `client_get` for `b` rejects).\n- **Non-empty strings required** — every `client_id`, `key`, and `value` is validated with `typeof === 'string' && length > 0`.\n- **Reject unknown clients** — `put`/`get` throw if the client wasn't opened.\n- **Reject unknown tools** — `callTool`'s `default` case throws `Unknown tool: <name>`.\n- **Schemas** — every tool's `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` as mandated by the skill.\n\n## Verification\n\nThe provided test suite passes (`✔ clients`), and I ran additional sanity checks confirming: tool listing with `additionalProperties:false`, unknown-tool rejection, unknown-client rejection, non-empty-string enforcement, and cross-client isolation (a writes `k→v`, reads it back; `b`'s read of `k` rejects).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-out/multi-client-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 56005,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 15470,
+              "completion_tokens": 3792,
+              "total_tokens": 19262,
+              "usage_observations": 7,
+              "elapsed_ms": 56618,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "I've implemented the multi-client-isolation MCP server. Here's a summary of what I built in `server.mjs`:\n\n## Implementation\n\n**State model:** A `Map<client_id, Map<key, value>>` provides each client with its own isolated key/value store. A value written by client `a` lives in `a`'s map and is never accessible to client `b`.\n\n**Three tools:**\n\n1. **`open_client`** — creates (or no-ops for) an isolated map for the given `client_id`. Requires a non-empty string `client_id`.\n2. **`client_put`** — stores a `key`/`value` pair into the client's own map. Requires `client_id`, `key`, and `value` to all be non-empty strings, and rejects unknown (un-opened) clients.\n3. **`client_get`** — retrieves a value by `key` from the client's own map. Requires non-empty `client_id`/`key`, rejects unknown clients and unknown keys.\n\n**Requirements covered:**\n- **Independent maps per client** — isolation enforced by per-client `Map`; `client b` cannot see `a`'s keys (test confirms `client_get` for `b` rejects).\n- **Non-empty strings required** — every `client_id`, `key`, and `value` is validated with `typeof === 'string' && length > 0`.\n- **Reject unknown clients** — `put`/`get` throw if the client wasn't opened.\n- **Reject unknown tools** — `callTool`'s `default` case throws `Unknown tool: <name>`.\n- **Schemas** — every tool's `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` as mandated by the skill.\n\n## Verification\n\nThe provided test suite passes (`✔ clients`), and I ran additional sanity checks confirming: tool listing with `additionalProperties:false`, unknown-tool rejection, unknown-client rejection, non-empty-string enforcement, and cross-client isolation (a writes `k→v`, reads it back; `b`'s read of `k` rejects).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-out/multi-client-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-4/held-out/multi-client-isolation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "multi-client-isolation",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 65.656125 | PASS multi-client-isolation",
+          "runner": {
+            "steps": 9,
+            "final_answer": "The implementation is complete and all tests pass.\n\n## Summary\n\nI implemented a multi-client-isolation MCP server in `server.mjs` with three tools:\n\n1. **`open_client`** — registers a client, creating its own independent `Map` for key/value storage. Calling it again for an existing client is a safe no-op.\n\n2. **`client_put`** — writes a key/value pair into the named client's map. Rejects unknown clients and any non-empty-string violations.\n\n3. **`client_get`** — reads a value from the named client's map. Rejects unknown clients and unknown keys.\n\nKey design points following the `mcp-builder` skill requirements:\n\n- **Isolation**: each `client_id` owns an independent `Map`, so a value written by client `a` is invisible to client `b` (client `b` gets an \"unknown key\" error).\n- **Validation**: every string argument (`client_id`, `key`, `value`) is required to be a non-empty string, throwing an error otherwise.\n- **Unknown clients rejected**: `client_put`/`client_get` throw an error if the `client_id` was never opened.\n- **Unknown tools rejected**: the `default` switch case throws an `unknown tool` error.\n- **`additionalProperties: false`**: every tool's `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` as mandated.\n- Errors carry `code: -32602`, consistent with the protocol's invalid-params handling.\n\nThe full test suite passes (1/1), plus my manual sanity checks for unknown client/tool handling, empty-string rejection, cross-client isolation, and unknown keys within a known client.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-out/multi-client-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 9,
+              "api_latency_ms": 54503,
+              "tool_calls": 13,
+              "tool_call_retries": 0,
+              "prompt_tokens": 25957,
+              "completion_tokens": 3334,
+              "total_tokens": 29291,
+              "usage_observations": 9,
+              "elapsed_ms": 55370,
+              "steps": 9
+            }
+          },
+          "behavior": {
+            "steps": 13,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The implementation is complete and all tests pass.\n\n## Summary\n\nI implemented a multi-client-isolation MCP server in `server.mjs` with three tools:\n\n1. **`open_client`** — registers a client, creating its own independent `Map` for key/value storage. Calling it again for an existing client is a safe no-op.\n\n2. **`client_put`** — writes a key/value pair into the named client's map. Rejects unknown clients and any non-empty-string violations.\n\n3. **`client_get`** — reads a value from the named client's map. Rejects unknown clients and unknown keys.\n\nKey design points following the `mcp-builder` skill requirements:\n\n- **Isolation**: each `client_id` owns an independent `Map`, so a value written by client `a` is invisible to client `b` (client `b` gets an \"unknown key\" error).\n- **Validation**: every string argument (`client_id`, `key`, `value`) is required to be a non-empty string, throwing an error otherwise.\n- **Unknown clients rejected**: `client_put`/`client_get` throw an error if the `client_id` was never opened.\n- **Unknown tools rejected**: the `default` switch case throws an `unknown tool` error.\n- **`additionalProperties: false`**: every tool's `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` as mandated.\n- Errors carry `code: -32602`, consistent with the protocol's invalid-params handling.\n\nThe full test suite passes (1/1), plus my manual sanity checks for unknown client/tool handling, empty-string rejection, cross-client isolation, and unknown keys within a known client.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-out/multi-client-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-0/held-out/multi-client-isolation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "multi-client-isolation",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 60.185041 | PASS multi-client-isolation",
+          "runner": {
+            "steps": 11,
+            "final_answer": "The implementation is complete. Here's a summary of what I did:\n\n## Summary\n\nI implemented a multi-client-isolation MCP server in `server.mjs` with three tools:\n\n### `open_client`\n- Opens (or returns) a client's own isolated `Map` keyed by `client_id`.\n- Requires a non-empty string `client_id`.\n\n### `client_put`\n- Writes a key/value pair into the calling client's own map only.\n- Requires non-empty strings `client_id`, `key`, and `value`.\n\n### `client_get`\n- Reads a key from the calling client's own map.\n- A value written by client `a` is **unavailable** to client `b` (b gets an error — confirmed by the test).\n\n### Key design points\n- **Isolation**: A module-level `Map` of `client_id -> Map(key -> value)` ensures each client owns an independent store. No cross-client access is possible.\n- **Validation**: A `nonEmptyString` helper rejects empty or non-string arguments (throws JSON-RPC error code `-32602`).\n- **Unknown client rejection**: `knownClient` helper rejects `put`/`get` for clients not opened via `open_client`.\n- **Unknown tool rejection**: The `default` case throws `-32601` for any tool name that isn't one of the three.\n- **Schema compliance**: Every tool's `inputSchema` includes `type: 'object'`, `properties`, `required`, and `additionalProperties: false` (per the skill's mandate).\n\n### Verification\n- The provided `server.test.mjs` passes (1 test, 0 failures).\n- Extra manual checks confirm unknown-tool rejection, unknown-client rejection, non-empty-string validation, true isolation across clients, and unknown-key rejection.\n- End-to-end protocol check via `protocol.mjs` confirms `tools/list` returns well-formed schemas and `tools/call` routes correctly, returning clean JSON-RPC content.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-out/multi-client-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 11,
+              "api_latency_ms": 68610,
+              "tool_calls": 14,
+              "tool_call_retries": 0,
+              "prompt_tokens": 29379,
+              "completion_tokens": 4290,
+              "total_tokens": 33669,
+              "usage_observations": 11,
+              "elapsed_ms": 70026,
+              "steps": 11
+            }
+          },
+          "behavior": {
+            "steps": 14,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The implementation is complete. Here's a summary of what I did:\n\n## Summary\n\nI implemented a multi-client-isolation MCP server in `server.mjs` with three tools:\n\n### `open_client`\n- Opens (or returns) a client's own isolated `Map` keyed by `client_id`.\n- Requires a non-empty string `client_id`.\n\n### `client_put`\n- Writes a key/value pair into the calling client's own map only.\n- Requires non-empty strings `client_id`, `key`, and `value`.\n\n### `client_get`\n- Reads a key from the calling client's own map.\n- A value written by client `a` is **unavailable** to client `b` (b gets an error — confirmed by the test).\n\n### Key design points\n- **Isolation**: A module-level `Map` of `client_id -> Map(key -> value)` ensures each client owns an independent store. No cross-client access is possible.\n- **Validation**: A `nonEmptyString` helper rejects empty or non-string arguments (throws JSON-RPC error code `-32602`).\n- **Unknown client rejection**: `knownClient` helper rejects `put`/`get` for clients not opened via `open_client`.\n- **Unknown tool rejection**: The `default` case throws `-32601` for any tool name that isn't one of the three.\n- **Schema compliance**: Every tool's `inputSchema` includes `type: 'object'`, `properties`, `required`, and `additionalProperties: false` (per the skill's mandate).\n\n### Verification\n- The provided `server.test.mjs` passes (1 test, 0 failures).\n- Extra manual checks confirm unknown-tool rejection, unknown-client rejection, non-empty-string validation, true isolation across clients, and unknown-key rejection.\n- End-to-end protocol check via `protocol.mjs` confirms `tools/list` returns well-formed schemas and `tools/call` routes correctly, returning clean JSON-RPC content.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-out/multi-client-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-2/held-out/multi-client-isolation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "multi-client-isolation",
+          "repeat": 3,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 57.575375 | PASS multi-client-isolation",
+          "runner": {
+            "steps": 7,
+            "final_answer": "I've implemented the multi-client-isolation MCP server. Here's a summary of what was done:\n\n## Implementation (`server.mjs`)\n\n**State model:** A module-level `Map` named `clients` maps each `client_id` to its own independent `Map(key → value)`. This is what guarantees isolation — client `a`'s store and client `b`'s store are completely separate objects.\n\n**Three tools, each with a discoverable `inputSchema`** (including `\"additionalProperties\": false` as the skill requires):\n\n- **`open_client`** — validates `client_id` is a non-empty string, creates a fresh empty map (idempotent if already open).\n- **`client_put`** — requires the client to already exist, then validates non-empty `key`/`value` before storing in *that client's* map only.\n- **`client_get`** — requires the client to exist, then validates non-empty `key` and looks it up only in *that client's* map; missing keys are rejected.\n\n**Validation/error handling:**\n- Unknown tool → `-32601` (\"unknown tool\")\n- Unknown client (put/get before open) → `-32602` (\"unknown client\")\n- Missing/empty string arguments → `-32602` (\"must be a non-empty string\")\n- Unknown key on get → `-32602` (\"unknown key\")\n\nAll errors carry a JSON-RPC-style `code` on the thrown error, which `protocol.mjs` already propagates to the client.\n\n## Tests\n\n- The provided `server.test.mjs` passes (client `b` cannot read a key written by client `a`).\n- Additional sanity checks confirm unknown tools, unknown clients, empty-string arguments, and cross-client key isolation all behave correctly.\n\nFull suite result: **1 test passed, 0 failed.**",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-out/multi-client-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 67275,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 15458,
+              "completion_tokens": 4648,
+              "total_tokens": 20106,
+              "usage_observations": 7,
+              "elapsed_ms": 67844,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "I've implemented the multi-client-isolation MCP server. Here's a summary of what was done:\n\n## Implementation (`server.mjs`)\n\n**State model:** A module-level `Map` named `clients` maps each `client_id` to its own independent `Map(key → value)`. This is what guarantees isolation — client `a`'s store and client `b`'s store are completely separate objects.\n\n**Three tools, each with a discoverable `inputSchema`** (including `\"additionalProperties\": false` as the skill requires):\n\n- **`open_client`** — validates `client_id` is a non-empty string, creates a fresh empty map (idempotent if already open).\n- **`client_put`** — requires the client to already exist, then validates non-empty `key`/`value` before storing in *that client's* map only.\n- **`client_get`** — requires the client to exist, then validates non-empty `key` and looks it up only in *that client's* map; missing keys are rejected.\n\n**Validation/error handling:**\n- Unknown tool → `-32601` (\"unknown tool\")\n- Unknown client (put/get before open) → `-32602` (\"unknown client\")\n- Missing/empty string arguments → `-32602` (\"must be a non-empty string\")\n- Unknown key on get → `-32602` (\"unknown key\")\n\nAll errors carry a JSON-RPC-style `code` on the thrown error, which `protocol.mjs` already propagates to the client.\n\n## Tests\n\n- The provided `server.test.mjs` passes (client `b` cannot read a key written by client `a`).\n- Additional sanity checks confirm unknown tools, unknown clients, empty-string arguments, and cross-client key isolation all behave correctly.\n\nFull suite result: **1 test passed, 0 failed.**",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-out/multi-client-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-out/multi-client-isolation/trace.jsonl"
+        }
+      ]
+    }
+  ],
+  "generated_at": "2026-07-30T04:25:07.551Z"
+}

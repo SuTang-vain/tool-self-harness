@@ -630,3 +630,25 @@ The prior expanded run and this independent replication both reject the same lin
 the exact regression tasks vary. `concurrent-state-isolation` and `prompt-template-render` are
 recurring regression signals and will be investigated with a preregistered ablation before any
 new proposal or expanded cross-model run.
+
+## 11. Targeted Edit Ablation
+
+After the independent expanded replication again rejected `h1`, we ran a diagnostic ablation on
+four representative regression tasks with five fresh repeats per variant:
+
+| Variant | Held-in | Reliable held-in | Held-out | Reliable held-out |
+|---|---:|---:|---:|---:|
+| `h0` | 15/15 | 3/3 | 4/5 | 0/1 |
+| `h1-core` | 12/15 | 1/3 | 5/5 | 1/1 |
+| `h1-description` | 14/15 | 2/3 | 5/5 | 1/1 |
+| `h1-checklist` | 13/15 | 1/3 | 4/5 | 0/1 |
+
+The direct core edit and checklist both show instability on the recurring state/prompt tasks.
+The description edit preserves `prompt-template-render` and `multi-client-isolation` in this
+small diagnostic, but still loses one `concurrent-state-isolation` repeat and consumes more
+tokens. No alternative is non-regressive on all four tasks, so none is promoted.
+
+This is mechanism evidence, not a capability result: the task subset was selected after observing
+regressions. The next candidate should explicitly separate strict schema guidance from lifecycle,
+state, and prompt behavior, then be evaluated on the full 36-task suite under a new
+preregistration.

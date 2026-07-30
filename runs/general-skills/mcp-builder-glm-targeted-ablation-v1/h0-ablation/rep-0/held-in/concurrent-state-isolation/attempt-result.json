@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "concurrent-state-isolation",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 55.154916 | PASS concurrent-state-isolation",
+  "runner": {
+    "steps": 12,
+    "final_answer": "The implementation is complete and all tests pass.\n\n## Summary\n\nI implemented a concurrent-state-isolation MCP server in `server.mjs` with three tools:\n\n**`begin_session`** — creates/resets an isolated session store keyed by `session_id`. Requires a non-empty string `session_id`.\n\n**`put_value`** — stores a string `value` under `key` within a session's store. Requires non-empty string `session_id` and `key`, plus a string `value`. Rejects if the session doesn't exist.\n\n**`get_value`** — retrieves the value for `key` within a session. Requires non-empty string `session_id` and `key`. Rejects if the session or key doesn't exist.\n\nKey design points:\n\n- **Isolation**: state is a `Map<session_id, Map<key, value>>`, so each session owns an independent store. A write in `s1` is structurally unreachable from `s2` — the provided isolation test confirms a `get_value` in `s2` rejects when the key only exists in `s1`.\n- **Validation**: every tool rejects extra/unexpected arguments (`additionalProperties: false` in the schemas plus runtime enforcement), missing sessions, empty/non-string `session_id` and `key`, and non-string `value` for `put_value`. Errors carry JSON-RPC error code `-32602` (invalid params).\n- **Unknown tools**: the `default` case throws with code `-32601` (method not found).\n- `listTools()` exposes all three tools with explicit `inputSchema`s so they're discoverable via the protocol layer (`tools/list`).\n\nThe provided test suite passes, and an additional sweep of edge cases (missing session, missing key, invalid/extra arguments, unknown tool, session reset) all behave correctly.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-0/held-in/concurrent-state-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 12,
+      "api_latency_ms": 147761,
+      "tool_calls": 15,
+      "tool_call_retries": 0,
+      "prompt_tokens": 32377,
+      "completion_tokens": 9025,
+      "total_tokens": 41402,
+      "usage_observations": 12,
+      "elapsed_ms": 268903,
+      "steps": 12
+    }
+  },
+  "behavior": {
+    "steps": 15,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete and all tests pass.\n\n## Summary\n\nI implemented a concurrent-state-isolation MCP server in `server.mjs` with three tools:\n\n**`begin_session`** — creates/resets an isolated session store keyed by `session_id`. Requires a non-empty string `session_id`.\n\n**`put_value`** — stores a string `value` under `key` within a session's store. Requires non-empty string `session_id` and `key`, plus a string `value`. Rejects if the session doesn't exist.\n\n**`get_value`** — retrieves the value for `key` within a session. Requires non-empty string `session_id` and `key`. Rejects if the session or key doesn't exist.\n\nKey design points:\n\n- **Isolation**: state is a `Map<session_id, Map<key, value>>`, so each session owns an independent store. A write in `s1` is structurally unreachable from `s2` — the provided isolation test confirms a `get_value` in `s2` rejects when the key only exists in `s1`.\n- **Validation**: every tool rejects extra/unexpected arguments (`additionalProperties: false` in the schemas plus runtime enforcement), missing sessions, empty/non-string `session_id` and `key`, and non-string `value` for `put_value`. Errors carry JSON-RPC error code `-32602` (invalid params).\n- **Unknown tools**: the `default` case throws with code `-32601` (method not found).\n- `listTools()` exposes all three tools with explicit `inputSchema`s so they're discoverable via the protocol layer (`tools/list`).\n\nThe provided test suite passes, and an additional sweep of edge cases (missing session, missing key, invalid/extra arguments, unknown tool, session reset) all behave correctly.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-0/held-in/concurrent-state-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-0/held-in/concurrent-state-isolation/trace.jsonl"
+}

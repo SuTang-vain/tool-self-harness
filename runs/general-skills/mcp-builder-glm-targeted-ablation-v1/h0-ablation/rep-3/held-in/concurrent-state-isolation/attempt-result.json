@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "concurrent-state-isolation",
+  "repeat": 3,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 49.742541 | PASS concurrent-state-isolation",
+  "runner": {
+    "steps": 9,
+    "final_answer": "The implementation is complete and all tests pass.\n\n## Summary\n\nI implemented a concurrent-state-isolation MCP server in `server.mjs` with three tools:\n\n**`begin_session`** — creates (or resets) a per-session `Map` keyed by `session_id`. Each session owns an isolated store, so writes in one session are never visible to another.\n\n**`put_value`** — stores a string value under a key within an existing session's isolated store.\n\n**`get_value`** — reads the value for a key within an existing session's store.\n\n**Isolation guarantee:** State is stored in `sessions = new Map<session_id, Map<key, value>>`. A write to `s1` only touches `sessions.get('s1')`, so `get_value` on `s2` for the same key either errors (session missing) or returns \"key not found\" — it can never see `s1`'s data. The test confirms this: `put_value` in `s1` followed by `get_value` in `s2` rejects.\n\n**Validation enforced:**\n- `session_id` and `key` must be non-empty strings (both `put_value` and `get_value`)\n- `value` must be a string (`put_value`)\n- Missing arguments → rejected (e.g. `begin_session` with no `session_id`)\n- Extra/unexpected arguments → rejected via `assertNoExtraArgs`\n- Operations on a session that was never begun → rejected (\"session not found\")\n- Unknown tool name → rejected (\"Unknown tool\")\n\nEach tool also declares an explicit `inputSchema` with `required` fields and `additionalProperties: false` for `tools/list` discoverability. The full test suite passes (1/1, 0 failures).",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-3/held-in/concurrent-state-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 9,
+      "api_latency_ms": 63441,
+      "tool_calls": 12,
+      "tool_call_retries": 0,
+      "prompt_tokens": 21428,
+      "completion_tokens": 3917,
+      "total_tokens": 25345,
+      "usage_observations": 9,
+      "elapsed_ms": 64202,
+      "steps": 9
+    }
+  },
+  "behavior": {
+    "steps": 12,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete and all tests pass.\n\n## Summary\n\nI implemented a concurrent-state-isolation MCP server in `server.mjs` with three tools:\n\n**`begin_session`** — creates (or resets) a per-session `Map` keyed by `session_id`. Each session owns an isolated store, so writes in one session are never visible to another.\n\n**`put_value`** — stores a string value under a key within an existing session's isolated store.\n\n**`get_value`** — reads the value for a key within an existing session's store.\n\n**Isolation guarantee:** State is stored in `sessions = new Map<session_id, Map<key, value>>`. A write to `s1` only touches `sessions.get('s1')`, so `get_value` on `s2` for the same key either errors (session missing) or returns \"key not found\" — it can never see `s1`'s data. The test confirms this: `put_value` in `s1` followed by `get_value` in `s2` rejects.\n\n**Validation enforced:**\n- `session_id` and `key` must be non-empty strings (both `put_value` and `get_value`)\n- `value` must be a string (`put_value`)\n- Missing arguments → rejected (e.g. `begin_session` with no `session_id`)\n- Extra/unexpected arguments → rejected via `assertNoExtraArgs`\n- Operations on a session that was never begun → rejected (\"session not found\")\n- Unknown tool name → rejected (\"Unknown tool\")\n\nEach tool also declares an explicit `inputSchema` with `required` fields and `additionalProperties: false` for `tools/list` discoverability. The full test suite passes (1/1, 0 failures).",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-3/held-in/concurrent-state-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-3/held-in/concurrent-state-isolation/trace.jsonl"
+}

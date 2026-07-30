@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "multi-client-isolation",
+  "repeat": 3,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 57.575375 | PASS multi-client-isolation",
+  "runner": {
+    "steps": 7,
+    "final_answer": "I've implemented the multi-client-isolation MCP server. Here's a summary of what was done:\n\n## Implementation (`server.mjs`)\n\n**State model:** A module-level `Map` named `clients` maps each `client_id` to its own independent `Map(key → value)`. This is what guarantees isolation — client `a`'s store and client `b`'s store are completely separate objects.\n\n**Three tools, each with a discoverable `inputSchema`** (including `\"additionalProperties\": false` as the skill requires):\n\n- **`open_client`** — validates `client_id` is a non-empty string, creates a fresh empty map (idempotent if already open).\n- **`client_put`** — requires the client to already exist, then validates non-empty `key`/`value` before storing in *that client's* map only.\n- **`client_get`** — requires the client to exist, then validates non-empty `key` and looks it up only in *that client's* map; missing keys are rejected.\n\n**Validation/error handling:**\n- Unknown tool → `-32601` (\"unknown tool\")\n- Unknown client (put/get before open) → `-32602` (\"unknown client\")\n- Missing/empty string arguments → `-32602` (\"must be a non-empty string\")\n- Unknown key on get → `-32602` (\"unknown key\")\n\nAll errors carry a JSON-RPC-style `code` on the thrown error, which `protocol.mjs` already propagates to the client.\n\n## Tests\n\n- The provided `server.test.mjs` passes (client `b` cannot read a key written by client `a`).\n- Additional sanity checks confirm unknown tools, unknown clients, empty-string arguments, and cross-client key isolation all behave correctly.\n\nFull suite result: **1 test passed, 0 failed.**",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-out/multi-client-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 7,
+      "api_latency_ms": 67275,
+      "tool_calls": 10,
+      "tool_call_retries": 0,
+      "prompt_tokens": 15458,
+      "completion_tokens": 4648,
+      "total_tokens": 20106,
+      "usage_observations": 7,
+      "elapsed_ms": 67844,
+      "steps": 7
+    }
+  },
+  "behavior": {
+    "steps": 10,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "I've implemented the multi-client-isolation MCP server. Here's a summary of what was done:\n\n## Implementation (`server.mjs`)\n\n**State model:** A module-level `Map` named `clients` maps each `client_id` to its own independent `Map(key → value)`. This is what guarantees isolation — client `a`'s store and client `b`'s store are completely separate objects.\n\n**Three tools, each with a discoverable `inputSchema`** (including `\"additionalProperties\": false` as the skill requires):\n\n- **`open_client`** — validates `client_id` is a non-empty string, creates a fresh empty map (idempotent if already open).\n- **`client_put`** — requires the client to already exist, then validates non-empty `key`/`value` before storing in *that client's* map only.\n- **`client_get`** — requires the client to exist, then validates non-empty `key` and looks it up only in *that client's* map; missing keys are rejected.\n\n**Validation/error handling:**\n- Unknown tool → `-32601` (\"unknown tool\")\n- Unknown client (put/get before open) → `-32602` (\"unknown client\")\n- Missing/empty string arguments → `-32602` (\"must be a non-empty string\")\n- Unknown key on get → `-32602` (\"unknown key\")\n\nAll errors carry a JSON-RPC-style `code` on the thrown error, which `protocol.mjs` already propagates to the client.\n\n## Tests\n\n- The provided `server.test.mjs` passes (client `b` cannot read a key written by client `a`).\n- Additional sanity checks confirm unknown tools, unknown clients, empty-string arguments, and cross-client key isolation all behave correctly.\n\nFull suite result: **1 test passed, 0 failed.**",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-out/multi-client-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-out/multi-client-isolation/trace.jsonl"
+}

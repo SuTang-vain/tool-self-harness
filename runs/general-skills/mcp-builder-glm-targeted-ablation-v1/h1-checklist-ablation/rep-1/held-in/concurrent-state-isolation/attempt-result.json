@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "concurrent-state-isolation",
+  "repeat": 1,
+  "pass": false,
+  "verify_exit": 1,
+  "verify_msg": "TypeError: Cannot read properties of undefined (reading '0') |     at file:///Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-checklist-ablation/rep-1/held-in/concurrent-state-isolation/workspace/[eval1]:4:243 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |  | Node.js v22.23.0",
+  "runner": {
+    "steps": 7,
+    "final_answer": "The implementation is complete and the test suite passes (1/1 tests).\n\n## Summary\n\nI implemented a concurrent-state-isolation MCP server in `server.mjs` with three tools:\n\n**`begin_session`** — creates a new isolated state store keyed by `session_id`.\n\n**`put_value`** — stores a string `value` under `key` within a session's store.\n\n**`get_value`** — retrieves the value for `key` within a session's store.\n\n### Design\n- **State isolation**: A module-level `Map` maps each `session_id` to its own `Map` of key→value. Sessions only ever read/write their own map, so a write in `s1` cannot be read from `s2` (the test confirms `get_value` on `s2` rejects since the key doesn't exist there).\n- **Validation** (shared helpers):\n  - `validateArgs` rejects non-object args and any keys outside an explicit allow-list (rejects extra/unknown arguments).\n  - `requireNonEmptyString` enforces non-empty string `session_id` and `key`.\n  - `requireString` enforces string `value` for `put`.\n  - `requireSession` rejects operations against sessions that were never begun.\n- **Unknown tools** fall through to the `default` case and throw.\n\n### Schema checklist\nPer the skill's pre-finish checklist, every tool's `inputSchema` includes `\"additionalProperties\": false` (verified above: `begin_session:false, put_value:false, get_value:false`), with `required` fields and `minLength: 1` constraints mirroring the runtime validation.\n\n### Verification\nBeyond the provided isolation test, I manually confirmed rejection paths for: missing session, extra argument, empty `session_id`, non-string `value`, unknown tool name, and missing `key` — all reject with clear messages.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-checklist-ablation/rep-1/held-in/concurrent-state-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 7,
+      "api_latency_ms": 80787,
+      "tool_calls": 12,
+      "tool_call_retries": 0,
+      "prompt_tokens": 16101,
+      "completion_tokens": 5411,
+      "total_tokens": 21512,
+      "usage_observations": 7,
+      "elapsed_ms": 81480,
+      "steps": 7
+    }
+  },
+  "behavior": {
+    "steps": 12,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete and the test suite passes (1/1 tests).\n\n## Summary\n\nI implemented a concurrent-state-isolation MCP server in `server.mjs` with three tools:\n\n**`begin_session`** — creates a new isolated state store keyed by `session_id`.\n\n**`put_value`** — stores a string `value` under `key` within a session's store.\n\n**`get_value`** — retrieves the value for `key` within a session's store.\n\n### Design\n- **State isolation**: A module-level `Map` maps each `session_id` to its own `Map` of key→value. Sessions only ever read/write their own map, so a write in `s1` cannot be read from `s2` (the test confirms `get_value` on `s2` rejects since the key doesn't exist there).\n- **Validation** (shared helpers):\n  - `validateArgs` rejects non-object args and any keys outside an explicit allow-list (rejects extra/unknown arguments).\n  - `requireNonEmptyString` enforces non-empty string `session_id` and `key`.\n  - `requireString` enforces string `value` for `put`.\n  - `requireSession` rejects operations against sessions that were never begun.\n- **Unknown tools** fall through to the `default` case and throw.\n\n### Schema checklist\nPer the skill's pre-finish checklist, every tool's `inputSchema` includes `\"additionalProperties\": false` (verified above: `begin_session:false, put_value:false, get_value:false`), with `required` fields and `minLength: 1` constraints mirroring the runtime validation.\n\n### Verification\nBeyond the provided isolation test, I manually confirmed rejection paths for: missing session, extra argument, empty `session_id`, non-string `value`, unknown tool name, and missing `key` — all reject with clear messages.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-checklist-ablation/rep-1/held-in/concurrent-state-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-checklist-ablation/rep-1/held-in/concurrent-state-isolation/trace.jsonl"
+}

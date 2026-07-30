@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "multi-client-isolation",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 52.662667 | PASS multi-client-isolation",
+  "runner": {
+    "steps": 7,
+    "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Summary\n\nI implemented the multi-client-isolation MCP server in `server.mjs` with three tools:\n\n**`open_client`** — Registers a `client_id` with its own isolated `Map`. Validates that `client_id` is a non-empty string. Idempotent (re-opening an existing client keeps its data).\n\n**`client_put`** — Stores `key`→`value` in the calling client's map. Requires non-empty `client_id`, `key`, and `value`, and rejects unknown clients.\n\n**`client_get`** — Retrieves a value from the calling client's map. Rejects unknown clients and unknown keys, which provides the **isolation guarantee**: a key written by client `a` is genuinely absent from client `b`'s store, so `client_get` for `b` rejects.\n\nKey design points:\n- **Per-client isolation**: A top-level `Map<client_id, Map<key, value>>` ensures each client owns a fully independent namespace — there is no shared lookup, so a value written by `a` is invisible to `b` (returns `unknown key`, satisfying the test's `assert.rejects`).\n- **Validation**: `assertNonEmptyString` enforces non-empty strings for all identifiers/keys/values; errors carry JSON-RPC code `-32602` (invalid params).\n- **Unknown tool rejection**: The `default` switch branch throws with code `-32601` (method not found), which `protocol.mjs` already surfaces.\n- **Discoverable schemas**: `listTools` returns all three tools with explicit `inputSchema`s (required fields, `additionalProperties: false`).\n\nThe test suite passes (`✔ clients`), and manual checks confirmed isolation, unknown-client/tool rejection, and non-empty-string validation all behave correctly.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-0/held-out/multi-client-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 7,
+      "api_latency_ms": 65394,
+      "tool_calls": 11,
+      "tool_call_retries": 0,
+      "prompt_tokens": 15705,
+      "completion_tokens": 4459,
+      "total_tokens": 20164,
+      "usage_observations": 7,
+      "elapsed_ms": 66014,
+      "steps": 7
+    }
+  },
+  "behavior": {
+    "steps": 11,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Summary\n\nI implemented the multi-client-isolation MCP server in `server.mjs` with three tools:\n\n**`open_client`** — Registers a `client_id` with its own isolated `Map`. Validates that `client_id` is a non-empty string. Idempotent (re-opening an existing client keeps its data).\n\n**`client_put`** — Stores `key`→`value` in the calling client's map. Requires non-empty `client_id`, `key`, and `value`, and rejects unknown clients.\n\n**`client_get`** — Retrieves a value from the calling client's map. Rejects unknown clients and unknown keys, which provides the **isolation guarantee**: a key written by client `a` is genuinely absent from client `b`'s store, so `client_get` for `b` rejects.\n\nKey design points:\n- **Per-client isolation**: A top-level `Map<client_id, Map<key, value>>` ensures each client owns a fully independent namespace — there is no shared lookup, so a value written by `a` is invisible to `b` (returns `unknown key`, satisfying the test's `assert.rejects`).\n- **Validation**: `assertNonEmptyString` enforces non-empty strings for all identifiers/keys/values; errors carry JSON-RPC code `-32602` (invalid params).\n- **Unknown tool rejection**: The `default` switch branch throws with code `-32601` (method not found), which `protocol.mjs` already surfaces.\n- **Discoverable schemas**: `listTools` returns all three tools with explicit `inputSchema`s (required fields, `additionalProperties: false`).\n\nThe test suite passes (`✔ clients`), and manual checks confirmed isolation, unknown-client/tool rejection, and non-empty-string validation all behave correctly.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-0/held-out/multi-client-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h0-ablation/rep-0/held-out/multi-client-isolation/trace.jsonl"
+}

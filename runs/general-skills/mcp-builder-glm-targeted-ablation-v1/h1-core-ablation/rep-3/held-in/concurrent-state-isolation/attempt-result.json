@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "concurrent-state-isolation",
+  "repeat": 3,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 49.5305 | PASS concurrent-state-isolation",
+  "runner": {
+    "steps": 12,
+    "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Implementation Summary\n\nI implemented the `concurrent-state-isolation` MCP server in `server.mjs` with three tools:\n\n**`begin_session`** — creates (or re-uses) an isolated key-value store keyed by `session_id`. Requires a non-empty string `session_id`.\n\n**`put_value`** — stores a `value` under a `key` within a session's store. Requires non-empty string `session_id` and `key`, and a string `value`. Rejects if the session hasn't been begun.\n\n**`get_value`** — retrieves a value by `key` from a session's store. Requires non-empty string `session_id` and `key`. Rejects if the session is missing or the key doesn't exist in that session.\n\n### Key design points\n\n- **Session isolation**: Each `session_id` maps to its own `Map`. A write under `s1` is invisible to `s2`, so `get_value` on `s2` for a key only written under `s1` rejects (the test's core assertion).\n- **Explicit input schemas**: Every tool's `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` as required by the skill.\n- **Argument validation** (`validateArgs`): rejects extra/unknown arguments, missing required arguments, empty strings for `session_id`/`key`, and non-string `value`.\n- **Missing sessions**: `put_value`/`get_value` reject with an error if the `session_id` was never begun.\n- **Unknown tools**: `callTool` rejects with code `-32601` for tools not in the registry.\n- Errors carry JSON-RPC error codes (`-32602` for invalid params, `-32601` for unknown tool/method) so `protocol.mjs` returns proper error responses.\n\n### Test results\n- Official suite: `✔ isolation` — **1 pass, 0 fail**\n- Additional manual edge-case checks (unknown tool, missing session, missing/empty/extra/typed args, isolation both directions) — **all passed**.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/concurrent-state-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 12,
+      "api_latency_ms": 119770,
+      "tool_calls": 14,
+      "tool_call_retries": 0,
+      "prompt_tokens": 30304,
+      "completion_tokens": 7876,
+      "total_tokens": 38180,
+      "usage_observations": 12,
+      "elapsed_ms": 120590,
+      "steps": 12
+    }
+  },
+  "behavior": {
+    "steps": 14,
+    "loaded_skill": true,
+    "read_skill_reference": true,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete and all tests pass. Here's a summary of what I built:\n\n## Implementation Summary\n\nI implemented the `concurrent-state-isolation` MCP server in `server.mjs` with three tools:\n\n**`begin_session`** — creates (or re-uses) an isolated key-value store keyed by `session_id`. Requires a non-empty string `session_id`.\n\n**`put_value`** — stores a `value` under a `key` within a session's store. Requires non-empty string `session_id` and `key`, and a string `value`. Rejects if the session hasn't been begun.\n\n**`get_value`** — retrieves a value by `key` from a session's store. Requires non-empty string `session_id` and `key`. Rejects if the session is missing or the key doesn't exist in that session.\n\n### Key design points\n\n- **Session isolation**: Each `session_id` maps to its own `Map`. A write under `s1` is invisible to `s2`, so `get_value` on `s2` for a key only written under `s1` rejects (the test's core assertion).\n- **Explicit input schemas**: Every tool's `inputSchema` includes `type`, `properties`, `required`, and `additionalProperties: false` as required by the skill.\n- **Argument validation** (`validateArgs`): rejects extra/unknown arguments, missing required arguments, empty strings for `session_id`/`key`, and non-string `value`.\n- **Missing sessions**: `put_value`/`get_value` reject with an error if the `session_id` was never begun.\n- **Unknown tools**: `callTool` rejects with code `-32601` for tools not in the registry.\n- Errors carry JSON-RPC error codes (`-32602` for invalid params, `-32601` for unknown tool/method) so `protocol.mjs` returns proper error responses.\n\n### Test results\n- Official suite: `✔ isolation` — **1 pass, 0 fail**\n- Additional manual edge-case checks (unknown tool, missing session, missing/empty/extra/typed args, isolation both directions) — **all passed**.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/concurrent-state-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-core-ablation/rep-3/held-in/concurrent-state-isolation/trace.jsonl"
+}

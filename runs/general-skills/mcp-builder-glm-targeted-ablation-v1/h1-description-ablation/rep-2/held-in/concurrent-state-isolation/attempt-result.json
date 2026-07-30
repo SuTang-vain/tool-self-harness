@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "concurrent-state-isolation",
+  "repeat": 2,
+  "pass": false,
+  "verify_exit": 1,
+  "verify_msg": "TypeError: Cannot read properties of undefined (reading '0') |     at file:///Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-description-ablation/rep-2/held-in/concurrent-state-isolation/workspace/[eval1]:4:243 |     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) |  | Node.js v22.23.0",
+  "runner": {
+    "steps": 10,
+    "final_answer": "The implementation is complete. Here's a summary of what I built:\n\n## Summary\n\nI implemented the `concurrent-state-isolation` MCP server in `server.mjs` with three discoverable tools, each with strict JSON schemas (`additionalProperties: false`):\n\n1. **`begin_session`** — requires non-empty `session_id`, creates an isolated `Map` store for that session.\n2. **`put_value`** — requires non-empty `session_id` and `key`, plus a string `value`. Writes are scoped to the session's own store.\n3. **`get_value`** — requires non-empty `session_id` and `key`. Reads only from the named session's store.\n\n### Key behaviors\n- **State isolation**: Each `session_id` gets its own `Map`, so writes in `s1` are not visible from `s2` (the `get_value` for an absent key rejects).\n- **Validation**: \n  - Unknown tools are rejected (code `-32601`).\n  - Missing required arguments are rejected.\n  - Extra/unexpected arguments are rejected.\n  - Empty-string `session_id`/`key` are rejected.\n  - Non-string `value` on `put_value` is rejected.\n  - Operations against a session that was never begun (`put`/`get`) are rejected.\n\n### Verification\n- The existing `isolation` test now passes.\n- I verified all edge cases (unknown tool, missing args, extra args, empty session_id/key, non-string value, missing session store, cross-session isolation) all behave correctly.\n- The `protocol.mjs` driver returns proper JSON-RPC responses (`tools/list`, successful calls, and error objects for unknown tools / unexpected arguments).\n- Full test suite passes: 1 pass, 0 fail.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-description-ablation/rep-2/held-in/concurrent-state-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 10,
+      "api_latency_ms": 118135,
+      "tool_calls": 15,
+      "tool_call_retries": 0,
+      "prompt_tokens": 29331,
+      "completion_tokens": 7907,
+      "total_tokens": 37238,
+      "usage_observations": 10,
+      "elapsed_ms": 119942,
+      "steps": 10
+    }
+  },
+  "behavior": {
+    "steps": 15,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete. Here's a summary of what I built:\n\n## Summary\n\nI implemented the `concurrent-state-isolation` MCP server in `server.mjs` with three discoverable tools, each with strict JSON schemas (`additionalProperties: false`):\n\n1. **`begin_session`** — requires non-empty `session_id`, creates an isolated `Map` store for that session.\n2. **`put_value`** — requires non-empty `session_id` and `key`, plus a string `value`. Writes are scoped to the session's own store.\n3. **`get_value`** — requires non-empty `session_id` and `key`. Reads only from the named session's store.\n\n### Key behaviors\n- **State isolation**: Each `session_id` gets its own `Map`, so writes in `s1` are not visible from `s2` (the `get_value` for an absent key rejects).\n- **Validation**: \n  - Unknown tools are rejected (code `-32601`).\n  - Missing required arguments are rejected.\n  - Extra/unexpected arguments are rejected.\n  - Empty-string `session_id`/`key` are rejected.\n  - Non-string `value` on `put_value` is rejected.\n  - Operations against a session that was never begun (`put`/`get`) are rejected.\n\n### Verification\n- The existing `isolation` test now passes.\n- I verified all edge cases (unknown tool, missing args, extra args, empty session_id/key, non-string value, missing session store, cross-session isolation) all behave correctly.\n- The `protocol.mjs` driver returns proper JSON-RPC responses (`tools/list`, successful calls, and error objects for unknown tools / unexpected arguments).\n- Full test suite passes: 1 pass, 0 fail.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-description-ablation/rep-2/held-in/concurrent-state-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-description-ablation/rep-2/held-in/concurrent-state-isolation/trace.jsonl"
+}

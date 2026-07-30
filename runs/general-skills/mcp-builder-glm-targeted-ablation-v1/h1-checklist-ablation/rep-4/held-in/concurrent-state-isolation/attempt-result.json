@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "concurrent-state-isolation",
+  "repeat": 4,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 55.989083 | PASS concurrent-state-isolation",
+  "runner": {
+    "steps": 7,
+    "final_answer": "All tests pass. Here's a summary of what I implemented in `server.mjs`:\n\n## Implementation\n\n**State isolation**: Each session is a `Map` stored in a top-level `sessions` `Map` keyed by `session_id`. `put_value`/`get_value` look up the session-specific map, so writes in one session are invisible to others.\n\n**Three tools** (all with `additionalProperties: false` per the schema checklist):\n\n1. `begin_session` — creates an isolated session map (idempotent if already exists). Requires non-empty string `session_id`.\n2. `put_value` — stores a string `value` under `key` in the session. Requires non-empty string `session_id` and `key`, plus a string `value`.\n3. `get_value` — retrieves the value for `key` in the session. Requires non-empty string `session_id` and `key`.\n\n**Validation/rejection**:\n- Unknown tool → error\n- Missing/empty `session_id` or `key` → error\n- Non-string `value` on put → error\n- Extra/unknown arguments → error (enforced both via `additionalProperties: false` schema and an explicit `assertNoExtraArgs` runtime check)\n- Operation on a non-existent session → error (\"session not found\")\n- `get_value` on a key not present in the session → error (\"key not found\"), which is what the isolation test relies on (s2 can't read s1's `k`).\n\nThe test `isolation` passes: after writing `k=one` into `s1`, `get_value` from `s2` rejects.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-checklist-ablation/rep-4/held-in/concurrent-state-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 7,
+      "api_latency_ms": 31122,
+      "tool_calls": 11,
+      "tool_call_retries": 0,
+      "prompt_tokens": 13974,
+      "completion_tokens": 1928,
+      "total_tokens": 15902,
+      "usage_observations": 7,
+      "elapsed_ms": 32173,
+      "steps": 7
+    }
+  },
+  "behavior": {
+    "steps": 11,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "All tests pass. Here's a summary of what I implemented in `server.mjs`:\n\n## Implementation\n\n**State isolation**: Each session is a `Map` stored in a top-level `sessions` `Map` keyed by `session_id`. `put_value`/`get_value` look up the session-specific map, so writes in one session are invisible to others.\n\n**Three tools** (all with `additionalProperties: false` per the schema checklist):\n\n1. `begin_session` — creates an isolated session map (idempotent if already exists). Requires non-empty string `session_id`.\n2. `put_value` — stores a string `value` under `key` in the session. Requires non-empty string `session_id` and `key`, plus a string `value`.\n3. `get_value` — retrieves the value for `key` in the session. Requires non-empty string `session_id` and `key`.\n\n**Validation/rejection**:\n- Unknown tool → error\n- Missing/empty `session_id` or `key` → error\n- Non-string `value` on put → error\n- Extra/unknown arguments → error (enforced both via `additionalProperties: false` schema and an explicit `assertNoExtraArgs` runtime check)\n- Operation on a non-existent session → error (\"session not found\")\n- `get_value` on a key not present in the session → error (\"key not found\"), which is what the isolation test relies on (s2 can't read s1's `k`).\n\nThe test `isolation` passes: after writing `k=one` into `s1`, `get_value` from `s2` rejects.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-checklist-ablation/rep-4/held-in/concurrent-state-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-targeted-ablation-v1/h1-checklist-ablation/rep-4/held-in/concurrent-state-isolation/trace.jsonl"
+}
