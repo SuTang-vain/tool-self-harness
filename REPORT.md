@@ -752,3 +752,49 @@ protocol and shows a non-regressive local Path-B edit, but does not independentl
 tracked-ignore ordering was the causal mechanism. Candidate 3 used about 11.8% more total tokens
 and 12.9% more tool calls, while reducing elapsed time by about 9.2% and tokens per reliable task
 by about 25.5%; this is mixed descriptive Q3 movement, not an efficiency claim.
+
+## 15. Independent Replication and Expanded Path-B Suite
+
+A fresh 4+2 replication used seed `2026073031` and did not pool qualification or Round-1 attempts.
+The reliable gate again accepted `h1`: `h0` scored 10/12 held-in and 4/6 held-out with 3/4 and
+1/2 reliable tasks, while `h1` scored 12/12 and 5/6 with 4/4 and 1/2 reliable tasks. The reliable
+gain was `default-hidden`, with no losses. Thus the aggregate Q2-safe advantage replicated, but the
+task identity differed from Round 1: the original attribution target became reliable while the
+previous held-out gain remained 2/3. This is mechanism-consistent replication, not a causal
+ablation.
+
+The suite was then expanded from 4+2 to 8+4 tasks. Added cases cover a pre-existing branch,
+dirty-source preservation, detached HEAD, existing-worktree reuse, submodule preservation, and a
+baseline setup/readiness failure. All 12 untouched fixtures fail and all 12 external reference
+repairs pass.
+
+Two expanded runs were invalidated at Gate 0 rather than interpreted as model results. Expanded-v1
+missed explicit inner test exits written with hyphens; expanded-v2 missed the equivalent command
+`npm --prefix <worktree> test`. Both raw runs and post-hoc rescores are retained as verifier audits,
+but neither is pooled into the final comparison. Verifier v3 separates test-command classification
+from inner-exit parsing, covers the observed equivalent command forms with focused unit tests, and
+was frozen before a third fresh run.
+
+The formal expanded-v3 result is:
+
+| Variant | Held-in | Reliable held-in | Held-out | Reliable held-out | Q2 decision |
+|---|---:|---:|---:|---:|---|
+| h0 | 21/24 | 6/8 | 8/12 | 2/4 | baseline |
+| h1 | 24/24 | 8/8 | 12/12 | 4/4 | accept |
+
+`h1` gains reliable `default-hidden`, `dirty-worktree`, `failing-baseline`, and `submodule-guard`,
+loses no reliable task, and produces seven paired wins with zero losses (two-sided exact sign
+p=0.015625). Gains occur on both the original six-task subset and the six added tasks, so the result
+is not explained solely by replaying the compact suite. Within GLM-5.2 and this Path-B benchmark,
+the bounded L1 edit now has independent and expanded-distribution support.
+
+Q3 remains mixed: relative to `h0`, `h1` uses about 16.0% more total tokens and 3.7% more tool calls,
+but completes about 7.7% faster and reduces tokens per successful attempt by 6.6% and tokens per
+reliable task by 22.7%. These are descriptive movements, not a preregistered efficiency claim. Q4
+remains `not_measured`.
+
+Round 2 is stopped on this suite. `h1` is reliable on all eight held-in tasks (24/24), leaving no
+non-leaking held-in failure evidence for a proposer. The next formal research action is therefore
+to redesign the Path-C Security Review suite so that it is non-ceiling and sensitive to rule
+density/deep-reference effects, rather than generating an unsupported Path-B candidate or opening
+cross-model evaluation.
