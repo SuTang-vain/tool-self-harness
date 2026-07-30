@@ -726,3 +726,29 @@ no-skill, a stable 0/3 held-in failure on `default-hidden`, and substantially le
 full skill. In all three failures it created the correct worktree and ran tests but used
 `.git/info/exclude` instead of committing `.worktrees/` to `.gitignore`. Round-1 proposal evidence
 contains only this held-in mechanism; held-out results and official-full content remain hidden.
+
+## 14. Path-B Progressive Round 1
+
+The minimal Git Worktrees skill was frozen as `h0`, and only its held-in `default-hidden` failure
+cluster was exposed to the GLM proposer. The proposer generated three single-surface L1 edits:
+an ordered procedure, a named precondition gate, and emphasized bullet ordering. All candidates
+were frozen before a fresh 72-attempt comparison.
+
+| Variant | Held-in | Reliable held-in | Held-out | Reliable held-out | Q2 decision |
+|---|---:|---:|---:|---:|---|
+| h0 | 11/12 | 3/4 | 5/6 | 1/2 | baseline |
+| candidate 1 | 12/12 | 4/4 | 5/6 | 1/2 | accept, dominated |
+| candidate 2 | 11/12 | 3/4 | 5/6 | 1/2 | reject |
+| candidate 3 | 12/12 | 4/4 | 6/6 | 2/2 | accept, promote |
+
+Candidate 3 is both the smallest patch and the only candidate to make all six tasks reliable. It
+gains held-in `both-directories` and held-out `failing-baseline`, loses no reliable task, and is
+promoted as `h1`. Held-out evidence was not visible during proposal generation.
+
+This is an E2 reliable local evolution result, but the causal claim must remain narrow. In the
+fresh h0 comparison, the originally attributed `default-hidden` task happened to pass all three
+repeats; the actual reliable gains occurred on other tasks. The result validates the promotion
+protocol and shows a non-regressive local Path-B edit, but does not independently prove that the
+tracked-ignore ordering was the causal mechanism. Candidate 3 used about 11.8% more total tokens
+and 12.9% more tool calls, while reducing elapsed time by about 9.2% and tokens per reliable task
+by about 25.5%; this is mixed descriptive Q3 movement, not an efficiency claim.
