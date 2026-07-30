@@ -140,9 +140,9 @@ async function pool(items, concurrency, fn) {
 }
 
 async function main() {
-  const [modelConfigArg, suiteArg, variant, skillArg, runId, repeatsArg, concurrencyArg, seedArg] = process.argv.slice(2);
+  const [modelConfigArg, suiteArg, variant, skillArg, runId, repeatsArg, concurrencyArg, seedArg, taskFilterArg] = process.argv.slice(2);
   if (!modelConfigArg || !suiteArg || !variant || !skillArg || !runId) {
-    console.error('Usage: 06-run-skill-benchmark.js <model-config> <suite-dir> <variant> <skill-repo|none> <run-id> [repeats=2] [concurrency=2] [seed]');
+    console.error('Usage: 06-run-skill-benchmark.js <model-config> <suite-dir> <variant> <skill-repo|none> <run-id> [repeats=2] [concurrency=2] [seed] [task-filter comma-list]');
     process.exit(2);
   }
   const root = path.resolve(__dirname, '..');
@@ -152,10 +152,16 @@ async function main() {
   const repeats = Math.max(1, Number(repeatsArg || 2));
   const concurrency = Math.max(1, Number(concurrencyArg || 2));
   const seed = seedArg == null ? null : Number(seedArg);
+  const taskFilter = taskFilterArg ? new Set(taskFilterArg.split(',').map(value => value.trim()).filter(Boolean)) : null;
   const runDir = path.join(root, 'runs', 'general-skills', runId, variant);
   const resultDir = path.join(root, 'results', 'general-skills', runId);
-  const tasks = listTasks(suiteDir);
+  const allTasks = listTasks(suiteDir);
+  const tasks = taskFilter ? allTasks.filter(task => taskFilter.has(task.id)) : allTasks;
   if (tasks.length === 0) throw new Error('no tasks found in ' + suiteDir);
+  if (taskFilter && tasks.length !== taskFilter.size) {
+    const found = new Set(tasks.map(task => task.id));
+    throw new Error('task filter contains unknown task(s): ' + [...taskFilter].filter(id => !found.has(id)).join(','));
+  }
   const attempts = [];
   for (let repeat = 0; repeat < repeats; repeat++) for (const task of tasks) attempts.push({ task, repeat });
   if (seed != null && Number.isFinite(seed)) {
@@ -225,6 +231,7 @@ async function main() {
     suite: suiteDir,
     repeats,
     task_order_seed: seed,
+    task_filter: taskFilter ? [...taskFilter].sort() : null,
     held_in: summarizeSplit('held-in'),
     held_out: summarizeSplit('held-out'),
     metrics,
