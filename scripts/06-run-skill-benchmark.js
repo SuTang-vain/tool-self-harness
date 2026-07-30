@@ -140,9 +140,9 @@ async function pool(items, concurrency, fn) {
 }
 
 async function main() {
-  const [modelConfigArg, suiteArg, variant, skillArg, runId, repeatsArg, concurrencyArg] = process.argv.slice(2);
+  const [modelConfigArg, suiteArg, variant, skillArg, runId, repeatsArg, concurrencyArg, seedArg] = process.argv.slice(2);
   if (!modelConfigArg || !suiteArg || !variant || !skillArg || !runId) {
-    console.error('Usage: 06-run-skill-benchmark.js <model-config> <suite-dir> <variant> <skill-repo|none> <run-id> [repeats=2] [concurrency=2]');
+    console.error('Usage: 06-run-skill-benchmark.js <model-config> <suite-dir> <variant> <skill-repo|none> <run-id> [repeats=2] [concurrency=2] [seed]');
     process.exit(2);
   }
   const root = path.resolve(__dirname, '..');
@@ -151,12 +151,21 @@ async function main() {
   const skillRepo = skillArg === 'none' ? 'none' : path.resolve(skillArg);
   const repeats = Math.max(1, Number(repeatsArg || 2));
   const concurrency = Math.max(1, Number(concurrencyArg || 2));
+  const seed = seedArg == null ? null : Number(seedArg);
   const runDir = path.join(root, 'runs', 'general-skills', runId, variant);
   const resultDir = path.join(root, 'results', 'general-skills', runId);
   const tasks = listTasks(suiteDir);
   if (tasks.length === 0) throw new Error('no tasks found in ' + suiteDir);
   const attempts = [];
   for (let repeat = 0; repeat < repeats; repeat++) for (const task of tasks) attempts.push({ task, repeat });
+  if (seed != null && Number.isFinite(seed)) {
+    let state = Math.trunc(seed) >>> 0;
+    const random = () => { state = (1664525 * state + 1013904223) >>> 0; return state / 0x100000000; };
+    for (let i = attempts.length - 1; i > 0; i--) {
+      const j = Math.floor(random() * (i + 1));
+      [attempts[i], attempts[j]] = [attempts[j], attempts[i]];
+    }
+  }
   console.log('Running ' + attempts.length + ' attempts: variant=' + variant + ' tasks=' + tasks.length + ' repeats=' + repeats);
   const ctx = { root, modelConfig, skillRepo, runDir, maxSteps: 30 };
   const results = await pool(attempts, concurrency, item => runAttempt(ctx, item.task, item.repeat));
@@ -215,6 +224,7 @@ async function main() {
     skill_repo: skillRepo,
     suite: suiteDir,
     repeats,
+    task_order_seed: seed,
     held_in: summarizeSplit('held-in'),
     held_out: summarizeSplit('held-out'),
     metrics,
