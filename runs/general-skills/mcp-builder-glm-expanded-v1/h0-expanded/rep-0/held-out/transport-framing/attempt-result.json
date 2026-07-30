@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "transport-framing",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 50.952541 | PASS transport-framing",
+  "runner": {
+    "steps": 9,
+    "final_answer": "All tests pass. Here's a summary of what I implemented.\n\n## Changes\n\n### `server.mjs`\n- **`listTools()`** now exposes an `echo` tool with a proper `inputSchema` requiring a `message` string (`required: ['message']`, `additionalProperties: false`).\n- **`callTool(name, args)`** rejects unknown tools with error code `-32601`, validates that arguments is an object, and rejects a non-string `message` with error code `-32602`. On success it returns `{ content: [{ type: 'text', text: args.message }] }`.\n\n### `protocol.mjs`\nThe adapter was tightened so it **never prints diagnostics to stdout** and **emits exactly one valid JSON response line per request**, including when things go wrong:\n- **Malformed lines** are caught at `JSON.parse` time and produce a single `Parse error` response (code `-32700`) rather than crashing with a stack trace.\n- **Per-request try/catch** wraps all method handling; any thrown error yields exactly one JSON-RPC error response line with the error's code (falling back to `-32603` internal error).\n- **`id` extraction** is guarded so a non-object request still produces a well-formed response (`id: null`).\n- The empty-line guard (`if (!line.trim()) continue`) keeps blank lines from generating spurious responses, while every non-empty line produces exactly one response.\n\n## Verification\n- `node --test`: **1 pass, 0 fail**.\n- Pipe of 8 lines (one blank, one malformed, plus valid/invalid/unknown-tool/unknown-method cases) produced **7 response lines** — one per non-empty input, each a single line of valid JSON.\n- stderr was confirmed empty for all runs.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-v1/h0-expanded/rep-0/held-out/transport-framing/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 14,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "All tests pass. Here's a summary of what I implemented.\n\n## Changes\n\n### `server.mjs`\n- **`listTools()`** now exposes an `echo` tool with a proper `inputSchema` requiring a `message` string (`required: ['message']`, `additionalProperties: false`).\n- **`callTool(name, args)`** rejects unknown tools with error code `-32601`, validates that arguments is an object, and rejects a non-string `message` with error code `-32602`. On success it returns `{ content: [{ type: 'text', text: args.message }] }`.\n\n### `protocol.mjs`\nThe adapter was tightened so it **never prints diagnostics to stdout** and **emits exactly one valid JSON response line per request**, including when things go wrong:\n- **Malformed lines** are caught at `JSON.parse` time and produce a single `Parse error` response (code `-32700`) rather than crashing with a stack trace.\n- **Per-request try/catch** wraps all method handling; any thrown error yields exactly one JSON-RPC error response line with the error's code (falling back to `-32603` internal error).\n- **`id` extraction** is guarded so a non-object request still produces a well-formed response (`id: null`).\n- The empty-line guard (`if (!line.trim()) continue`) keeps blank lines from generating spurious responses, while every non-empty line produces exactly one response.\n\n## Verification\n- `node --test`: **1 pass, 0 fail**.\n- Pipe of 8 lines (one blank, one malformed, plus valid/invalid/unknown-tool/unknown-method cases) produced **7 response lines** — one per non-empty input, each a single line of valid JSON.\n- stderr was confirmed empty for all runs.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-v1/h0-expanded/rep-0/held-out/transport-framing/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-v1/h0-expanded/rep-0/held-out/transport-framing/trace.jsonl"
+}

@@ -547,3 +547,28 @@ splits, but the reliable task set exchanged `file-metadata` for `safe-calculator
 promotion is real for GLM on this pilot but does not transfer as a universal model-independent
 skill edit. This strengthens the model-specificity result and makes per-model acceptance a
 necessary part of subsequent task expansion.
+
+### 7.4 Expanded 36-Task GLM Evaluation
+
+The MCP Builder suite was expanded from 8 held-in / 4 held-out tasks to 24 held-in / 12
+held-out tasks. Every new untouched fixture failed its hidden verifier, and all 24 external
+reference repairs passed. We then evaluated the frozen GLM lineages with three fresh repeats:
+
+| Lineage | Held-in | Reliable held-in | Held-out | Reliable held-out |
+|---|---:|---:|---:|---:|
+| `h0-expanded` | 68/72 | 22/24 | 25/36 | 6/12 |
+| `h1-expanded` | 67/72 | 20/24 | 26/36 | 7/12 |
+
+The aggregate gate rejects because held-in decreases by one, even though held-out increases by
+one. The reliable gate also rejects: the candidate gains `notes-store`, `order-status`, and
+`prompt-argument-validation`, but loses reliable passes on `cancellation-cleanup`,
+`concurrent-state-isolation`, `prompt-template-render`, and `multi-client-isolation`. There are
+six paired wins and six paired losses (exact two-sided sign p=1).
+
+This is an important correction to the compact-pilot result. The GLM `h1-stable` promotion is
+valid on the original 12-task MCP suite, but it does not survive the frozen 36-task expansion.
+The expanded task set exposes the edit as a task exchange with a small held-in regression, not
+as a generally reliable MCP skill improvement. We therefore do not start expanded-suite
+MiniMax/DeepSeek runs yet. The next decision is whether to audit/revise task difficulty under a
+new preregistered version or retain this as a negative generalization result and perform an
+independent replication.

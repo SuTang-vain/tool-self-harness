@@ -1,0 +1,26 @@
+{
+  "split": "held-in",
+  "task_id": "batch-partial-failure",
+  "repeat": 1,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 53.439958 | PASS batch-partial-failure",
+  "runner": {
+    "steps": 9,
+    "final_answer": "The implementation is complete. Here's a summary of what I built:\n\n## Summary\n\nI implemented a batch-partial-failure MCP server in `server.mjs` with a single `batch_lookup` tool:\n\n### `listTools()`\nReturns one tool definition with an explicit input schema:\n- `ids`: a non-empty array of strings (`type: array`, `items: string`, `minItems: 1`)\n- `required: ['ids']`, `additionalProperties: false` to reject extra arguments\n\n### `callTool(name, args)`\n- **Unknown tools** → throws `-32601` error (caught by the protocol layer and returned as a JSON-RPC error)\n- **Invalid args** (non-object, missing `ids`, non-array, empty array, non-string elements, or extra properties) → throws `-32602` validation errors\n- **Valid batch** → iterates over every id **in input order** and produces one result per id, without aborting the batch:\n  - known ids → `{ id, ok: true, value }`\n  - missing ids → `{ id, ok: false, error: 'id not found: <id>' }`\n- Returns the results wrapped as MCP content: `{ content: [{ type: 'text', text: JSON.stringify({ results }) }] }`\n\n### Key design points\n- A single missing id only produces a per-id failure result — the rest of the batch still resolves normally.\n- Argument validation rejects extra/unknown properties and bad types before doing any lookups.\n- The existing protocol layer (`protocol.mjs`) already maps thrown `Error.code` to JSON-RPC error codes, so unknown-tool (`-32601`) and invalid-argument (`-32602`) errors surface cleanly to clients.\n\nThe test suite passes (1/1), and manual edge-case checks (all-known, all-missing, empty array, scalar ids, extra props, unknown tool, null args) all behave correctly.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-v1/h0-expanded/rep-1/held-in/batch-partial-failure/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 12,
+    "loaded_skill": true,
+    "read_skill_reference": true,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "The implementation is complete. Here's a summary of what I built:\n\n## Summary\n\nI implemented a batch-partial-failure MCP server in `server.mjs` with a single `batch_lookup` tool:\n\n### `listTools()`\nReturns one tool definition with an explicit input schema:\n- `ids`: a non-empty array of strings (`type: array`, `items: string`, `minItems: 1`)\n- `required: ['ids']`, `additionalProperties: false` to reject extra arguments\n\n### `callTool(name, args)`\n- **Unknown tools** → throws `-32601` error (caught by the protocol layer and returned as a JSON-RPC error)\n- **Invalid args** (non-object, missing `ids`, non-array, empty array, non-string elements, or extra properties) → throws `-32602` validation errors\n- **Valid batch** → iterates over every id **in input order** and produces one result per id, without aborting the batch:\n  - known ids → `{ id, ok: true, value }`\n  - missing ids → `{ id, ok: false, error: 'id not found: <id>' }`\n- Returns the results wrapped as MCP content: `{ content: [{ type: 'text', text: JSON.stringify({ results }) }] }`\n\n### Key design points\n- A single missing id only produces a per-id failure result — the rest of the batch still resolves normally.\n- Argument validation rejects extra/unknown properties and bad types before doing any lookups.\n- The existing protocol layer (`protocol.mjs`) already maps thrown `Error.code` to JSON-RPC error codes, so unknown-tool (`-32601`) and invalid-argument (`-32602`) errors surface cleanly to clients.\n\nThe test suite passes (1/1), and manual edge-case checks (all-known, all-missing, empty array, scalar ids, extra props, unknown tool, null args) all behave correctly.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-v1/h0-expanded/rep-1/held-in/batch-partial-failure/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-v1/h0-expanded/rep-1/held-in/batch-partial-failure/trace.jsonl"
+}

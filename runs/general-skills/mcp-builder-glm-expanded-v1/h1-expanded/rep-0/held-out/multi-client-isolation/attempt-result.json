@@ -1,0 +1,26 @@
+{
+  "split": "held-out",
+  "task_id": "multi-client-isolation",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 60.589958 | PASS multi-client-isolation",
+  "runner": {
+    "steps": 10,
+    "final_answer": "Done. Here's a summary of what I implemented in `server.mjs`:\n\n## Implementation\n\n**State model** — a single `Map` keyed by `client_id`, where each value is an independent `Map(key -> value)`. This guarantees isolation: client `a`'s keys live only in `a`'s map and are never readable by client `b`.\n\n**Three tools:**\n- `open_client` — creates a fresh private key/value map for a `client_id` (idempotent: re-opening reuses the existing map so data persists).\n- `client_put` — writes a `key`/`value` into the calling client's own map.\n- `client_get` — reads a `key` only from the calling client's own map; if the key isn't in *that* client's map, it throws (this is what makes cross-client reads fail).\n\n**Validation & errors (per the skill):**\n- All `inputSchema` objects include `type`, `properties`, `required`, and `additionalProperties: false`.\n- Non-empty strings are required for `client_id`, `key`, and `value` — empty/missing values throw a `-32602` error.\n- Unknown tool names throw `-32601` (\"Unknown tool\").\n- Operations referencing a client that was never opened throw `-32602` (\"Unknown client\").\n- Getting a key that the calling client doesn't have throws `-32602` (\"Unknown key\") — so even an opened client `b` cannot see a key that only client `a` wrote.\n\nThe existing `protocol.mjs` already converts thrown errors (using `error.code`/`error.message`) into JSON-RPC error responses, so the error contract flows through to clients correctly.\n\n## Verification\n- `node --test` → 1 pass, 0 fail.\n- Manual checks confirmed isolation (a writes, b rejects), unknown-tool rejection, unknown-client rejection, empty-string rejection, and map reuse on re-open.\n- End-to-end `tools/list` and `tools/call` over the stdio loop returned clean results and proper JSON-RPC errors.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-v1/h1-expanded/rep-0/held-out/multi-client-isolation/trace.jsonl"
+  },
+  "behavior": {
+    "steps": 13,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": false,
+    "test_after_last_edit": true,
+    "final_answer": "Done. Here's a summary of what I implemented in `server.mjs`:\n\n## Implementation\n\n**State model** — a single `Map` keyed by `client_id`, where each value is an independent `Map(key -> value)`. This guarantees isolation: client `a`'s keys live only in `a`'s map and are never readable by client `b`.\n\n**Three tools:**\n- `open_client` — creates a fresh private key/value map for a `client_id` (idempotent: re-opening reuses the existing map so data persists).\n- `client_put` — writes a `key`/`value` into the calling client's own map.\n- `client_get` — reads a `key` only from the calling client's own map; if the key isn't in *that* client's map, it throws (this is what makes cross-client reads fail).\n\n**Validation & errors (per the skill):**\n- All `inputSchema` objects include `type`, `properties`, `required`, and `additionalProperties: false`.\n- Non-empty strings are required for `client_id`, `key`, and `value` — empty/missing values throw a `-32602` error.\n- Unknown tool names throw `-32601` (\"Unknown tool\").\n- Operations referencing a client that was never opened throw `-32602` (\"Unknown client\").\n- Getting a key that the calling client doesn't have throws `-32602` (\"Unknown key\") — so even an opened client `b` cannot see a key that only client `a` wrote.\n\nThe existing `protocol.mjs` already converts thrown errors (using `error.code`/`error.message`) into JSON-RPC error responses, so the error contract flows through to clients correctly.\n\n## Verification\n- `node --test` → 1 pass, 0 fail.\n- Manual checks confirmed isolation (a writes, b rejects), unknown-tool rejection, unknown-client rejection, empty-string rejection, and map reuse on re-open.\n- End-to-end `tools/list` and `tools/call` over the stdio loop returned clean results and proper JSON-RPC errors.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-v1/h1-expanded/rep-0/held-out/multi-client-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/mcp-builder-glm-expanded-v1/h1-expanded/rep-0/held-out/multi-client-isolation/trace.jsonl"
+}
