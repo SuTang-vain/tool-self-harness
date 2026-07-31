@@ -1,0 +1,112 @@
+{
+  "findings": [
+    {
+      "canonical_id": "server-side-template-injection",
+      "aliases": [
+        "ssti",
+        "template-injection",
+        "server-side-template-injection-ssti"
+      ],
+      "minimum_severity": "CRITICAL",
+      "files": [
+        "app/routes.py",
+        "app/rendering.py"
+      ],
+      "evidence_groups": [
+        [
+          "render_template_string",
+          "template string"
+        ],
+        [
+          "name",
+          "request.args"
+        ]
+      ],
+      "remediation_markers": [
+        "fixed template",
+        "context variable",
+        "render_template"
+      ]
+    },
+    {
+      "canonical_id": "cross-site-scripting",
+      "aliases": [
+        "xss",
+        "stored-xss",
+        "html-injection"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "app/profile.py",
+        "templates/profile.html"
+      ],
+      "evidence_groups": [
+        [
+          "bio",
+          "safe"
+        ],
+        [
+          "request.form",
+          "user input"
+        ]
+      ],
+      "remediation_markers": [
+        "remove safe",
+        "autoescape",
+        "sanitize",
+        "bleach"
+      ]
+    }
+  ],
+  "scanned_files": [
+    "app/config.py",
+    "app/db.py",
+    "app/profile.py",
+    "app/redirects.py",
+    "app/rendering.py",
+    "app/routes.py",
+    "app/security.py",
+    "static/comment.js",
+    "templates/account.html",
+    "templates/profile.html"
+  ],
+  "protected_decoys": [
+    {
+      "id": "jinja-autoescape-account",
+      "files": [
+        "templates/account.html"
+      ],
+      "rationale": "Normal Jinja interpolation is autoescaped."
+    },
+    {
+      "id": "dom-text-content",
+      "files": [
+        "static/comment.js"
+      ],
+      "rationale": "textContent does not interpret HTML."
+    },
+    {
+      "id": "exact-redirect-host",
+      "files": [
+        "app/redirects.py"
+      ],
+      "rationale": "The parsed scheme and exact hostname are checked."
+    },
+    {
+      "id": "bleach-sanitizer",
+      "files": [
+        "app/security.py"
+      ],
+      "rationale": "The sanitizer uses an explicit small tag allowlist."
+    },
+    {
+      "id": "safe-config-and-query",
+      "files": [
+        "app/config.py",
+        "app/db.py"
+      ],
+      "rationale": "The secret is environment-only, debug is disabled, and SQL is parameterized."
+    }
+  ],
+  "source_modified": false
+}

@@ -14,13 +14,18 @@ for(const file of fs.readdirSync(resultDir).filter(x=>x.endsWith('.json')).sort(
   for(const task of record.per_task||[]){
     for(const row of task.rows||[]){
       const reportPath=path.join(row.workspace,'SECURITY_REVIEW.json');
-      if(!fs.existsSync(reportPath))continue;
-      const report=JSON.parse(fs.readFileSync(reportPath,'utf8'));
       const expected=JSON.parse(fs.readFileSync(path.join(suite,task.split,task.task_id,'expected.json'),'utf8'));
-      const status=spawnSync('git',['status','--porcelain'],{cwd:row.workspace,encoding:'utf8'});
-      const changes=status.stdout.split('\n').filter(Boolean).map(line=>line.slice(3).trim()).filter(changed=>changed!=='SECURITY_REVIEW.json');
-      const score=scoreReport(report,expected,changes);
-      taskRows.push({split:task.split,task_id:task.task_id,repeat:row.repeat,pass:score.pass,metrics:score.metrics,actual_ids:score.actual_ids,false_positive_ids:score.false_positive_ids,false_negative_ids:score.false_negative_ids,reference_used:!!row.behavior?.read_skill_reference,loaded_skill:!!row.behavior?.loaded_skill});
+      let score;
+      if(!fs.existsSync(reportPath)) {
+        const expectedIds=(expected.findings||[]).map(x=>x.canonical_id||x.category).sort();
+        score={pass:false,metrics:{precision:0,recall:0,false_positive_count:0,false_negative_count:expectedIds.length,evidence_completeness:0,remediation_completeness:0,finding_file_completeness:0,severity_completeness:0,files_scanned_ratio:0,source_unchanged:true,structure_valid:false,duplicate_count:0},actual_ids:[],false_positive_ids:[],false_negative_ids:expectedIds};
+      } else {
+        const report=JSON.parse(fs.readFileSync(reportPath,'utf8'));
+        const status=spawnSync('git',['status','--porcelain'],{cwd:row.workspace,encoding:'utf8'});
+        const changes=status.stdout.split('\n').filter(Boolean).map(line=>line.slice(3).trim()).filter(changed=>changed!=='SECURITY_REVIEW.json');
+        score=scoreReport(report,expected,changes);
+      }
+      taskRows.push({split:task.split,task_id:task.task_id,repeat:row.repeat,pass:score.pass,metrics:score.metrics,actual_ids:score.actual_ids,false_positive_ids:score.false_positive_ids,false_negative_ids:score.false_negative_ids,reference_used:!!row.behavior?.read_skill_reference,loaded_skill:!!row.behavior?.loaded_skill,report_present:fs.existsSync(reportPath)});
     }
   }
   const keys=['precision','recall','evidence_completeness','remediation_completeness','finding_file_completeness','severity_completeness','files_scanned_ratio'];
