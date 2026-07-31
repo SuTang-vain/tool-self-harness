@@ -18,7 +18,7 @@ for(const file of fs.readdirSync(resultDir).filter(x=>x.endsWith('.json')).sort(
       let score;
       if(!fs.existsSync(reportPath)) {
         const expectedIds=(expected.findings||[]).map(x=>x.canonical_id||x.category).sort();
-        score={pass:false,metrics:{precision:0,recall:0,false_positive_count:0,false_negative_count:expectedIds.length,evidence_completeness:0,remediation_completeness:0,finding_file_completeness:0,severity_completeness:0,files_scanned_ratio:0,source_unchanged:true,structure_valid:false,duplicate_count:0},actual_ids:[],false_positive_ids:[],false_negative_ids:expectedIds};
+        score={pass:false,metrics:{precision:0,recall:0,false_positive_count:0,false_negative_count:expectedIds.length,evidence_completeness:0,remediation_completeness:0,finding_file_completeness:0,severity_completeness:0,files_scanned_ratio:0,source_unchanged:true,structure_valid:false,canonical_id_validity:0,duplicate_count:0},actual_ids:[],false_positive_ids:[],false_negative_ids:expectedIds};
       } else {
         const report=JSON.parse(fs.readFileSync(reportPath,'utf8'));
         const status=spawnSync('git',['status','--porcelain'],{cwd:row.workspace,encoding:'utf8'});
@@ -28,9 +28,11 @@ for(const file of fs.readdirSync(resultDir).filter(x=>x.endsWith('.json')).sort(
       taskRows.push({split:task.split,task_id:task.task_id,repeat:row.repeat,pass:score.pass,metrics:score.metrics,actual_ids:score.actual_ids,false_positive_ids:score.false_positive_ids,false_negative_ids:score.false_negative_ids,reference_used:!!row.behavior?.read_skill_reference,loaded_skill:!!row.behavior?.loaded_skill,report_present:fs.existsSync(reportPath)});
     }
   }
-  const keys=['precision','recall','evidence_completeness','remediation_completeness','finding_file_completeness','severity_completeness','files_scanned_ratio'];
-  const mean=key=>taskRows.length?taskRows.reduce((sum,row)=>sum+Number(row.metrics[key]||0),0)/taskRows.length:0;
-  variants[record.variant]={result_path:path.join(resultDir,file),held_in:`${taskRows.filter(x=>x.split==='held-in'&&x.pass).length}/${taskRows.filter(x=>x.split==='held-in').length}`,held_out:`${taskRows.filter(x=>x.split==='held-out'&&x.pass).length}/${taskRows.filter(x=>x.split==='held-out').length}`,task_passes:taskRows.filter(x=>x.pass).length,attempts:taskRows.length,false_positives:taskRows.reduce((s,x)=>s+x.metrics.false_positive_count,0),false_negatives:taskRows.reduce((s,x)=>s+x.metrics.false_negative_count,0),quality:Object.fromEntries(keys.map(k=>[k,mean(k)])),reference_usage_attempts:taskRows.filter(x=>x.reference_used).length,metrics:record.metrics,per_task:taskRows};
+  const keys=['precision','recall','evidence_completeness','remediation_completeness','finding_file_completeness','severity_completeness','files_scanned_ratio','canonical_id_validity'];
+  const mean=(rows,key)=>rows.length?rows.reduce((sum,row)=>sum+Number(row.metrics[key]||0),0)/rows.length:0;
+  const quality=rows=>Object.fromEntries(keys.map(k=>[k,mean(rows,k)]));
+  const heldInRows=taskRows.filter(x=>x.split==='held-in'),heldOutRows=taskRows.filter(x=>x.split==='held-out');
+  variants[record.variant]={result_path:path.join(resultDir,file),held_in:`${taskRows.filter(x=>x.split==='held-in'&&x.pass).length}/${taskRows.filter(x=>x.split==='held-in').length}`,held_out:`${taskRows.filter(x=>x.split==='held-out'&&x.pass).length}/${taskRows.filter(x=>x.split==='held-out').length}`,task_passes:taskRows.filter(x=>x.pass).length,attempts:taskRows.length,false_positives:taskRows.reduce((s,x)=>s+x.metrics.false_positive_count,0),false_negatives:taskRows.reduce((s,x)=>s+x.metrics.false_negative_count,0),quality:quality(taskRows),quality_by_split:{held_in:quality(heldInRows),held_out:quality(heldOutRows)},reports_present:taskRows.filter(x=>x.report_present).length,structure_valid_attempts:taskRows.filter(x=>x.metrics.structure_valid).length,reference_usage_attempts:taskRows.filter(x=>x.reference_used).length,metrics:record.metrics,per_task:taskRows};
 }
 const names=Object.keys(variants);
 const comparisons=[];
