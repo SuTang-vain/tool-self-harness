@@ -1,0 +1,129 @@
+{
+  "findings": [
+    {
+      "canonical_id": "hardcoded-secret",
+      "aliases": [
+        "hardcoded-credentials",
+        "hardcoded-secrets",
+        "embedded-secret",
+        "secret-in-source"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "src/config/payment.js"
+      ],
+      "evidence_groups": [
+        [
+          "sk_live",
+          "paymentkey"
+        ]
+      ],
+      "remediation_markers": [
+        "environment",
+        "secret manager",
+        "rotate"
+      ]
+    },
+    {
+      "canonical_id": "sql-injection",
+      "aliases": [
+        "sqli",
+        "sql-injection-vulnerability"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "src/routes/search.js",
+        "src/db/search.js"
+      ],
+      "evidence_groups": [
+        [
+          "rawsearch",
+          "query.q"
+        ],
+        [
+          "select",
+          "like"
+        ]
+      ],
+      "remediation_markers": [
+        "parameter",
+        "placeholder",
+        "prepared"
+      ]
+    },
+    {
+      "canonical_id": "insecure-deserialization",
+      "aliases": [
+        "unsafe-deserialization",
+        "object-deserialization",
+        "untrusted-deserialization"
+      ],
+      "minimum_severity": "CRITICAL",
+      "files": [
+        "src/jobs/import.js"
+      ],
+      "evidence_groups": [
+        [
+          "unserialize",
+          "payload"
+        ]
+      ],
+      "remediation_markers": [
+        "json",
+        "schema",
+        "remove node-serialize",
+        "allowlist"
+      ]
+    }
+  ],
+  "scanned_files": [
+    "src/config/payment.js",
+    "src/db/search.js",
+    "src/db/users.js",
+    "src/files/download.js",
+    "src/health.js",
+    "src/jobs/import.js",
+    "src/logging/redact.js",
+    "src/process/image.js",
+    "src/routes/search.js",
+    "src/routes/users.js"
+  ],
+  "protected_decoys": [
+    {
+      "id": "object-authorization-check",
+      "files": [
+        "src/routes/users.js"
+      ],
+      "rationale": "The route compares the authenticated user ID before reading the object."
+    },
+    {
+      "id": "parameterized-user-query",
+      "files": [
+        "src/db/users.js"
+      ],
+      "rationale": "The user query is parameterized."
+    },
+    {
+      "id": "safe-image-process",
+      "files": [
+        "src/process/image.js"
+      ],
+      "rationale": "The process uses an argument array and shell false."
+    },
+    {
+      "id": "canonical-public-path",
+      "files": [
+        "src/files/download.js"
+      ],
+      "rationale": "The candidate is resolved and constrained to the public root."
+    },
+    {
+      "id": "credential-redaction",
+      "files": [
+        "src/logging/redact.js"
+      ],
+      "rationale": "The logger removes password and token fields."
+    }
+  ],
+  "source_modified": false
+}

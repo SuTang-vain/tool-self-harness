@@ -1,0 +1,114 @@
+{
+  "findings": [
+    {
+      "canonical_id": "insecure-deserialization",
+      "aliases": [
+        "unsafe-deserialization",
+        "pickle-deserialization",
+        "object-deserialization"
+      ],
+      "minimum_severity": "CRITICAL",
+      "files": [
+        "app/routes.py",
+        "app/jobs.py"
+      ],
+      "evidence_groups": [
+        [
+          "pickle.loads",
+          "pickle"
+        ],
+        [
+          "request.body",
+          "decoded"
+        ]
+      ],
+      "remediation_markers": [
+        "json",
+        "safe format",
+        "remove pickle",
+        "schema"
+      ]
+    },
+    {
+      "canonical_id": "authentication-bypass",
+      "aliases": [
+        "authorization-bypass",
+        "signature-verification-bypass",
+        "auth-bypass"
+      ],
+      "minimum_severity": "CRITICAL",
+      "files": [
+        "app/jobs.py",
+        "app/signatures.py",
+        "app/permissions.py"
+      ],
+      "evidence_groups": [
+        [
+          "run_privileged",
+          "role"
+        ],
+        [
+          "verify_signature",
+          "after"
+        ]
+      ],
+      "remediation_markers": [
+        "verify before",
+        "signature before",
+        "reject before processing"
+      ]
+    }
+  ],
+  "scanned_files": [
+    "app/config.py",
+    "app/jobs.py",
+    "app/json_jobs.py",
+    "app/logging.py",
+    "app/permissions.py",
+    "app/routes.py",
+    "app/schema.py",
+    "app/signatures.py",
+    "app/storage.py",
+    "app/worker.py"
+  ],
+  "protected_decoys": [
+    {
+      "id": "strong-hmac-primitive",
+      "files": [
+        "app/signatures.py"
+      ],
+      "rationale": "HMAC SHA-256 and compare_digest are sound; the vulnerable issue is their ordering."
+    },
+    {
+      "id": "safe-json-loader",
+      "files": [
+        "app/json_jobs.py"
+      ],
+      "rationale": "JSON loading does not instantiate arbitrary Python objects."
+    },
+    {
+      "id": "action-allowlist",
+      "files": [
+        "app/schema.py",
+        "app/worker.py"
+      ],
+      "rationale": "The separate worker path validates actions against a fixed set."
+    },
+    {
+      "id": "parameterized-result-storage",
+      "files": [
+        "app/storage.py"
+      ],
+      "rationale": "The insert query uses placeholders."
+    },
+    {
+      "id": "metadata-only-logging",
+      "files": [
+        "app/logging.py",
+        "app/config.py"
+      ],
+      "rationale": "The logger omits secrets and the queue name is not sensitive."
+    }
+  ],
+  "source_modified": false
+}

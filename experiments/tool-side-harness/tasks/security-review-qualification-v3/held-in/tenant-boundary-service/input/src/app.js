@@ -1,0 +1,11 @@
+const express = require('express');
+const { authenticate } = require('./middleware/authenticate');
+const invoices = require('./routes/invoices');
+const profile = require('./routes/profile');
+const admin = require('./routes/admin');
+const app = express();
+app.use('/api', authenticate);
+app.use('/api/invoices', invoices);
+app.use('/api/profile', profile);
+app.use('/api/admin', admin);
+module.exports = app;

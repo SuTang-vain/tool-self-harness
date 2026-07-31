@@ -39,6 +39,9 @@ function main() {
   const suiteArg = process.argv[2];
   if (!suiteArg) { console.error('Usage: 14-validate-security-review-suite.js <suite-dir>'); process.exit(2); }
   const suite = path.resolve(suiteArg);
+  const manifestPath = path.join(suite, 'suite-manifest.json');
+  const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {};
+  const constraints = manifest.constraints || null;
   const rows = [];
   for (const split of ['held-in', 'held-out']) {
     const splitDir = path.join(suite, split);
@@ -48,6 +51,18 @@ function main() {
       const required = ['task.md', 'input', 'expected.json', 'verify.sh', 'reference.sh'];
       const missing = required.filter(name => !fs.existsSync(path.join(taskDir, name)));
       if (missing.length) throw new Error(`${split}/${entry.name} missing: ${missing.join(', ')}`);
+      const expected = JSON.parse(fs.readFileSync(path.join(taskDir, 'expected.json'), 'utf8'));
+      if (constraints) {
+        const inputFiles = walkFiles(path.join(taskDir, 'input')).length;
+        const findingCount = Array.isArray(expected.findings) ? expected.findings.length : 0;
+        const decoyCount = Array.isArray(expected.protected_decoys) ? expected.protected_decoys.length : 0;
+        if (inputFiles < constraints.input_files_min || inputFiles > constraints.input_files_max) throw new Error(`${split}/${entry.name}: input file count ${inputFiles} outside ${constraints.input_files_min}-${constraints.input_files_max}`);
+        if (findingCount < constraints.true_findings_min || findingCount > constraints.true_findings_max) throw new Error(`${split}/${entry.name}: finding count ${findingCount} outside ${constraints.true_findings_min}-${constraints.true_findings_max}`);
+        if (decoyCount < constraints.protected_decoys_min || decoyCount > constraints.protected_decoys_max) throw new Error(`${split}/${entry.name}: decoy count ${decoyCount} outside ${constraints.protected_decoys_min}-${constraints.protected_decoys_max}`);
+        const relativeInput = walkFiles(path.join(taskDir, 'input')).map(file => path.relative(path.join(taskDir, 'input'), file)).sort();
+        const scanned = [...(expected.scanned_files || [])].sort();
+        if (JSON.stringify(relativeInput) !== JSON.stringify(scanned)) throw new Error(`${split}/${entry.name}: scanned_files must exactly cover all input files`);
+      }
       const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'security-suite-check-'));
       try {
         const untouched = path.join(temp, 'untouched'); initWorkspace(taskDir, untouched);

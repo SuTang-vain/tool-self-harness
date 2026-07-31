@@ -1,0 +1,115 @@
+{
+  "findings": [
+    {
+      "canonical_id": "broken-object-level-authorization",
+      "aliases": [
+        "idor",
+        "insecure-direct-object-reference",
+        "object-level-authorization",
+        "bola"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "src/routes/invoices.js",
+        "src/repos/invoices.js"
+      ],
+      "evidence_groups": [
+        [
+          "findbyid",
+          "find by id"
+        ],
+        [
+          "tenant",
+          "owner",
+          "req.user"
+        ]
+      ],
+      "remediation_markers": [
+        "tenant",
+        "owner",
+        "authorization",
+        "scope"
+      ]
+    },
+    {
+      "canonical_id": "mass-assignment",
+      "aliases": [
+        "unsafe-mass-assignment",
+        "overposting",
+        "over-posting"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "src/routes/profile.js",
+        "src/repos/users.js"
+      ],
+      "evidence_groups": [
+        [
+          "req.body",
+          "request body"
+        ],
+        [
+          "update",
+          "fields"
+        ]
+      ],
+      "remediation_markers": [
+        "allowlist",
+        "permitted fields",
+        "schema",
+        "pick"
+      ]
+    }
+  ],
+  "scanned_files": [
+    "src/app.js",
+    "src/db/query.js",
+    "src/middleware/authenticate.js",
+    "src/repos/invoices.js",
+    "src/repos/users.js",
+    "src/routes/admin.js",
+    "src/routes/avatar.js",
+    "src/routes/invoices.js",
+    "src/routes/profile.js",
+    "src/security/passwords.js"
+  ],
+  "protected_decoys": [
+    {
+      "id": "authenticated-api-mount",
+      "files": [
+        "src/app.js",
+        "src/middleware/authenticate.js"
+      ],
+      "rationale": "JWT verification and algorithm pinning protect the API mount but do not provide object authorization."
+    },
+    {
+      "id": "admin-role-check",
+      "files": [
+        "src/routes/admin.js"
+      ],
+      "rationale": "The administrator route has an explicit role check."
+    },
+    {
+      "id": "password-hashing",
+      "files": [
+        "src/security/passwords.js"
+      ],
+      "rationale": "bcrypt comparison is an appropriate password verification primitive."
+    },
+    {
+      "id": "avatar-canonical-boundary",
+      "files": [
+        "src/routes/avatar.js"
+      ],
+      "rationale": "The canonical path is constrained to ROOT plus a separator."
+    },
+    {
+      "id": "parameterized-email-query",
+      "files": [
+        "src/db/query.js"
+      ],
+      "rationale": "The query uses a parameter placeholder."
+    }
+  ],
+  "source_modified": false
+}

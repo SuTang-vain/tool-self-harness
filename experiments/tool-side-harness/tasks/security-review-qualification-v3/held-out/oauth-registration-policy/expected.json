@@ -1,0 +1,112 @@
+{
+  "findings": [
+    {
+      "canonical_id": "open-redirect",
+      "aliases": [
+        "unvalidated-redirect",
+        "oauth-redirect-uri-bypass",
+        "redirect-uri-bypass"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "src/oauth/register.js",
+        "src/oauth/client-repo.js"
+      ],
+      "evidence_groups": [
+        [
+          "startswith",
+          "baseurl"
+        ],
+        [
+          "redirecturi",
+          "redirect uri"
+        ]
+      ],
+      "remediation_markers": [
+        "exact match",
+        "parse",
+        "registered uri"
+      ]
+    },
+    {
+      "canonical_id": "ssrf",
+      "aliases": [
+        "server-side-request-forgery",
+        "jku-ssrf",
+        "remote-key-ssrf"
+      ],
+      "minimum_severity": "CRITICAL",
+      "files": [
+        "src/oauth/token.js",
+        "src/oauth/jwks.js"
+      ],
+      "evidence_groups": [
+        [
+          "jku",
+          "fetchkey"
+        ],
+        [
+          "startswith",
+          "redirect"
+        ]
+      ],
+      "remediation_markers": [
+        "fixed endpoint",
+        "hostname",
+        "disable redirects",
+        "allowlist"
+      ]
+    }
+  ],
+  "scanned_files": [
+    "src/config.js",
+    "src/http/safe-jwks.js",
+    "src/logging.js",
+    "src/oauth/client-repo.js",
+    "src/oauth/exact-redirect.js",
+    "src/oauth/jwks.js",
+    "src/oauth/pkce.js",
+    "src/oauth/register.js",
+    "src/oauth/state.js",
+    "src/oauth/token.js"
+  ],
+  "protected_decoys": [
+    {
+      "id": "oauth-state-protection",
+      "files": [
+        "src/oauth/state.js"
+      ],
+      "rationale": "State is random and compared with timingSafeEqual."
+    },
+    {
+      "id": "pkce-sha256",
+      "files": [
+        "src/oauth/pkce.js"
+      ],
+      "rationale": "The PKCE challenge uses SHA-256."
+    },
+    {
+      "id": "exact-redirect-helper",
+      "files": [
+        "src/oauth/exact-redirect.js"
+      ],
+      "rationale": "This helper compares parsed redirect components exactly, but the vulnerable registration path does not use it."
+    },
+    {
+      "id": "fixed-jwks-endpoint",
+      "files": [
+        "src/http/safe-jwks.js"
+      ],
+      "rationale": "The separate helper uses a fixed endpoint and disables redirects."
+    },
+    {
+      "id": "metadata-only-oauth-log",
+      "files": [
+        "src/logging.js",
+        "src/config.js"
+      ],
+      "rationale": "The logger omits tokens and secrets, and the issuer config is public metadata."
+    }
+  ],
+  "source_modified": false
+}

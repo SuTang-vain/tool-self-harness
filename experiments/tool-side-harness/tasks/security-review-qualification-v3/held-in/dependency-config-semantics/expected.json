@@ -1,0 +1,120 @@
+{
+  "findings": [
+    {
+      "canonical_id": "prototype-pollution",
+      "aliases": [
+        "lodash-prototype-pollution",
+        "vulnerable-lodash",
+        "vulnerable-dependency",
+        "dependency-vulnerability"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "package.json",
+        "package-lock.json",
+        "src/routes/preferences.js",
+        "src/utils/object.js"
+      ],
+      "evidence_groups": [
+        [
+          "4.17.20",
+          "lodash"
+        ],
+        [
+          "mergepreferences",
+          "req.body",
+          "input"
+        ]
+      ],
+      "remediation_markers": [
+        "upgrade",
+        "4.17.21",
+        "allowlist",
+        "schema"
+      ]
+    },
+    {
+      "canonical_id": "cors-misconfiguration",
+      "aliases": [
+        "cors",
+        "insecure-cors",
+        "cors-credentials-exposure",
+        "cross-origin-policy-bypass"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "src/app.js"
+      ],
+      "evidence_groups": [
+        [
+          "origin: true",
+          "origin true"
+        ],
+        [
+          "credentials: true",
+          "credentials true"
+        ]
+      ],
+      "remediation_markers": [
+        "allowlist",
+        "specific origin",
+        "disable credentials"
+      ]
+    }
+  ],
+  "scanned_files": [
+    "package-lock.json",
+    "package.json",
+    "src/app.js",
+    "src/config.js",
+    "src/headers.js",
+    "src/http/client.js",
+    "src/proxy.js",
+    "src/routes/preferences.js",
+    "src/security/tokens.js",
+    "src/utils/object.js"
+  ],
+  "protected_decoys": [
+    {
+      "id": "safe-axios-version-and-fixed-url",
+      "files": [
+        "package.json",
+        "package-lock.json",
+        "src/http/client.js"
+      ],
+      "rationale": "axios 1.6.0 is outside the frozen vulnerable range and the URL is constant."
+    },
+    {
+      "id": "safe-jwt-version-and-algorithm",
+      "files": [
+        "package.json",
+        "src/security/tokens.js"
+      ],
+      "rationale": "jsonwebtoken 9.0.0 and explicit HS256 pinning avoid the referenced confusion issue."
+    },
+    {
+      "id": "safe-express-version",
+      "files": [
+        "package.json",
+        "package-lock.json"
+      ],
+      "rationale": "Express is at the frozen safe version."
+    },
+    {
+      "id": "trusted-proxy-function",
+      "files": [
+        "src/proxy.js"
+      ],
+      "rationale": "The proxy decision uses a fixed address allowlist rather than trust proxy true."
+    },
+    {
+      "id": "production-aware-config",
+      "files": [
+        "src/config.js",
+        "src/headers.js"
+      ],
+      "rationale": "Debug and secure-cookie behavior are environment-aware and security headers are configured."
+    }
+  ],
+  "source_modified": false
+}
