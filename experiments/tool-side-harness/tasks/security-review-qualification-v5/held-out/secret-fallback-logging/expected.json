@@ -1,0 +1,118 @@
+{
+  "findings": [
+    {
+      "canonical_id": "hardcoded-secret",
+      "aliases": [
+        "hardcoded-credentials",
+        "hardcoded-secrets",
+        "embedded-secret",
+        "secret-fallback",
+        "secrets-management",
+        "secrets-in-source",
+        "secrets-exposure"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "src/config.js",
+        "src/payments.js"
+      ],
+      "evidence_groups": [
+        [
+          "sk_live",
+          "fallback"
+        ],
+        [
+          "paymentkey",
+          "payment key"
+        ]
+      ],
+      "remediation_markers": [
+        "remove fallback",
+        "environment",
+        "secret manager",
+        "rotate"
+      ]
+    },
+    {
+      "canonical_id": "sensitive-data-exposure",
+      "aliases": [
+        "sensitive-information-exposure",
+        "credential-logging",
+        "secret-logging",
+        "cleartext-logging"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "src/auth/login.js",
+        "src/logging/logger.js"
+      ],
+      "evidence_groups": [
+        [
+          "password",
+          "token"
+        ],
+        [
+          "logger.info",
+          "stdout"
+        ]
+      ],
+      "remediation_markers": [
+        "redact",
+        "omit",
+        "structured logging",
+        "never log"
+      ]
+    }
+  ],
+  "scanned_files": [
+    "package.json",
+    "src/auth/login.js",
+    "src/config-safe.js",
+    "src/config.js",
+    "src/logging/logger.js",
+    "src/logging/redact.js",
+    "src/payments.js",
+    "src/routes/health.js",
+    "src/security/hash.js",
+    "src/test-fixtures.js"
+  ],
+  "protected_decoys": [
+    {
+      "id": "unused-redaction-helper",
+      "files": [
+        "src/logging/redact.js"
+      ],
+      "rationale": "The helper is safe but the vulnerable login path does not call it."
+    },
+    {
+      "id": "test-only-fake-secret",
+      "files": [
+        "src/test-fixtures.js"
+      ],
+      "rationale": "The values are explicitly test-only and use a non-production prefix."
+    },
+    {
+      "id": "bcrypt-password-hash",
+      "files": [
+        "src/security/hash.js"
+      ],
+      "rationale": "bcrypt with cost 12 is an appropriate password hashing primitive."
+    },
+    {
+      "id": "required-environment-secret",
+      "files": [
+        "src/config-safe.js"
+      ],
+      "rationale": "The separate helper fails closed when an environment secret is missing."
+    },
+    {
+      "id": "non-sensitive-health-metadata",
+      "files": [
+        "src/routes/health.js",
+        "package.json"
+      ],
+      "rationale": "Health status/version and the bcrypt dependency do not expose credentials."
+    }
+  ],
+  "source_modified": false
+}

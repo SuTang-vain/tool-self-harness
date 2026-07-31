@@ -52,6 +52,11 @@ function main() {
       const missing = required.filter(name => !fs.existsSync(path.join(taskDir, name)));
       if (missing.length) throw new Error(`${split}/${entry.name} missing: ${missing.join(', ')}`);
       const expected = JSON.parse(fs.readFileSync(path.join(taskDir, 'expected.json'), 'utf8'));
+      const taxonomy = Array.isArray(manifest.canonical_taxonomy) ? new Set(manifest.canonical_taxonomy) : null;
+      if (taxonomy) {
+        const invalidIds = (expected.findings || []).map(finding => finding.canonical_id).filter(id => !taxonomy.has(id));
+        if (invalidIds.length) throw new Error(`${split}/${entry.name}: expected canonical IDs outside global taxonomy: ${invalidIds.join(', ')}`);
+      }
       if (constraints) {
         const inputFiles = walkFiles(path.join(taskDir, 'input')).length;
         const findingCount = Array.isArray(expected.findings) ? expected.findings.length : 0;
@@ -79,7 +84,7 @@ function main() {
   }
   if (!rows.length) throw new Error('no tasks found in ' + suite);
   const taskHash = hashFiles(suite, rel => /(^|\/)(task\.md)$/.test(rel) || rel.includes('/input/'));
-  const verifierHash = hashFiles(suite, rel => rel.includes('_shared/verify') || /(^|\/)(verify\.sh|expected\.json)$/.test(rel));
+  const verifierHash = hashFiles(suite, rel => rel.includes('_shared/verify') || rel === '_shared/score.js' || /(^|\/)(verify\.sh|expected\.json)$/.test(rel));
   const referenceHash = hashFiles(suite, rel => rel.includes('_shared/reference') || /(^|\/)reference\.sh$/.test(rel));
   console.log(JSON.stringify({
     suite,

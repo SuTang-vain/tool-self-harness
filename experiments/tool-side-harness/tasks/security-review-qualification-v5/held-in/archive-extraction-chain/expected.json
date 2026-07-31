@@ -1,0 +1,111 @@
+{
+  "findings": [
+    {
+      "canonical_id": "path-traversal",
+      "aliases": [
+        "directory-traversal",
+        "zip-slip",
+        "archive-path-traversal"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "src/routes/upload.js",
+        "src/archive/extract.js"
+      ],
+      "evidence_groups": [
+        [
+          "entry.name",
+          "entry name"
+        ],
+        [
+          "path.join",
+          "destination"
+        ]
+      ],
+      "remediation_markers": [
+        "resolve",
+        "canonical",
+        "separator",
+        "reject"
+      ]
+    },
+    {
+      "canonical_id": "command-injection",
+      "aliases": [
+        "os-command-injection",
+        "shell-command-injection"
+      ],
+      "minimum_severity": "CRITICAL",
+      "files": [
+        "src/archive/extract.js",
+        "src/archive/hooks.js"
+      ],
+      "evidence_groups": [
+        [
+          "postextract",
+          "post extract"
+        ],
+        [
+          "exec",
+          "sh"
+        ]
+      ],
+      "remediation_markers": [
+        "allowlist",
+        "spawn",
+        "shell false",
+        "remove hook"
+      ]
+    }
+  ],
+  "scanned_files": [
+    "src/archive/extensions.js",
+    "src/archive/extract.js",
+    "src/archive/hooks.js",
+    "src/archive/limits.js",
+    "src/archive/safe-extract.js",
+    "src/config.js",
+    "src/process/safe-hook.js",
+    "src/routes/status.js",
+    "src/routes/upload.js",
+    "src/storage/temp.js"
+  ],
+  "protected_decoys": [
+    {
+      "id": "unused-safe-extractor",
+      "files": [
+        "src/archive/safe-extract.js"
+      ],
+      "rationale": "This helper is safe but the vulnerable extraction path does not call it."
+    },
+    {
+      "id": "archive-resource-limits",
+      "files": [
+        "src/archive/limits.js"
+      ],
+      "rationale": "The vulnerable extraction path now invokes entry-count and total-size limits before writing."
+    },
+    {
+      "id": "extension-allowlist",
+      "files": [
+        "src/archive/extensions.js"
+      ],
+      "rationale": "The extension helper is not a substitute for path confinement but is not itself vulnerable."
+    },
+    {
+      "id": "approved-process-helper",
+      "files": [
+        "src/process/safe-hook.js"
+      ],
+      "rationale": "The separate helper uses an allowlist, fixed executable, argument array, and shell false."
+    },
+    {
+      "id": "secure-temp-directory",
+      "files": [
+        "src/storage/temp.js"
+      ],
+      "rationale": "mkdtemp provides an isolated temporary directory."
+    }
+  ],
+  "source_modified": false
+}
