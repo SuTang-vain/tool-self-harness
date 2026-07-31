@@ -10,6 +10,8 @@ const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
+const API_TIMEOUT_MS = Math.max(1000, Number(process.env.GENERIC_RUNNER_API_TIMEOUT_MS || 240000));
+
 function readYAML(file) {
   const src = fs.readFileSync(file, 'utf8');
   const root = {};
@@ -89,7 +91,7 @@ async function chatComplete(model, messages, tools) {
       Authorization: 'Bearer ' + model.api_key
     },
     body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(240000)
+    signal: AbortSignal.timeout(API_TIMEOUT_MS)
   });
   const text = await response.text();
   let json;
