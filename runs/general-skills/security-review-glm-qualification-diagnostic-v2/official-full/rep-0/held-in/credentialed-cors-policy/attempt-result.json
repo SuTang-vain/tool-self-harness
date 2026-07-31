@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "credentialed-cors-policy",
+  "repeat": 0,
+  "pass": false,
+  "verify_exit": 1,
+  "verify_msg": "canonical finding mismatch: expected cors-misconfiguration got cors",
+  "runner": {
+    "steps": 8,
+    "final_answer": "The security review is complete. Here's a summary:\n\n## Security Review Summary\n\n**Scanned files:** `src/app.js`, `src/auth.js` (only two source files in the repo)\n\n### Findings (1)\n\n| Severity | Category | File | Issue |\n|----------|----------|------|-------|\n| 🟠 HIGH | cors | `src/app.js` | Reflected-origin CORS policy combined with `credentials: true` |\n\n**The exploitable finding — `src/app.js`:**\n`app.use(cors({ origin: true, credentials: true }))` is applied globally before the session-bearing `/api` router.\n- `origin: true` reflects the request's `Origin` header verbatim into `Access-Control-Allow-Origin`, whitelisting **any** origin.\n- `credentials: true` sets `Access-Control-Allow-Credentials: true`, so the browser attaches the victim's session cookie **and** exposes the authenticated response to the caller's JS.\n\nCombined, an attacker-controlled page can call `fetch('https://victim/api/...', { credentials: 'include' })`, ride the victim's session, and read authenticated responses. This is a genuine CORS misconfiguration, not a pattern-only false positive.\n\n### Distinguished from the safe code — `src/auth.js`\n`jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] })` is **correctly implemented**: it sources the secret from the environment and pins the algorithm to `HS256`, which defeats both `alg: none` and RS256→HS256 algorithm-confusion attacks. Per the instructions (omit effectively-protected operations), it is **not** a finding — it appears only in `scanned_files`.\n\n### Verification\n- `SECURITY_REVIEW.json` is valid JSON with the exact required shape.\n- `git diff` is empty — no audited source files were modified (`source_modified: false`).\n- Report saved to `SECURITY_REVIEW.json`.\n\n**Remediation** (in the report): don't pair a reflected/wildcard origin with `credentials: true`. Use an explicit origin allowlist, or drop `credentials: true` (and prefer `Authorization` bearer tokens over cookies). Never combine `origin: true` with `credentials: true` on a session-bearing API.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-qualification-diagnostic-v2/official-full/rep-0/held-in/credentialed-cors-policy/trace.jsonl",
+    "metrics": {
+      "api_calls": 8,
+      "api_latency_ms": 63566,
+      "tool_calls": 11,
+      "tool_call_retries": 0,
+      "prompt_tokens": 41061,
+      "completion_tokens": 2439,
+      "total_tokens": 43500,
+      "usage_observations": 8,
+      "elapsed_ms": 63932,
+      "steps": 8
+    }
+  },
+  "behavior": {
+    "steps": 11,
+    "loaded_skill": true,
+    "read_skill_reference": true,
+    "ran_tests": false,
+    "test_before_first_edit": false,
+    "test_after_last_edit": false,
+    "final_answer": "The security review is complete. Here's a summary:\n\n## Security Review Summary\n\n**Scanned files:** `src/app.js`, `src/auth.js` (only two source files in the repo)\n\n### Findings (1)\n\n| Severity | Category | File | Issue |\n|----------|----------|------|-------|\n| 🟠 HIGH | cors | `src/app.js` | Reflected-origin CORS policy combined with `credentials: true` |\n\n**The exploitable finding — `src/app.js`:**\n`app.use(cors({ origin: true, credentials: true }))` is applied globally before the session-bearing `/api` router.\n- `origin: true` reflects the request's `Origin` header verbatim into `Access-Control-Allow-Origin`, whitelisting **any** origin.\n- `credentials: true` sets `Access-Control-Allow-Credentials: true`, so the browser attaches the victim's session cookie **and** exposes the authenticated response to the caller's JS.\n\nCombined, an attacker-controlled page can call `fetch('https://victim/api/...', { credentials: 'include' })`, ride the victim's session, and read authenticated responses. This is a genuine CORS misconfiguration, not a pattern-only false positive.\n\n### Distinguished from the safe code — `src/auth.js`\n`jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] })` is **correctly implemented**: it sources the secret from the environment and pins the algorithm to `HS256`, which defeats both `alg: none` and RS256→HS256 algorithm-confusion attacks. Per the instructions (omit effectively-protected operations), it is **not** a finding — it appears only in `scanned_files`.\n\n### Verification\n- `SECURITY_REVIEW.json` is valid JSON with the exact required shape.\n- `git diff` is empty — no audited source files were modified (`source_modified: false`).\n- Report saved to `SECURITY_REVIEW.json`.\n\n**Remediation** (in the report): don't pair a reflected/wildcard origin with `credentials: true`. Use an explicit origin allowlist, or drop `credentials: true` (and prefer `Authorization` bearer tokens over cookies). Never combine `origin: true` with `credentials: true` on a session-bearing API.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-qualification-diagnostic-v2/official-full/rep-0/held-in/credentialed-cors-policy/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-qualification-diagnostic-v2/official-full/rep-0/held-in/credentialed-cors-policy/trace.jsonl"
+}
