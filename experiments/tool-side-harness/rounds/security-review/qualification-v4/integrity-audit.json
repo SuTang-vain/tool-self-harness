@@ -1,0 +1,116 @@
+{
+  "experiment": "security-review-path-c-qualification-v4",
+  "status": "invalidated-at-gate-0",
+  "provider": "GLM-5.2 via Volcengine Ark plan/v3",
+  "results": {
+    "minimal": {
+      "held_in": "2/6",
+      "held_out": "1/3",
+      "task_passes": 3,
+      "false_positives": 4,
+      "false_negatives": 6,
+      "precision": 0.7037,
+      "recall": 0.7037,
+      "evidence_completeness": 0.7037,
+      "remediation_completeness": 0.6481444444444444,
+      "files_scanned_ratio": 0.8888888888888888,
+      "reference_usage_attempts": 0,
+      "total_tokens": 543100,
+      "tool_calls": 233,
+      "elapsed_ms": 1610466
+    },
+    "no-skill": {
+      "held_in": "2/6",
+      "held_out": "1/3",
+      "task_passes": 3,
+      "false_positives": 6,
+      "false_negatives": 5,
+      "precision": 0.7870444444444444,
+      "recall": 0.7222222222222222,
+      "evidence_completeness": 0.7222222222222222,
+      "remediation_completeness": 0.7222222222222222,
+      "files_scanned_ratio": 1,
+      "reference_usage_attempts": 0,
+      "total_tokens": 359909,
+      "tool_calls": 210,
+      "elapsed_ms": 1575165
+    },
+    "official-full": {
+      "held_in": "2/6",
+      "held_out": "1/3",
+      "task_passes": 3,
+      "false_positives": 3,
+      "false_negatives": 5,
+      "precision": 0.8518555555555556,
+      "recall": 0.7407444444444445,
+      "evidence_completeness": 0.7407444444444445,
+      "remediation_completeness": 0.7407444444444445,
+      "files_scanned_ratio": 1,
+      "reference_usage_attempts": 5,
+      "total_tokens": 620656,
+      "tool_calls": 218,
+      "elapsed_ms": 1671965
+    }
+  },
+  "task_level_separation": [
+    {
+      "baseline": "minimal",
+      "candidate": "no-skill",
+      "candidate_task_wins": [
+        "held-in/tenant-boundary-service",
+        "held-out/secret-fallback-logging"
+      ],
+      "baseline_task_wins": [
+        "held-in/template-rendering-framework",
+        "held-out/signed-job-envelope"
+      ]
+    },
+    {
+      "baseline": "minimal",
+      "candidate": "official-full",
+      "candidate_task_wins": [
+        "held-out/secret-fallback-logging"
+      ],
+      "baseline_task_wins": [
+        "held-out/signed-job-envelope"
+      ]
+    },
+    {
+      "baseline": "no-skill",
+      "candidate": "official-full",
+      "candidate_task_wins": [
+        "held-in/template-rendering-framework"
+      ],
+      "baseline_task_wins": [
+        "held-in/tenant-boundary-service"
+      ]
+    }
+  ],
+  "preliminary_quality_signal": {
+    "official_full_vs_minimal": {
+      "precision_delta": 0.1481555555555556,
+      "recall_delta": 0.037044444444444546,
+      "false_positive_delta": -1,
+      "false_negative_delta": -1,
+      "total_task_pass_delta": 0,
+      "reference_usage_attempts": 5
+    },
+    "interpretation": "official-full improves aggregate quality metrics and uses references, but total task passes are equal and reliable task identities are exchanged."
+  },
+  "gate_0": {
+    "decision": "fail",
+    "reason": "Free-form category labels remain semantically correct but outside the finite alias table, materially changing task outcomes.",
+    "observed_unmapped_equivalents": [
+      "rce -> insecure-deserialization",
+      "secrets -> hardcoded-secret",
+      "authorization -> broken-object-level-authorization",
+      "broken-authorization -> broken-object-level-authorization",
+      "access-control -> open-redirect policy bypass",
+      "compound labels such as authentication-bypass-via-jku-injection"
+    ]
+  },
+  "method_conclusion": "Repeated alias expansion is not a stable verifier strategy. The report contract must separate a required canonical taxonomy ID from an optional free-form label, or use non-deterministic semantic adjudication.",
+  "stop_go": "not-evaluated",
+  "formal_stage": "not-run",
+  "next_design_decision": "confirm a global canonical-ID contract that lists the full taxonomy but does not reveal task-specific expected categories."
+}
