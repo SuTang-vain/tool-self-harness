@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "secret-fallback-logging",
+  "repeat": 1,
+  "pass": false,
+  "verify_exit": 1,
+  "verify_msg": "SECURITY_SCORE {\"precision\":1,\"recall\":1,\"false_positive_count\":0,\"false_negative_count\":0,\"evidence_completeness\":1,\"remediation_completeness\":1,\"finding_file_completeness\":0.5,\"severity_completeness\":1,\"files_scanned_ratio\":1,\"source_unchanged\":true,\"structure_valid\":true,\"canonical_id_validity\":1,\"duplicate_count\":0} | hardcoded-secret missing required finding files",
+  "runner": {
+    "steps": 10,
+    "final_answer": "The security review is complete. Here's a summary of what I found:\n\n## Security Review Summary\n\n**Scanned:** 10 files (all source, config, and dependency metadata) · **Source modified:** No\n\n### Findings (2)\n\n| # | ID | Severity | File(s) |\n|---|---|---|---|\n| 1 | `hardcoded-secret` | HIGH | `src/config.js` |\n| 2 | `sensitive-data-exposure` | HIGH | `src/auth/login.js`, `src/logging/logger.js` |\n\n**1. Hardcoded payment-key fallback** — `src/config.js` falls back to `payment_live_FALLBACK_PRODUCTION_KEY` when `PAYMENT_KEY` is unset, and `payments.js` feeds that directly into `PaymentClient`. Missing config silently degrades to a committed credential instead of failing. The neighboring `config-safe.js` shows the correct (throw-on-missing) pattern. Remediation: drop the fallback, require the secret at startup, rotate the exposed value.\n\n**2. Plaintext credentials in logs** — `login.js` passes `password` and the issued `token` to `logger.info`, which writes raw JSON to stdout. A `redact()` helper exists in `logging/redact.js` but is never imported/used (zero call sites confirmed by grep), so the auth→log trust boundary is open. Remediation: route all log records through the redactor at the sink.\n\n### Explicitly ruled out (pattern-only false positives)\n- **`src/test-fixtures.js`** — values are clearly fake (`fakeKey`, `test-token-not-valid`, `fixture_only`); not real credentials.\n- **`src/config-safe.js`** — correct secret-loading pattern.\n- **`bcrypt` 5.1.1** — no known CVE; `hash.js` uses cost factor 12.\n- **`src/payments.js` undefined `PaymentClient`** — functional bug, not a security vulnerability.\n\nThe report is saved to `SECURITY_REVIEW.json` in the required shape.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-planv3-formal-v1/official-full/rep-1/held-out/secret-fallback-logging/trace.jsonl",
+    "metrics": {
+      "api_calls": 10,
+      "api_latency_ms": 115129,
+      "tool_calls": 23,
+      "tool_call_retries": 0,
+      "prompt_tokens": 40452,
+      "completion_tokens": 6809,
+      "total_tokens": 47261,
+      "usage_observations": 10,
+      "elapsed_ms": 115550,
+      "steps": 10
+    }
+  },
+  "behavior": {
+    "steps": 23,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": false,
+    "test_before_first_edit": false,
+    "test_after_last_edit": false,
+    "final_answer": "The security review is complete. Here's a summary of what I found:\n\n## Security Review Summary\n\n**Scanned:** 10 files (all source, config, and dependency metadata) · **Source modified:** No\n\n### Findings (2)\n\n| # | ID | Severity | File(s) |\n|---|---|---|---|\n| 1 | `hardcoded-secret` | HIGH | `src/config.js` |\n| 2 | `sensitive-data-exposure` | HIGH | `src/auth/login.js`, `src/logging/logger.js` |\n\n**1. Hardcoded payment-key fallback** — `src/config.js` falls back to `payment_live_FALLBACK_PRODUCTION_KEY` when `PAYMENT_KEY` is unset, and `payments.js` feeds that directly into `PaymentClient`. Missing config silently degrades to a committed credential instead of failing. The neighboring `config-safe.js` shows the correct (throw-on-missing) pattern. Remediation: drop the fallback, require the secret at startup, rotate the exposed value.\n\n**2. Plaintext credentials in logs** — `login.js` passes `password` and the issued `token` to `logger.info`, which writes raw JSON to stdout. A `redact()` helper exists in `logging/redact.js` but is never imported/used (zero call sites confirmed by grep), so the auth→log trust boundary is open. Remediation: route all log records through the redactor at the sink.\n\n### Explicitly ruled out (pattern-only false positives)\n- **`src/test-fixtures.js`** — values are clearly fake (`fakeKey`, `test-token-not-valid`, `fixture_only`); not real credentials.\n- **`src/config-safe.js`** — correct secret-loading pattern.\n- **`bcrypt` 5.1.1** — no known CVE; `hash.js` uses cost factor 12.\n- **`src/payments.js` undefined `PaymentClient`** — functional bug, not a security vulnerability.\n\nThe report is saved to `SECURITY_REVIEW.json` in the required shape.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-planv3-formal-v1/official-full/rep-1/held-out/secret-fallback-logging/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-planv3-formal-v1/official-full/rep-1/held-out/secret-fallback-logging/trace.jsonl"
+}

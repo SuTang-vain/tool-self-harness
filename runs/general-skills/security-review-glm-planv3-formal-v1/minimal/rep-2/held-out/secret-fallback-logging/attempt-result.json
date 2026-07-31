@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "secret-fallback-logging",
+  "repeat": 2,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "SECURITY_SCORE {\"precision\":1,\"recall\":1,\"false_positive_count\":0,\"false_negative_count\":0,\"evidence_completeness\":1,\"remediation_completeness\":1,\"finding_file_completeness\":1,\"severity_completeness\":1,\"files_scanned_ratio\":1,\"source_unchanged\":true,\"structure_valid\":true,\"canonical_id_validity\":1,\"duplicate_count\":0} | security review verifier passed",
+  "runner": {
+    "steps": 11,
+    "final_answer": "The report is complete and valid. No audited source files were modified (only `SECURITY_REVIEW.json` was added).\n\n## Summary\n\nI performed a comprehensive security review of the repository, tracing actual data flows (not just patterns) to determine exploitability.\n\n**Findings (2 exploitable):**\n\n1. **`hardcoded-secret` (HIGH)** — `src/config.js` silently falls back to a hardcoded `payment_live_FALLBACK_PRODUCTION_KEY` when `PAYMENT_KEY` is unset. `src/payments.js` wires this directly into the payment client. The safe `requiredSecret` pattern exists in `src/config-safe.js` but is **never used** (decoy), so the fallback is the live code path. Anyone reading source or running a misconfigured deployment gets payment API access.\n\n2. **`sensitive-data-exposure` (HIGH)** — `src/auth/login.js` logs the user's raw `password` and fresh `token` through `src/logging/logger.js`, which writes the record verbatim to stdout with **no redaction**. The `redact()` helper in `src/logging/redact.js` would strip these fields but is **never imported/invoked** (decoy), so plaintext credentials and reusable tokens flow to any log consumer.\n\n**Reviewed and cleared (decoys / non-exploitable):**\n- `src/test-fixtures.js` — test-labeled fake keys, unused\n- `src/config-safe.js`, `src/logging/redact.js` — correct patterns, but unused\n- `src/security/hash.js`, `src/routes/health.js` — no injection/authz issues\n- `package.json` — bcrypt 5.1.1, no exploitable CVE evidence; no lockfile for transitive analysis (no `vulnerable-dependency` finding)\n\nNo categories were emitted merely because they appear in the taxonomy — only the two findings with concrete, exploitable data-flow evidence were reported.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-planv3-formal-v1/minimal/rep-2/held-out/secret-fallback-logging/trace.jsonl",
+    "metrics": {
+      "api_calls": 11,
+      "api_latency_ms": 119910,
+      "tool_calls": 22,
+      "tool_call_retries": 0,
+      "prompt_tokens": 24827,
+      "completion_tokens": 6474,
+      "total_tokens": 31301,
+      "usage_observations": 11,
+      "elapsed_ms": 121032,
+      "steps": 11
+    }
+  },
+  "behavior": {
+    "steps": 22,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": false,
+    "test_before_first_edit": false,
+    "test_after_last_edit": false,
+    "final_answer": "The report is complete and valid. No audited source files were modified (only `SECURITY_REVIEW.json` was added).\n\n## Summary\n\nI performed a comprehensive security review of the repository, tracing actual data flows (not just patterns) to determine exploitability.\n\n**Findings (2 exploitable):**\n\n1. **`hardcoded-secret` (HIGH)** — `src/config.js` silently falls back to a hardcoded `payment_live_FALLBACK_PRODUCTION_KEY` when `PAYMENT_KEY` is unset. `src/payments.js` wires this directly into the payment client. The safe `requiredSecret` pattern exists in `src/config-safe.js` but is **never used** (decoy), so the fallback is the live code path. Anyone reading source or running a misconfigured deployment gets payment API access.\n\n2. **`sensitive-data-exposure` (HIGH)** — `src/auth/login.js` logs the user's raw `password` and fresh `token` through `src/logging/logger.js`, which writes the record verbatim to stdout with **no redaction**. The `redact()` helper in `src/logging/redact.js` would strip these fields but is **never imported/invoked** (decoy), so plaintext credentials and reusable tokens flow to any log consumer.\n\n**Reviewed and cleared (decoys / non-exploitable):**\n- `src/test-fixtures.js` — test-labeled fake keys, unused\n- `src/config-safe.js`, `src/logging/redact.js` — correct patterns, but unused\n- `src/security/hash.js`, `src/routes/health.js` — no injection/authz issues\n- `package.json` — bcrypt 5.1.1, no exploitable CVE evidence; no lockfile for transitive analysis (no `vulnerable-dependency` finding)\n\nNo categories were emitted merely because they appear in the taxonomy — only the two findings with concrete, exploitable data-flow evidence were reported.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-planv3-formal-v1/minimal/rep-2/held-out/secret-fallback-logging/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-planv3-formal-v1/minimal/rep-2/held-out/secret-fallback-logging/trace.jsonl"
+}

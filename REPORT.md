@@ -701,10 +701,11 @@ The redirected program selected two permissively licensed targets before evaluat
 `github/awesome-copilot/security-review` for Path C. Both 4+2 fixture suites passed the authoring
 check: untouched inputs fail and external reference outputs pass.
 
-The Security Review diagnostic stopped after one repeat. No-skill, minimal, and official-full all
-scored 5/6; the only failure was a category-name alias rather than a missed vulnerability. The
-full skill read three deep references and used far more tokens without changing verifier outcomes,
-so the current suite is near-ceiling and not qualified for formal Self-Harness work.
+The initial Security Review v1 diagnostic stopped after one repeat. No-skill, minimal, and
+official-full all scored 5/6; the only failure was a category-name alias rather than a missed
+vulnerability. That first suite was near-ceiling and was not qualified for formal Self-Harness
+work. A later non-ceiling redesign and canonical-ID contract are reported in Section 16; no v1
+outcomes are pooled into that study.
 
 The Git Worktrees suite required two transparent verifier revisions: v1 confused a shell wrapper's
 exit code with the inner test result, and v2 accepted only the literal command `npm test`. Neither
@@ -798,3 +799,60 @@ non-leaking held-in failure evidence for a proposer. The next formal research ac
 to redesign the Path-C Security Review suite so that it is non-ceiling and sensitive to rule
 density/deep-reference effects, rather than generating an unsupported Path-B candidate or opening
 cross-model evaluation.
+
+## 16. Path-C Canonical-ID Qualification and Formal Reliability Boundary
+
+The redesigned Security Review suite contains six held-in and three held-out repositories with
+8–12 relevant/decoy files, two or three true findings, and five protected decoys per task. Earlier
+v3/v4 runs were invalidated at Gate 0: source-fixture defects were first repaired, then free-form
+finding categories proved impossible to score with a finite alias table. V5 therefore froze a
+16-item global output taxonomy and required an exact `canonical_id`; optional human-readable labels
+were ignored by the verifier. Task-specific expected IDs, files, finding counts, decoys, and evidence
+markers remained hidden. All nine untouched fixtures fail, all nine external reference reports pass,
+and no prior attempt was pooled.
+
+The first v5 attempt was infrastructure-aborted after one official-full request reached the local
+240-second client timeout. Its 26 completed attempts were discarded. A separately preregistered,
+entirely fresh `plan/v3` rerun used a 360-second timeout and completed 27/27 attempts:
+
+| Variant | Held-in | Held-out | Deep-reference use |
+|---|---:|---:|---:|
+| no-skill | 2/6 | 2/3 | 0/9 |
+| minimal | 1/6 | 2/3 | 0/9 |
+| official-full | 3/6 | 2/3 | 6/9 |
+
+All 59 emitted finding IDs were in the frozen taxonomy and no alias mapping was required. The
+one-repeat diagnostic passed its stop/go gate: minimal retained headroom, official-full gained
+`archive-extraction-chain` and `redirect-fetch-policy` without a diagnostic held-out loss, and deep
+references were measurably used. Because one repeat cannot establish Q2, this result only qualified
+a fresh three-repeat formal baseline.
+
+The preregistered formal run completed all 81 attempts:
+
+| Variant | Held-in | Reliable held-in | Held-out | Reliable held-out |
+|---|---:|---:|---:|---:|
+| no-skill | 10/18 | 1/6 | 3/9 | 1/3 |
+| minimal | 6/18 | 0/6 | 5/9 | 1/3 |
+| official-full | 10/18 | 2/6 | 5/9 | 1/3 |
+
+Official-full has real local held-in movement: `redirect-fetch-policy` and
+`template-rendering-framework` pass all three repeats, versus no reliable minimal held-in task. It
+also reads deep references in 12/27 attempts and raises held-in aggregate pass count from 6/18 to
+10/18. However, the held-out reliable counts conceal a task-identity exchange. Minimal reliably
+passes `secret-fallback-logging` (3/3), while official-full is only 2/3 on that task and instead
+reliably passes `signed-job-envelope` (3/3). The official failure still found both correct categories
+but omitted a required data-flow file for the hardcoded-secret finding.
+
+The preregistered per-task safety gate therefore rejects progression even though held-out aggregate
+pass count (5/9) and reliable-task count (1/3) are unchanged. No Path-C h0 is frozen and no
+Self-Harness candidate is generated. This is a direct formal example of why aggregate or count-only
+acceptance is insufficient: stable task identity detects a non-local regression hidden by equal
+counts. The paired attempt comparison is 6 official-full wins versus 2 minimal wins (two-sided exact
+sign p=0.2890625), so the small suite also does not support a strong aggregate significance claim.
+
+Q3 is mixed and descriptive. Official-full uses 1,972,590 tokens versus minimal's 1,135,364
+(+73.7%), 672 versus 635 tool calls, and about 6.3% more elapsed time, while reducing tokens per
+reliable task because it produces three reliable tasks overall versus minimal's one. Q4 remains
+`not_measured`. The supported conclusion is narrow: the canonical-ID Path-C benchmark is valid and
+benchmark-sensitive, but the official skill's local held-in benefit is not Q2-safe under per-task
+held-out gating for GLM-5.2 via Volcengine `plan/v3`.

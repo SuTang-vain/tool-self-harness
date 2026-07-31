@@ -25,19 +25,23 @@ positive and negative results are retained as observations to be explained by th
 |---|---|---|---|
 | WP0 | Lock prior evidence | complete | compact, expanded, replication, and ablation results mapped without overclaiming |
 | WP1 | Build taxonomy sample pool | in progress | at least 2 qualified implementations per claimed class and coverage of Skill, MCP, CLI |
-| WP2 | Calibrate 4D baselines | in progress for MCP; pending elsewhere | benchmark sensitivity, repeat variance, family coverage, and Q3 coverage documented |
-| WP3 | Run progressive evolution | compact Path A complete; broader paths pending | one frozen single-surface study for each qualified path |
+| WP2 | Calibrate 4D baselines | Path B complete locally; Path C formal stopped at Q2 safety; MCP evidence retained | benchmark sensitivity, repeat variance, family coverage, and Q3 coverage documented |
+| WP3 | Run progressive evolution | compact Path A and local Path B complete; Path C blocked before h0 freeze | one frozen single-surface study for each qualified path |
 | WP4 | Run method ablations | Q2 and surface-placement evidence partial | preregistered Q2/no-Q2 and bounded/unrestricted comparisons |
 | WP5 | Replicate and evaluate utility | model/distribution rejection recorded; Q4 pending | independent replication before taxonomy-level or product claims |
 
 ## Frozen current interpretation
 
 - **Supported:** Q2 hard gating detects task exchange and prevents false lineage promotion.
-- **Supported locally:** a strict-schema body patch improves the compact GLM MCP suite.
-- **Supported as a boundary condition:** the same patch is model-specific and fails two expanded
-  GLM evaluations through non-local task exchange.
+- **Supported locally:** a strict-schema body patch improves the compact GLM MCP suite, and a bounded
+  Path-B edit produces replicated expanded local evolution on Using Git Worktrees.
+- **Supported as boundary conditions:** the MCP patch is model/distribution specific; the Path-C
+  canonical-ID benchmark is valid and benchmark-sensitive, but official-full loses a reliable
+  held-out task despite unchanged aggregate and reliable-task counts.
+- **Stopped by protocol:** Path C does not freeze h0 or generate a candidate because per-task held-out
+  safety fails (`secret-fallback-logging` 3/3 minimal vs 2/3 official-full).
 - **Not supported yet:** a universal four-class taxonomy, universal fitting paths, general
-  Self-Harness improvement, Path B/C/D effectiveness, or human-utility improvement.
+  Self-Harness improvement, Path C/D effectiveness, cross-model generality, or human utility.
 
 ## Immediate research sequence
 

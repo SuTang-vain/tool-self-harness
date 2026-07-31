@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "secret-fallback-logging",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "SECURITY_SCORE {\"precision\":1,\"recall\":1,\"false_positive_count\":0,\"false_negative_count\":0,\"evidence_completeness\":1,\"remediation_completeness\":1,\"finding_file_completeness\":1,\"severity_completeness\":1,\"files_scanned_ratio\":1,\"source_unchanged\":true,\"structure_valid\":true,\"canonical_id_validity\":1,\"duplicate_count\":0} | security review verifier passed",
+  "runner": {
+    "steps": 9,
+    "final_answer": "The report is valid JSON and no audited source files were modified (only the new `SECURITY_REVIEW.json` was created).\n\n## Security Review Summary\n\nI reviewed all 10 files in the repository (`package.json` plus 9 source files under `src/`). Two exploitable findings:\n\n### 1. Hardcoded production payment key used as silent fallback — `HIGH`\n**`src/config.js` / `src/payments.js`**\n`paymentKey: process.env.PAYMENT_KEY || 'payment_live_FALLBACK_PRODUCTION_KEY'` bakes a credential labeled as a live production key into source control and uses it as a silent default. It flows directly into `new PaymentClient(paymentKey)`. A misconfigured deployment silently authenticates to the payment provider with the leaked key rather than failing closed. Anyone with repo read access gets the production credential.\n**Remediation:** Remove the fallback, fail fast when the env var is missing (like the `config-safe.js` `requiredSecret` pattern), and rotate the leaked key.\n\n### 2. Plaintext passwords and auth tokens written to logs — `HIGH`\n**`src/auth/login.js` / `src/logging/logger.js` / `src/logging/redact.js`**\n`logger.info({ email, password, token })` passes the user's plaintext password and freshly issued token into a logger that does `JSON.stringify(record)` straight to stdout. A `redact()` helper exists but is **never imported or applied** by the logger, so secrets reach logs unredacted. Anyone with log access can harvest passwords and valid session tokens.\n**Remediation:** Never log passwords; force the logger to route all records through `redact()` so secrets are stripped at the trust boundary regardless of caller.\n\n**Deliberately excluded (decoys, not findings):**\n- `src/test-fixtures.js` — values explicitly labeled test-only fixtures, not real credentials.\n- `src/config-safe.js` — demonstrates the correct `requiredSecret` fail-fast pattern.\n- `src/security/hash.js` (bcrypt cost 12), `src/routes/health.js` — no issues.\n- No `package-lock.json`/`node_modules` present; `bcrypt@5.1.1` has no relevant known advisory.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-planv3-formal-v1/minimal/rep-0/held-out/secret-fallback-logging/trace.jsonl",
+    "metrics": {
+      "api_calls": 9,
+      "api_latency_ms": 86856,
+      "tool_calls": 23,
+      "tool_call_retries": 0,
+      "prompt_tokens": 19878,
+      "completion_tokens": 5078,
+      "total_tokens": 24956,
+      "usage_observations": 9,
+      "elapsed_ms": 88126,
+      "steps": 9
+    }
+  },
+  "behavior": {
+    "steps": 23,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": false,
+    "test_before_first_edit": false,
+    "test_after_last_edit": false,
+    "final_answer": "The report is valid JSON and no audited source files were modified (only the new `SECURITY_REVIEW.json` was created).\n\n## Security Review Summary\n\nI reviewed all 10 files in the repository (`package.json` plus 9 source files under `src/`). Two exploitable findings:\n\n### 1. Hardcoded production payment key used as silent fallback — `HIGH`\n**`src/config.js` / `src/payments.js`**\n`paymentKey: process.env.PAYMENT_KEY || 'payment_live_FALLBACK_PRODUCTION_KEY'` bakes a credential labeled as a live production key into source control and uses it as a silent default. It flows directly into `new PaymentClient(paymentKey)`. A misconfigured deployment silently authenticates to the payment provider with the leaked key rather than failing closed. Anyone with repo read access gets the production credential.\n**Remediation:** Remove the fallback, fail fast when the env var is missing (like the `config-safe.js` `requiredSecret` pattern), and rotate the leaked key.\n\n### 2. Plaintext passwords and auth tokens written to logs — `HIGH`\n**`src/auth/login.js` / `src/logging/logger.js` / `src/logging/redact.js`**\n`logger.info({ email, password, token })` passes the user's plaintext password and freshly issued token into a logger that does `JSON.stringify(record)` straight to stdout. A `redact()` helper exists but is **never imported or applied** by the logger, so secrets reach logs unredacted. Anyone with log access can harvest passwords and valid session tokens.\n**Remediation:** Never log passwords; force the logger to route all records through `redact()` so secrets are stripped at the trust boundary regardless of caller.\n\n**Deliberately excluded (decoys, not findings):**\n- `src/test-fixtures.js` — values explicitly labeled test-only fixtures, not real credentials.\n- `src/config-safe.js` — demonstrates the correct `requiredSecret` fail-fast pattern.\n- `src/security/hash.js` (bcrypt cost 12), `src/routes/health.js` — no issues.\n- No `package-lock.json`/`node_modules` present; `bcrypt@5.1.1` has no relevant known advisory.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-planv3-formal-v1/minimal/rep-0/held-out/secret-fallback-logging/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/security-review-glm-planv3-formal-v1/minimal/rep-0/held-out/secret-fallback-logging/trace.jsonl"
+}
