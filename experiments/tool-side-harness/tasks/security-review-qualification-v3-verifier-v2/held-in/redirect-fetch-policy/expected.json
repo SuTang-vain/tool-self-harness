@@ -1,0 +1,107 @@
+{
+  "findings": [
+    {
+      "canonical_id": "ssrf",
+      "aliases": [
+        "server-side-request-forgery",
+        "server-side-request-forgery-ssrf"
+      ],
+      "minimum_severity": "HIGH",
+      "files": [
+        "src/routes/preview.js",
+        "src/policy/outbound.js",
+        "src/http/client.js"
+      ],
+      "evidence_groups": [
+        [
+          "startswith",
+          "prefix"
+        ],
+        [
+          "followredirects",
+          "redirect"
+        ]
+      ],
+      "remediation_markers": [
+        "parse",
+        "hostname",
+        "origin",
+        "redirect"
+      ]
+    },
+    {
+      "canonical_id": "open-redirect",
+      "aliases": [
+        "unvalidated-redirect",
+        "external-redirect"
+      ],
+      "minimum_severity": "MEDIUM",
+      "files": [
+        "src/routes/continue.js"
+      ],
+      "evidence_groups": [
+        [
+          "returnto",
+          "redirect"
+        ]
+      ],
+      "remediation_markers": [
+        "allowlist",
+        "relative",
+        "same-origin",
+        "validate"
+      ]
+    }
+  ],
+  "scanned_files": [
+    "src/app.js",
+    "src/commands/thumbnail.js",
+    "src/config.js",
+    "src/http/client.js",
+    "src/logging.js",
+    "src/policy/origin.js",
+    "src/policy/outbound.js",
+    "src/routes/avatar.js",
+    "src/routes/continue.js",
+    "src/routes/preview.js"
+  ],
+  "protected_decoys": [
+    {
+      "id": "exact-avatar-origin",
+      "files": [
+        "src/policy/origin.js",
+        "src/routes/avatar.js"
+      ],
+      "rationale": "The URL is parsed and exact protocol, hostname, and port are checked; redirects are disabled."
+    },
+    {
+      "id": "bounded-http-client",
+      "files": [
+        "src/http/client.js"
+      ],
+      "rationale": "Timeout handling is protective but does not repair the vulnerable preview policy."
+    },
+    {
+      "id": "metadata-only-logging",
+      "files": [
+        "src/logging.js"
+      ],
+      "rationale": "The logger omits credentials, query values, and response bodies."
+    },
+    {
+      "id": "argument-array-process",
+      "files": [
+        "src/commands/thumbnail.js"
+      ],
+      "rationale": "spawn uses a fixed executable, argument array, and shell false."
+    },
+    {
+      "id": "constant-config-origin",
+      "files": [
+        "src/config.js"
+      ],
+      "rationale": "The constant itself is not a secret or vulnerability."
+    }
+  ],
+  "source_modified": false
+}
