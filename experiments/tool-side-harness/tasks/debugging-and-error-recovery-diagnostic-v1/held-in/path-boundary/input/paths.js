@@ -1,0 +1,1 @@
+import path from'node:path';export function resolveWorkspace(root,requested){const target=path.resolve(root,requested);if(!target.startsWith(path.resolve(root)))throw new Error('outside workspace');return target}

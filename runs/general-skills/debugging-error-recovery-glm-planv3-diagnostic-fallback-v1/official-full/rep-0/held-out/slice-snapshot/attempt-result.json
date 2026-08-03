@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "slice-snapshot",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "ok  \texample/snapshot\t(cached) | ok  \texample/snapshot\t0.276s | ok  \texample/snapshot\t(cached) | PASS go-slice-alias",
+  "runner": {
+    "steps": 13,
+    "final_answer": "## Summary\n\n### Root cause\n`Store.Snapshot()` returned the slice header of the internal `items` field directly (`return s.items`). In Go, a slice header is a view over a backing array, so this shared the store's backing array with callers. Two failure modes followed:\n- A later `Store.Add()` could write into the spare capacity of that shared backing array, corrupting a previously-taken snapshot.\n- Two snapshots taken from the same store aliased one another, so mutating one mutated the other.\n\nThe given `TestSnapshotIsStable` only passed by luck: appending `\"b\"` to a one-element slice triggered a reallocation, so the snapshot happened to remain stable. The isolation bug was real and latent.\n\n### Fix (smallest correct change)\nIn `store.go`, `Snapshot()` now returns a defensive copy instead of the live slice:\n\n```go\nfunc (s *Store) Snapshot() []string {\n    out := make([]string, len(s.items))\n    copy(out, s.items)\n    return out\n}\n```\n\nThe public API (`Store`, `Add`, `Snapshot` signatures) is unchanged, and only `store.go` was modified. `protected-decoy.txt` and the test file remain untouched.\n\n### Verification\n- I reproduced the bug with a temporary test where two snapshots aliased each other; it failed before the fix and passes after.\n- `go vet ./...` is clean.\n- The complete test suite (`go test -v -count=1 ./...`) passes.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-out/slice-snapshot/trace.jsonl",
+    "metrics": {
+      "api_calls": 13,
+      "api_latency_ms": 189213,
+      "tool_calls": 17,
+      "tool_call_retries": 0,
+      "prompt_tokens": 48634,
+      "completion_tokens": 7649,
+      "total_tokens": 56283,
+      "usage_observations": 13,
+      "elapsed_ms": 194835,
+      "steps": 13
+    }
+  },
+  "behavior": {
+    "steps": 17,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "## Summary\n\n### Root cause\n`Store.Snapshot()` returned the slice header of the internal `items` field directly (`return s.items`). In Go, a slice header is a view over a backing array, so this shared the store's backing array with callers. Two failure modes followed:\n- A later `Store.Add()` could write into the spare capacity of that shared backing array, corrupting a previously-taken snapshot.\n- Two snapshots taken from the same store aliased one another, so mutating one mutated the other.\n\nThe given `TestSnapshotIsStable` only passed by luck: appending `\"b\"` to a one-element slice triggered a reallocation, so the snapshot happened to remain stable. The isolation bug was real and latent.\n\n### Fix (smallest correct change)\nIn `store.go`, `Snapshot()` now returns a defensive copy instead of the live slice:\n\n```go\nfunc (s *Store) Snapshot() []string {\n    out := make([]string, len(s.items))\n    copy(out, s.items)\n    return out\n}\n```\n\nThe public API (`Store`, `Add`, `Snapshot` signatures) is unchanged, and only `store.go` was modified. `protected-decoy.txt` and the test file remain untouched.\n\n### Verification\n- I reproduced the bug with a temporary test where two snapshots aliased each other; it failed before the fix and passes after.\n- `go vet ./...` is clean.\n- The complete test suite (`go test -v -count=1 ./...`) passes.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-out/slice-snapshot/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-out/slice-snapshot/trace.jsonl"
+}

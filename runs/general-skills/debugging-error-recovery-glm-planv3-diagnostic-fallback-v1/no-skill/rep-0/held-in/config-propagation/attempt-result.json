@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "config-propagation",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "ok  \texample/configbug\t0.155s | ok  \texample/configbug\t0.312s | PASS go-config-propagation",
+  "runner": {
+    "steps": 8,
+    "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** `NewClient(cfg Config)` accepted a `Config` with a `Timeout` field but completely ignored it, always returning a client with a hardcoded 30-second timeout from `newHTTPClient()`.\n\n**Fix:** I made the smallest correct change in `client.go` — `NewClient` now applies the caller-provided timeout when it is positive, otherwise preserving the default 30s from `newHTTPClient()`:\n\n```go\nfunc NewClient(cfg Config)*Client{c:=newHTTPClient();if cfg.Timeout>0{c.Timeout=cfg.Timeout};return c}\n```\n\nThis change:\n- **Preserves the public API** — `Config`, `Client`, and `NewClient` signatures are unchanged.\n- **Doesn't hardcode test values** — the default 30s remains in `newHTTPClient`, and the caller's `cfg.Timeout` is used as provided.\n- **Preserves unrelated behavior** — when no timeout is configured (zero value), the 30s default still applies.\n- **Preserves unrelated files** — only `client.go` was modified; `protected-decoy.txt` and others are untouched.\n\nThe complete Go test suite passes.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/config-propagation/trace.jsonl",
+    "metrics": {
+      "api_calls": 8,
+      "api_latency_ms": 48125,
+      "tool_calls": 9,
+      "tool_call_retries": 0,
+      "prompt_tokens": 10673,
+      "completion_tokens": 1255,
+      "total_tokens": 11928,
+      "usage_observations": 8,
+      "elapsed_ms": 49319,
+      "steps": 8
+    }
+  },
+  "behavior": {
+    "steps": 9,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** `NewClient(cfg Config)` accepted a `Config` with a `Timeout` field but completely ignored it, always returning a client with a hardcoded 30-second timeout from `newHTTPClient()`.\n\n**Fix:** I made the smallest correct change in `client.go` — `NewClient` now applies the caller-provided timeout when it is positive, otherwise preserving the default 30s from `newHTTPClient()`:\n\n```go\nfunc NewClient(cfg Config)*Client{c:=newHTTPClient();if cfg.Timeout>0{c.Timeout=cfg.Timeout};return c}\n```\n\nThis change:\n- **Preserves the public API** — `Config`, `Client`, and `NewClient` signatures are unchanged.\n- **Doesn't hardcode test values** — the default 30s remains in `newHTTPClient`, and the caller's `cfg.Timeout` is used as provided.\n- **Preserves unrelated behavior** — when no timeout is configured (zero value), the 30s default still applies.\n- **Preserves unrelated files** — only `client.go` was modified; `protected-decoy.txt` and others are untouched.\n\nThe complete Go test suite passes.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/config-propagation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/config-propagation/trace.jsonl"
+}

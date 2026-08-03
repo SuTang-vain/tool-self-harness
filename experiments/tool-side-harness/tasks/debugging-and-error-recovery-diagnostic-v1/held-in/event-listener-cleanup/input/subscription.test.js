@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import{EventEmitter}from'node:events';import{connect}from'./subscription.js';test('cleanup removes data listener',()=>{const e=new EventEmitter();let n=0;const fn=()=>n++;const close=connect(e,fn);e.emit('data');close();e.emit('data');assert.equal(n,1)});

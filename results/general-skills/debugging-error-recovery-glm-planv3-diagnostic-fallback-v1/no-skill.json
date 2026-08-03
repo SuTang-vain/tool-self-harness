@@ -1,0 +1,484 @@
+{
+  "run_id": "debugging-error-recovery-glm-planv3-diagnostic-fallback-v1",
+  "variant": "no-skill",
+  "model_config": "/Users/tangyaoyue/DEV/tool-self-harness/glm-agent-config.yaml",
+  "skill_repo": "none",
+  "suite": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/tasks/debugging-and-error-recovery-diagnostic-v1",
+  "repeats": 1,
+  "task_order_seed": 2026080301,
+  "task_filter": null,
+  "held_in": {
+    "passes": 6,
+    "attempts": 6,
+    "pass_rate": 1,
+    "stable_tasks": [
+      "async-write",
+      "cache-key",
+      "config-propagation",
+      "event-listener-cleanup",
+      "path-boundary",
+      "state-isolation"
+    ],
+    "stable_task_count": 6,
+    "task_count": 6
+  },
+  "held_out": {
+    "passes": 2,
+    "attempts": 3,
+    "pass_rate": 0.6666666666666666,
+    "stable_tasks": [
+      "condition-wait",
+      "slice-snapshot"
+    ],
+    "stable_task_count": 2,
+    "task_count": 3
+  },
+  "metrics": {
+    "attempts": 9,
+    "usage_coverage": 1,
+    "api_calls": 76,
+    "api_latency_ms": 693263,
+    "tool_calls": 93,
+    "tool_call_retries": 0,
+    "prompt_tokens": 114501,
+    "completion_tokens": 23141,
+    "total_tokens": 137642,
+    "elapsed_ms": 704147,
+    "mean_tokens_per_attempt": 15293.555555555555,
+    "mean_tool_calls_per_attempt": 10.333333333333334,
+    "mean_elapsed_ms_per_attempt": 78238.55555555556,
+    "tokens_per_successful_attempt": 17205.25,
+    "tokens_per_reliable_task": 17205.25
+  },
+  "behavior": {
+    "loaded_skill_rate": 0,
+    "test_before_edit_rate": 0.6666666666666666,
+    "test_after_edit_rate": 1
+  },
+  "per_task": [
+    {
+      "split": "held-in",
+      "task_id": "async-write",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "async-write",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 63.179334 | PASS js-async-write",
+          "runner": {
+            "steps": 6,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Problem:** `saveReport` invoked `writeFile` (which returns a Promise) without `await`ing it. Because the `async` function returns before the actual write settled, awaiting `saveReport` did not guarantee the report was durable on disk — violating the caller's completion contract.\n\n**Fix (one-line change in `report.js`):** Added `await` before the `writeFile` call so the returned promise is properly awaited before `saveReport` resolves.\n\n```js\nawait writeFile(path, JSON.stringify(report, null, 2), 'utf8');\n```\n\n**Verification:**\n- The full test suite (`node --test`) passes — including the test that asserts awaiting `saveReport` means the report is durable.\n- The public API (`saveReport(path, report)`) is unchanged.\n- No unrelated files were modified (confirmed via `git_diff`, which shows only the single change in `report.js`).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/async-write/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 34532,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 6289,
+              "completion_tokens": 548,
+              "total_tokens": 6837,
+              "usage_observations": 6,
+              "elapsed_ms": 35291,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Problem:** `saveReport` invoked `writeFile` (which returns a Promise) without `await`ing it. Because the `async` function returns before the actual write settled, awaiting `saveReport` did not guarantee the report was durable on disk — violating the caller's completion contract.\n\n**Fix (one-line change in `report.js`):** Added `await` before the `writeFile` call so the returned promise is properly awaited before `saveReport` resolves.\n\n```js\nawait writeFile(path, JSON.stringify(report, null, 2), 'utf8');\n```\n\n**Verification:**\n- The full test suite (`node --test`) passes — including the test that asserts awaiting `saveReport` means the report is durable.\n- The public API (`saveReport(path, report)`) is unchanged.\n- No unrelated files were modified (confirmed via `git_diff`, which shows only the single change in `report.js`).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/async-write/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/async-write/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "cache-key",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "cache-key",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": " | ---------------------------------------------------------------------- | Ran 2 tests in 0.000s |  | OK",
+          "runner": {
+            "steps": 8,
+            "final_answer": "## Summary\n\n**The bug:** The cache key in `total_with_tax` was derived only from `subtotal`, ignoring `tax_rate`. After computing `total_with_tax(100, 0.05)` and caching `105.0` under key `100`, a subsequent call `total_with_tax(100, 0.20)` would return the stale cached `105.0` instead of the correct `120.0`.\n\n**The fix:** Include `tax_rate` in the cache key by making it a tuple `(subtotal, tax_rate)`, so each distinct `(subtotal, tax_rate)` pair gets its own cached entry.\n\nThe change is minimal and focused:\n- The public API (`total_with_tax` and `clear_cache`) is unchanged.\n- The unrelated `protected-decoy.txt` file is untouched.\n- The complete test suite passes, including the previously-failing `test_same_subtotal_different_tax_rates` and the repeated-call caching test.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/cache-key/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 40119,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 9782,
+              "completion_tokens": 746,
+              "total_tokens": 10528,
+              "usage_observations": 8,
+              "elapsed_ms": 40437,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "## Summary\n\n**The bug:** The cache key in `total_with_tax` was derived only from `subtotal`, ignoring `tax_rate`. After computing `total_with_tax(100, 0.05)` and caching `105.0` under key `100`, a subsequent call `total_with_tax(100, 0.20)` would return the stale cached `105.0` instead of the correct `120.0`.\n\n**The fix:** Include `tax_rate` in the cache key by making it a tuple `(subtotal, tax_rate)`, so each distinct `(subtotal, tax_rate)` pair gets its own cached entry.\n\nThe change is minimal and focused:\n- The public API (`total_with_tax` and `clear_cache`) is unchanged.\n- The unrelated `protected-decoy.txt` file is untouched.\n- The complete test suite passes, including the previously-failing `test_same_subtotal_different_tax_rates` and the repeated-call caching test.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/cache-key/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/cache-key/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "config-propagation",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "config-propagation",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "ok  \texample/configbug\t0.155s | ok  \texample/configbug\t0.312s | PASS go-config-propagation",
+          "runner": {
+            "steps": 8,
+            "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** `NewClient(cfg Config)` accepted a `Config` with a `Timeout` field but completely ignored it, always returning a client with a hardcoded 30-second timeout from `newHTTPClient()`.\n\n**Fix:** I made the smallest correct change in `client.go` — `NewClient` now applies the caller-provided timeout when it is positive, otherwise preserving the default 30s from `newHTTPClient()`:\n\n```go\nfunc NewClient(cfg Config)*Client{c:=newHTTPClient();if cfg.Timeout>0{c.Timeout=cfg.Timeout};return c}\n```\n\nThis change:\n- **Preserves the public API** — `Config`, `Client`, and `NewClient` signatures are unchanged.\n- **Doesn't hardcode test values** — the default 30s remains in `newHTTPClient`, and the caller's `cfg.Timeout` is used as provided.\n- **Preserves unrelated behavior** — when no timeout is configured (zero value), the 30s default still applies.\n- **Preserves unrelated files** — only `client.go` was modified; `protected-decoy.txt` and others are untouched.\n\nThe complete Go test suite passes.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/config-propagation/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 48125,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 10673,
+              "completion_tokens": 1255,
+              "total_tokens": 11928,
+              "usage_observations": 8,
+              "elapsed_ms": 49319,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** `NewClient(cfg Config)` accepted a `Config` with a `Timeout` field but completely ignored it, always returning a client with a hardcoded 30-second timeout from `newHTTPClient()`.\n\n**Fix:** I made the smallest correct change in `client.go` — `NewClient` now applies the caller-provided timeout when it is positive, otherwise preserving the default 30s from `newHTTPClient()`:\n\n```go\nfunc NewClient(cfg Config)*Client{c:=newHTTPClient();if cfg.Timeout>0{c.Timeout=cfg.Timeout};return c}\n```\n\nThis change:\n- **Preserves the public API** — `Config`, `Client`, and `NewClient` signatures are unchanged.\n- **Doesn't hardcode test values** — the default 30s remains in `newHTTPClient`, and the caller's `cfg.Timeout` is used as provided.\n- **Preserves unrelated behavior** — when no timeout is configured (zero value), the 30s default still applies.\n- **Preserves unrelated files** — only `client.go` was modified; `protected-decoy.txt` and others are untouched.\n\nThe complete Go test suite passes.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/config-propagation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/config-propagation/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "event-listener-cleanup",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "event-listener-cleanup",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 55.129833 | PASS js-event-listener",
+          "runner": {
+            "steps": 6,
+            "final_answer": "The fix is complete. Here's a summary of what I did:\n\n## Problem\nThe `connect` function in `subscription.js` registered a listener for the `'data'` event:\n```javascript\nemitter.on('data', onData);\n```\nBut the returned cleanup/disconnect function incorrectly removed a `'close'` listener instead of the `'data'` listener:\n```javascript\nreturn () => emitter.off('close', onData)\n```\nThis meant that after a caller disconnected, the `'data'` listener was never actually removed, so the subscriber kept receiving `'data'` events — incorrect behavior after disconnect.\n\n## Fix\nChanged the cleanup function to remove the correct event name (`'data'` instead of `'close'`), matching the event that was actually subscribed to:\n```javascript\nexport function connect(emitter,onData){emitter.on('data',onData);return ()=>emitter.off('data',onData)}\n```\n\n## Verification\n- The public API (`connect`) is preserved.\n- Only `subscription.js` was changed; `protected-decoy.txt` and all other files remain untouched.\n- The full test suite passes (1 test, 0 failures).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/event-listener-cleanup/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 39121,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 7658,
+              "completion_tokens": 1215,
+              "total_tokens": 8873,
+              "usage_observations": 6,
+              "elapsed_ms": 40164,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": false,
+            "test_after_last_edit": true,
+            "final_answer": "The fix is complete. Here's a summary of what I did:\n\n## Problem\nThe `connect` function in `subscription.js` registered a listener for the `'data'` event:\n```javascript\nemitter.on('data', onData);\n```\nBut the returned cleanup/disconnect function incorrectly removed a `'close'` listener instead of the `'data'` listener:\n```javascript\nreturn () => emitter.off('close', onData)\n```\nThis meant that after a caller disconnected, the `'data'` listener was never actually removed, so the subscriber kept receiving `'data'` events — incorrect behavior after disconnect.\n\n## Fix\nChanged the cleanup function to remove the correct event name (`'data'` instead of `'close'`), matching the event that was actually subscribed to:\n```javascript\nexport function connect(emitter,onData){emitter.on('data',onData);return ()=>emitter.off('data',onData)}\n```\n\n## Verification\n- The public API (`connect`) is preserved.\n- Only `subscription.js` was changed; `protected-decoy.txt` and all other files remain untouched.\n- The full test suite passes (1 test, 0 failures).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/event-listener-cleanup/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/event-listener-cleanup/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "path-boundary",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "path-boundary",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "# cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 52.95725 | PASS js-path-prefix",
+          "runner": {
+            "steps": 10,
+            "final_answer": "The diff confirms a minimal, focused change to a single file (`paths.js`); `protected-decoy.txt`, `paths.test.js`, and `package.json` are untouched, and the public API (`resolveWorkspace`) is preserved.\n\n## Summary\n\n**Bug:** The workspace path guard in `paths.js` used `String.startsWith` on the resolved path, which doesn't respect path boundaries. A request like `../workspace-secret` resolved to `/tmp/workspace-secret`, and since that string literally *starts with* the characters `/tmp/work`, the guard passed — allowing access to a sibling directory outside the workspace.\n\n**Fix:** A target is inside the workspace only if it either equals the workspace root exactly, or is a proper descendant — i.e. the resolved path equals `base` or begins with `base + path.sep`:\n\n```js\nconst base=path.resolve(root);\nif(!(target===base||target.startsWith(base+path.sep)))throw new Error('outside workspace');\n```\n\nThis rejects sibling-prefix escapes (`../workspace-secret`, `../work-evil`), parent traversal (`..`), and absolute escapes (`/etc/passwd`), while still allowing legitimate children and the root itself. The full test suite passes (2/2), and unrelated files are unchanged.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/path-boundary/trace.jsonl",
+            "metrics": {
+              "api_calls": 10,
+              "api_latency_ms": 90927,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 17604,
+              "completion_tokens": 3571,
+              "total_tokens": 21175,
+              "usage_observations": 10,
+              "elapsed_ms": 91998,
+              "steps": 10
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "The diff confirms a minimal, focused change to a single file (`paths.js`); `protected-decoy.txt`, `paths.test.js`, and `package.json` are untouched, and the public API (`resolveWorkspace`) is preserved.\n\n## Summary\n\n**Bug:** The workspace path guard in `paths.js` used `String.startsWith` on the resolved path, which doesn't respect path boundaries. A request like `../workspace-secret` resolved to `/tmp/workspace-secret`, and since that string literally *starts with* the characters `/tmp/work`, the guard passed — allowing access to a sibling directory outside the workspace.\n\n**Fix:** A target is inside the workspace only if it either equals the workspace root exactly, or is a proper descendant — i.e. the resolved path equals `base` or begins with `base + path.sep`:\n\n```js\nconst base=path.resolve(root);\nif(!(target===base||target.startsWith(base+path.sep)))throw new Error('outside workspace');\n```\n\nThis rejects sibling-prefix escapes (`../workspace-secret`, `../work-evil`), parent traversal (`..`), and absolute escapes (`/etc/passwd`), while still allowing legitimate children and the root itself. The full test suite passes (2/2), and unrelated files are unchanged.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/path-boundary/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/path-boundary/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "state-isolation",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "state-isolation",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": " | ---------------------------------------------------------------------- | Ran 2 tests in 0.000s |  | OK",
+          "runner": {
+            "steps": 13,
+            "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** The classic Python mutable-default-argument pitfall. `DEFAULT_TAGS=[]` is evaluated once at module import, so every `Registry()` instance that relies on the default shared the *same* list object. Calling `add()` mutated that shared list, leaking state between independent instances — `test_fresh` failed because an earlier `add('a')` persisted.\n\n**Fix (one line in `registry.py`):**\n```python\ndef __init__(self,tags=DEFAULT_TAGS): self.tags=list(tags) if tags is DEFAULT_TAGS else tags\n```\n\nWhen the caller uses the default, each instance now gets a fresh `list(...)` copy (identified via `is DEFAULT_TAGS` so the copy only happens for the default sentinel — passing an explicit list still uses that list object directly, preserving the original sharing semantics for callers who intentionally pass a shared list).\n\n**What was preserved:**\n- Public API unchanged: `Registry(tags=...)`, `.tags`, `.add(tag)` all intact.\n- `DEFAULT_TAGS` module constant retained and no longer mutated.\n- `test_registry.py` untouched.\n- `protected-decoy.txt` untouched (only `registry.py` is in the diff).\n\n**Verification:** The complete test suite (`test_add`, `test_fresh`) now passes, and additional manual checks confirmed instance isolation, no mutation of `DEFAULT_TAGS`, and correct behavior with explicit list arguments.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/state-isolation/trace.jsonl",
+            "metrics": {
+              "api_calls": 13,
+              "api_latency_ms": 221322,
+              "tool_calls": 14,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26530,
+              "completion_tokens": 9098,
+              "total_tokens": 35628,
+              "usage_observations": 13,
+              "elapsed_ms": 222855,
+              "steps": 13
+            }
+          },
+          "behavior": {
+            "steps": 14,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** The classic Python mutable-default-argument pitfall. `DEFAULT_TAGS=[]` is evaluated once at module import, so every `Registry()` instance that relies on the default shared the *same* list object. Calling `add()` mutated that shared list, leaking state between independent instances — `test_fresh` failed because an earlier `add('a')` persisted.\n\n**Fix (one line in `registry.py`):**\n```python\ndef __init__(self,tags=DEFAULT_TAGS): self.tags=list(tags) if tags is DEFAULT_TAGS else tags\n```\n\nWhen the caller uses the default, each instance now gets a fresh `list(...)` copy (identified via `is DEFAULT_TAGS` so the copy only happens for the default sentinel — passing an explicit list still uses that list object directly, preserving the original sharing semantics for callers who intentionally pass a shared list).\n\n**What was preserved:**\n- Public API unchanged: `Registry(tags=...)`, `.tags`, `.add(tag)` all intact.\n- `DEFAULT_TAGS` module constant retained and no longer mutated.\n- `test_registry.py` untouched.\n- `protected-decoy.txt` untouched (only `registry.py` is in the diff).\n\n**Verification:** The complete test suite (`test_add`, `test_fresh`) now passes, and additional manual checks confirmed instance isolation, no mutation of `DEFAULT_TAGS`, and correct behavior with explicit list arguments.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/state-isolation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/state-isolation/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "condition-wait",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "condition-wait",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": " | ---------------------------------------------------------------------- | Ran 1 test in 0.047s |  | OK",
+          "runner": {
+            "steps": 9,
+            "final_answer": "The change is focused and minimal — only `waiter.py` was modified, and the protected decoy file and test file are untouched. The public API (`wait_until(predicate, timeout, interval=0.01)`) is fully preserved.\n\n## Summary\n\n**Problem:** The original `wait_until` helper was fundamentally broken:\n```python\ndef wait_until(predicate,timeout,interval=0.01):\n time.sleep(timeout)\n return predicate()\n```\nIt slept the full `timeout` (ignoring `interval` entirely), never returned early when the predicate became true, and violated the timeout contract.\n\n**Fix:** Replaced it with a proper polling loop that:\n1. Checks the `predicate` first (returns `True` immediately if already satisfied, honoring early condition).\n2. Computes a monotonic deadline and returns `False` once the timeout elapses (honoring the timeout contract).\n3. Sleeps in `interval`-sized increments (using `min(interval, remaining)` to avoid overshooting the deadline).\n4. Uses `time.monotonic()` for correct, drift-free timeout measurement.\n\n**Verification:** The full test suite passes (`test_returns_early` now completes in ~0.038s, returning early instead of waiting the full 0.5s timeout), and additional edge-case checks confirm correct behavior for the immediately-true and never-true cases.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/condition-wait/trace.jsonl",
+            "metrics": {
+              "api_calls": 9,
+              "api_latency_ms": 83001,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 14983,
+              "completion_tokens": 2804,
+              "total_tokens": 17787,
+              "usage_observations": 9,
+              "elapsed_ms": 84605,
+              "steps": 9
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "The change is focused and minimal — only `waiter.py` was modified, and the protected decoy file and test file are untouched. The public API (`wait_until(predicate, timeout, interval=0.01)`) is fully preserved.\n\n## Summary\n\n**Problem:** The original `wait_until` helper was fundamentally broken:\n```python\ndef wait_until(predicate,timeout,interval=0.01):\n time.sleep(timeout)\n return predicate()\n```\nIt slept the full `timeout` (ignoring `interval` entirely), never returned early when the predicate became true, and violated the timeout contract.\n\n**Fix:** Replaced it with a proper polling loop that:\n1. Checks the `predicate` first (returns `True` immediately if already satisfied, honoring early condition).\n2. Computes a monotonic deadline and returns `False` once the timeout elapses (honoring the timeout contract).\n3. Sleeps in `interval`-sized increments (using `min(interval, remaining)` to avoid overshooting the deadline).\n4. Uses `time.monotonic()` for correct, drift-free timeout measurement.\n\n**Verification:** The full test suite passes (`test_returns_early` now completes in ~0.038s, returning early instead of waiting the full 0.5s timeout), and additional edge-case checks confirm correct behavior for the immediately-true and never-true cases.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/condition-wait/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/condition-wait/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "options-defaults",
+      "passes": 0,
+      "attempts": 1,
+      "stable_pass": false,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "options-defaults",
+          "repeat": 0,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "  operator: 'deepStrictEqual', |   diff: 'simple' | } |  | Node.js v22.23.0",
+          "runner": {
+            "steps": 8,
+            "final_answer": "All edge cases behave correctly:\n\n1. **No options** → defaults applied: `{retries:3, timeout:5000, verbose:false}` ✓\n2. **Explicit zeros** → preserved: `{retries:0, timeout:0, verbose:false}` ✓\n3. **Explicit values** → preserved: `{retries:5, timeout:1000, verbose:false}` ✓\n4. **Explicit `verbose:true`** → preserved, other defaults applied: `{retries:3, timeout:5000, verbose:true}` ✓\n5. **Explicit `null`** → falls back to default: `{retries:3, timeout:5000, verbose:false}` ✓\n\n## Summary\n\n**Issue:** The request builder used the logical OR operator (`||`) to apply default option values. This treats any valid-but-falsy value (e.g., `retries: 0`, `timeout: 0`, `verbose: false`) the same as a missing option, incorrectly overwriting them with defaults.\n\n**Fix:** Replaced `||` with the nullish coalescing operator (`??`) for all three options (`retries`, `timeout`, `verbose`). The `??` operator only falls back to the default when the value is `null` or `undefined`, correctly preserving explicit falsy values while still applying defaults for omitted options.\n\n**Verification:**\n- The complete test suite passes (1/1 tests).\n- The public API signature (`buildRequest(options={})`) and return shape are unchanged.\n- The unrelated `protected-decoy.txt` file remains untouched.\n- The change is minimal — only the operator was swapped (`||` → `??`), three occurrences in one file.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/options-defaults/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 78233,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 12284,
+              "completion_tokens": 2480,
+              "total_tokens": 14764,
+              "usage_observations": 8,
+              "elapsed_ms": 79237,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "All edge cases behave correctly:\n\n1. **No options** → defaults applied: `{retries:3, timeout:5000, verbose:false}` ✓\n2. **Explicit zeros** → preserved: `{retries:0, timeout:0, verbose:false}` ✓\n3. **Explicit values** → preserved: `{retries:5, timeout:1000, verbose:false}` ✓\n4. **Explicit `verbose:true`** → preserved, other defaults applied: `{retries:3, timeout:5000, verbose:true}` ✓\n5. **Explicit `null`** → falls back to default: `{retries:3, timeout:5000, verbose:false}` ✓\n\n## Summary\n\n**Issue:** The request builder used the logical OR operator (`||`) to apply default option values. This treats any valid-but-falsy value (e.g., `retries: 0`, `timeout: 0`, `verbose: false`) the same as a missing option, incorrectly overwriting them with defaults.\n\n**Fix:** Replaced `||` with the nullish coalescing operator (`??`) for all three options (`retries`, `timeout`, `verbose`). The `??` operator only falls back to the default when the value is `null` or `undefined`, correctly preserving explicit falsy values while still applying defaults for omitted options.\n\n**Verification:**\n- The complete test suite passes (1/1 tests).\n- The public API signature (`buildRequest(options={})`) and return shape are unchanged.\n- The unrelated `protected-decoy.txt` file remains untouched.\n- The change is minimal — only the operator was swapped (`||` → `??`), three occurrences in one file.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/options-defaults/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/options-defaults/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "slice-snapshot",
+      "passes": 1,
+      "attempts": 1,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "slice-snapshot",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "ok  \texample/snapshot\t0.180s | ok  \texample/snapshot\t0.326s | ok  \texample/snapshot\t(cached) | PASS go-slice-alias",
+          "runner": {
+            "steps": 8,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Issue:** `Store.Snapshot()` returned the store's internal slice (`s.items`) directly. Because Go slices share their backing array, a caller could mutate the returned slice and corrupt the store's internal state (and vice versa), so a \"snapshot\" was never truly isolated.\n\n**Fix:** In `store.go`, `Snapshot()` now allocates a fresh slice and copies the contents before returning:\n\n```go\nfunc(s *Store)Snapshot()[]string{out:=make([]string,len(s.items));copy(out,s.items);return out}\n```\n\nThis is the smallest correct change:\n- The public API (`Store`, `Add`, `Snapshot`) is unchanged.\n- `Add` is untouched.\n- No unrelated files were modified.\n- The complete Go test suite passes (`go test ./...`).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/slice-snapshot/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 57883,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 8698,
+              "completion_tokens": 1424,
+              "total_tokens": 10122,
+              "usage_observations": 8,
+              "elapsed_ms": 60241,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": true,
+            "test_before_first_edit": true,
+            "test_after_last_edit": true,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Issue:** `Store.Snapshot()` returned the store's internal slice (`s.items`) directly. Because Go slices share their backing array, a caller could mutate the returned slice and corrupt the store's internal state (and vice versa), so a \"snapshot\" was never truly isolated.\n\n**Fix:** In `store.go`, `Snapshot()` now allocates a fresh slice and copies the contents before returning:\n\n```go\nfunc(s *Store)Snapshot()[]string{out:=make([]string,len(s.items));copy(out,s.items);return out}\n```\n\nThis is the smallest correct change:\n- The public API (`Store`, `Add`, `Snapshot`) is unchanged.\n- `Add` is untouched.\n- No unrelated files were modified.\n- The complete Go test suite passes (`go test ./...`).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/slice-snapshot/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/slice-snapshot/trace.jsonl"
+        }
+      ]
+    }
+  ],
+  "generated_at": "2026-08-03T03:22:05.434Z"
+}

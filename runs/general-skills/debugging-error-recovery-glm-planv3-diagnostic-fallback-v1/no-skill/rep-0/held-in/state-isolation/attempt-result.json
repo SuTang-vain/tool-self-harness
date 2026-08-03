@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "state-isolation",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": " | ---------------------------------------------------------------------- | Ran 2 tests in 0.000s |  | OK",
+  "runner": {
+    "steps": 13,
+    "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** The classic Python mutable-default-argument pitfall. `DEFAULT_TAGS=[]` is evaluated once at module import, so every `Registry()` instance that relies on the default shared the *same* list object. Calling `add()` mutated that shared list, leaking state between independent instances — `test_fresh` failed because an earlier `add('a')` persisted.\n\n**Fix (one line in `registry.py`):**\n```python\ndef __init__(self,tags=DEFAULT_TAGS): self.tags=list(tags) if tags is DEFAULT_TAGS else tags\n```\n\nWhen the caller uses the default, each instance now gets a fresh `list(...)` copy (identified via `is DEFAULT_TAGS` so the copy only happens for the default sentinel — passing an explicit list still uses that list object directly, preserving the original sharing semantics for callers who intentionally pass a shared list).\n\n**What was preserved:**\n- Public API unchanged: `Registry(tags=...)`, `.tags`, `.add(tag)` all intact.\n- `DEFAULT_TAGS` module constant retained and no longer mutated.\n- `test_registry.py` untouched.\n- `protected-decoy.txt` untouched (only `registry.py` is in the diff).\n\n**Verification:** The complete test suite (`test_add`, `test_fresh`) now passes, and additional manual checks confirmed instance isolation, no mutation of `DEFAULT_TAGS`, and correct behavior with explicit list arguments.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/state-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 13,
+      "api_latency_ms": 221322,
+      "tool_calls": 14,
+      "tool_call_retries": 0,
+      "prompt_tokens": 26530,
+      "completion_tokens": 9098,
+      "total_tokens": 35628,
+      "usage_observations": 13,
+      "elapsed_ms": 222855,
+      "steps": 13
+    }
+  },
+  "behavior": {
+    "steps": 14,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** The classic Python mutable-default-argument pitfall. `DEFAULT_TAGS=[]` is evaluated once at module import, so every `Registry()` instance that relies on the default shared the *same* list object. Calling `add()` mutated that shared list, leaking state between independent instances — `test_fresh` failed because an earlier `add('a')` persisted.\n\n**Fix (one line in `registry.py`):**\n```python\ndef __init__(self,tags=DEFAULT_TAGS): self.tags=list(tags) if tags is DEFAULT_TAGS else tags\n```\n\nWhen the caller uses the default, each instance now gets a fresh `list(...)` copy (identified via `is DEFAULT_TAGS` so the copy only happens for the default sentinel — passing an explicit list still uses that list object directly, preserving the original sharing semantics for callers who intentionally pass a shared list).\n\n**What was preserved:**\n- Public API unchanged: `Registry(tags=...)`, `.tags`, `.add(tag)` all intact.\n- `DEFAULT_TAGS` module constant retained and no longer mutated.\n- `test_registry.py` untouched.\n- `protected-decoy.txt` untouched (only `registry.py` is in the diff).\n\n**Verification:** The complete test suite (`test_add`, `test_fresh`) now passes, and additional manual checks confirmed instance isolation, no mutation of `DEFAULT_TAGS`, and correct behavior with explicit list arguments.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/state-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-in/state-isolation/trace.jsonl"
+}

@@ -889,3 +889,34 @@ The formal registries and protocols are:
 - `experiments/tool-side-harness/protocols/STRUCTURAL_FEATURES_V1.md`;
 - `experiments/tool-side-harness/registries/sample-pool-v2.json`;
 - `experiments/tool-side-harness/registries/market-skill-inventory-v1.json`.
+
+
+## 18. Debugging-and-Error-Recovery Diagnostic Qualification
+
+The next registered target was evaluated after the historical systematic-debugging suite was found
+to contain a visible held-out `hidden_test.go` leak. A new 6 held-in + 3 held-out suite removed that
+leak, added protected decoy files, and passed Gate 0: all nine untouched fixtures failed and all
+nine external reference repairs passed.
+
+The first `coding/v3` attempt was infrastructure-aborted by `AccountQuotaExceeded` before the
+variant cohort completed. Its partial attempts were discarded. A fresh, non-pooled fallback cohort
+used GLM-5.2 through Volcengine Ark `plan/v3` with a 360-second timeout and completed all 27
+diagnostic attempts:
+
+| Variant | Held-in | Held-out | Test before first edit | Test after last edit | Mean steps | Total tokens |
+|---|---:|---:|---:|---:|---:|---:|
+| no-skill | 6/6 | 2/3 | 66.7% | 100% | 10.33 | 137,642 |
+| minimal | 6/6 | 2/3 | 77.8% | 100% | 11.67 | 143,797 |
+| official-full | 6/6 | 2/3 | 100% | 88.9% | 12.33 | 332,879 |
+
+The diagnostic establishes a narrow process observation: official-full changes behavior, especially
+reproduce/test-before-edit ordering. It does not establish a task correctness effect. The task pass
+vector is identical across all variants: all six held-in tasks pass, while held-out
+`condition-wait` and `slice-snapshot` pass and `options-defaults` fails. Minimal therefore reaches
+the held-in ceiling, so the preregistered diagnostic gate stops with `stop-redesign`. No formal
+three-repeat baseline, h0 freeze, or Self-Harness candidate generation is authorized on this suite.
+
+This is not evidence that the debugging skill or Self-Harness fails. It is benchmark evidence that
+process sensitivity alone is insufficient when the correctness suite is too easy. The next redesign
+must deepen at least two held-in fixtures, preserve hidden process checks, and audit the
+`options-defaults` null/default contract.

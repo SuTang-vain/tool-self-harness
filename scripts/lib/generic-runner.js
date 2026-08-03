@@ -223,7 +223,9 @@ async function main() {
     skillEnabled ? 'AVAILABLE SKILL: ' + skill.name + ': ' + skill.description : 'NO SKILLS ARE AVAILABLE. Solve the task using your normal reasoning.',
     skillEnabled ? 'Use list_skills and load_skill when the skill is relevant. Use read_skill_file only for references named by the skill.' : '',
     'TOOLS: ' + toolNames + '.',
-    'Reproduce the problem, make the smallest correct change, run relevant tests, then run the full test suite before finishing.'
+    process.env.GENERIC_RUNNER_PROMPT_MODE === 'diagnostic-neutral'
+      ? 'Investigate the reported issue, make a correct focused change, preserve unrelated behavior, and verify your result.'
+      : 'Reproduce the problem, make the smallest correct change, run relevant tests, then run the full test suite before finishing.'
   ].filter(Boolean).join('\n\n');
 
   fs.mkdirSync(path.dirname(tracePath), { recursive: true });

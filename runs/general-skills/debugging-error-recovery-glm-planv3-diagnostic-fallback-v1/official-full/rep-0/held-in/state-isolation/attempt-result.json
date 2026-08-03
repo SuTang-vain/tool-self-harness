@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "state-isolation",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": " | ---------------------------------------------------------------------- | Ran 2 tests in 0.000s |  | OK",
+  "runner": {
+    "steps": 10,
+    "final_answer": "## Summary\n\n**Bug:** Independent `Registry` instances shared mutable state. A new `Registry()` would report a non-empty `.tags` list polluted by prior instances that called `add()`.\n\n**Root cause:** The classic Python mutable-default-argument pitfall. `__init__(self, tags=DEFAULT_TAGS)` bound the *same* list object (created once at module load) as the default for every instance. `add()` mutated that shared list, so the mutation leaked across instances and into `DEFAULT_TAGS`.\n\n**Triage (per debugging-and-error-recovery skill):**\n1. **Reproduce:** Ran `test_registry.py` → `test_fresh` failed with `['a'] != []` (a new `Registry()` inherited the `['a']` that `test_add` appended).\n2. **Localize:** `registry.py`, the `__init__` default argument.\n3. **Reduce:** Minimal repro is exactly `test_add` → `test_fresh`.\n4. **Fix root cause:** Use `None` as a sentinel and allocate a fresh list per instance via `list(DEFAULT_TAGS)` when no argument is given.\n\n**The change (single line):**\n```python\ndef __init__(self,tags=DEFAULT_TAGS): self.tags=tags\n```\n→\n```python\ndef __init__(self,tags=None): self.tags=list(DEFAULT_TAGS) if tags is None else tags\n```\n\n**Public API preserved:**\n- `DEFAULT_TAGS` (module-level, still `[]`) untouched.\n- `Registry()` → fresh empty `.tags` each time.\n- `Registry(tags=[...])` → uses the caller's list (same aliasing behavior as before).\n- `add()` and `.tags` attribute unchanged.\n\n**Verification:**\n- Full test suite passes (`test_add`, `test_fresh` both OK).\n- Extra isolation check: two instances (`a`, `b`) get independent tags; `DEFAULT_TAGS` stays `[]`; explicit-list passthrough still aliases as before.\n- Only `registry.py` modified; `protected-decoy.txt` unchanged.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-in/state-isolation/trace.jsonl",
+    "metrics": {
+      "api_calls": 10,
+      "api_latency_ms": 102694,
+      "tool_calls": 13,
+      "tool_call_retries": 0,
+      "prompt_tokens": 40509,
+      "completion_tokens": 4582,
+      "total_tokens": 45091,
+      "usage_observations": 10,
+      "elapsed_ms": 103474,
+      "steps": 10
+    }
+  },
+  "behavior": {
+    "steps": 13,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": false,
+    "final_answer": "## Summary\n\n**Bug:** Independent `Registry` instances shared mutable state. A new `Registry()` would report a non-empty `.tags` list polluted by prior instances that called `add()`.\n\n**Root cause:** The classic Python mutable-default-argument pitfall. `__init__(self, tags=DEFAULT_TAGS)` bound the *same* list object (created once at module load) as the default for every instance. `add()` mutated that shared list, so the mutation leaked across instances and into `DEFAULT_TAGS`.\n\n**Triage (per debugging-and-error-recovery skill):**\n1. **Reproduce:** Ran `test_registry.py` → `test_fresh` failed with `['a'] != []` (a new `Registry()` inherited the `['a']` that `test_add` appended).\n2. **Localize:** `registry.py`, the `__init__` default argument.\n3. **Reduce:** Minimal repro is exactly `test_add` → `test_fresh`.\n4. **Fix root cause:** Use `None` as a sentinel and allocate a fresh list per instance via `list(DEFAULT_TAGS)` when no argument is given.\n\n**The change (single line):**\n```python\ndef __init__(self,tags=DEFAULT_TAGS): self.tags=tags\n```\n→\n```python\ndef __init__(self,tags=None): self.tags=list(DEFAULT_TAGS) if tags is None else tags\n```\n\n**Public API preserved:**\n- `DEFAULT_TAGS` (module-level, still `[]`) untouched.\n- `Registry()` → fresh empty `.tags` each time.\n- `Registry(tags=[...])` → uses the caller's list (same aliasing behavior as before).\n- `add()` and `.tags` attribute unchanged.\n\n**Verification:**\n- Full test suite passes (`test_add`, `test_fresh` both OK).\n- Extra isolation check: two instances (`a`, `b`) get independent tags; `DEFAULT_TAGS` stays `[]`; explicit-list passthrough still aliases as before.\n- Only `registry.py` modified; `protected-decoy.txt` unchanged.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-in/state-isolation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-in/state-isolation/trace.jsonl"
+}

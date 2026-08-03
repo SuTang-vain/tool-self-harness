@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "condition-wait",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": " | ---------------------------------------------------------------------- | Ran 1 test in 0.038s |  | OK",
+  "runner": {
+    "steps": 8,
+    "final_answer": "The fix is complete and verified. Here's a summary:\n\n## Root Cause\n\nThe `wait_until` helper in `waiter.py` was broken in its implementation:\n\n```python\ndef wait_until(predicate,timeout,interval=0.01):\n time.sleep(timeout)\n return predicate()\n```\n\nIt slept the **entire** `timeout` duration before ever checking the predicate. This violated both contracts:\n\n1. **Early condition** — When the predicate becomes true (e.g. at ~0.03s), it should return immediately with `True`. Instead it always blocked for the full `timeout` (0.5s), so the elapsed-time assertion (`< 0.2s`) failed.\n2. **Timeout contract** — The `interval` parameter was completely ignored, and the function never polled repeatedly. It returned the result of a single late check, with no proper \"give up after `timeout`\" semantics.\n\n## Fix\n\nReplaced the body with a polling loop that honors both the early-return and timeout contracts, preserving the public API signature `wait_until(predicate, timeout, interval=0.01)`:\n\n```python\nimport time\ndef wait_until(predicate,timeout,interval=0.01):\n deadline=time.monotonic()+timeout\n while True:\n  if predicate():\n   return True\n  now=time.monotonic()\n  if now>=deadline:\n   return False\n  time.sleep(min(interval,deadline-now))\n```\n\n- Checks the predicate first; returns `True` immediately when it becomes true (honors **early condition**).\n- Computes a `deadline` from `time.monotonic()` (clock-monotonic, immune to wall-clock changes).\n- Sleeps in `interval` increments, capped at the remaining time until the deadline so it never overshoots (honors **timeout contract**).\n- Returns `False` once the deadline is reached.\n\n## Verification\n\n- Reproduced the failure first (elapsed ~0.505s, expected < 0.2s).\n- After the fix, the test passes, completing in ~0.036s.\n- Full test suite: `python3 -m unittest test_waiter -v` → `OK`.\n- The unrelated file (`protected-decoy.txt`) is unchanged; only `waiter.py` was modified.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-out/condition-wait/trace.jsonl",
+    "metrics": {
+      "api_calls": 8,
+      "api_latency_ms": 69245,
+      "tool_calls": 11,
+      "tool_call_retries": 0,
+      "prompt_tokens": 30699,
+      "completion_tokens": 2993,
+      "total_tokens": 33692,
+      "usage_observations": 8,
+      "elapsed_ms": 70263,
+      "steps": 8
+    }
+  },
+  "behavior": {
+    "steps": 11,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The fix is complete and verified. Here's a summary:\n\n## Root Cause\n\nThe `wait_until` helper in `waiter.py` was broken in its implementation:\n\n```python\ndef wait_until(predicate,timeout,interval=0.01):\n time.sleep(timeout)\n return predicate()\n```\n\nIt slept the **entire** `timeout` duration before ever checking the predicate. This violated both contracts:\n\n1. **Early condition** — When the predicate becomes true (e.g. at ~0.03s), it should return immediately with `True`. Instead it always blocked for the full `timeout` (0.5s), so the elapsed-time assertion (`< 0.2s`) failed.\n2. **Timeout contract** — The `interval` parameter was completely ignored, and the function never polled repeatedly. It returned the result of a single late check, with no proper \"give up after `timeout`\" semantics.\n\n## Fix\n\nReplaced the body with a polling loop that honors both the early-return and timeout contracts, preserving the public API signature `wait_until(predicate, timeout, interval=0.01)`:\n\n```python\nimport time\ndef wait_until(predicate,timeout,interval=0.01):\n deadline=time.monotonic()+timeout\n while True:\n  if predicate():\n   return True\n  now=time.monotonic()\n  if now>=deadline:\n   return False\n  time.sleep(min(interval,deadline-now))\n```\n\n- Checks the predicate first; returns `True` immediately when it becomes true (honors **early condition**).\n- Computes a `deadline` from `time.monotonic()` (clock-monotonic, immune to wall-clock changes).\n- Sleeps in `interval` increments, capped at the remaining time until the deadline so it never overshoots (honors **timeout contract**).\n- Returns `False` once the deadline is reached.\n\n## Verification\n\n- Reproduced the failure first (elapsed ~0.505s, expected < 0.2s).\n- After the fix, the test passes, completing in ~0.036s.\n- Full test suite: `python3 -m unittest test_waiter -v` → `OK`.\n- The unrelated file (`protected-decoy.txt`) is unchanged; only `waiter.py` was modified.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-out/condition-wait/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-out/condition-wait/trace.jsonl"
+}

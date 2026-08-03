@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "config-propagation",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "ok  \texample/configbug\t0.168s | ok  \texample/configbug\t0.285s | PASS go-config-propagation",
+  "runner": {
+    "steps": 7,
+    "final_answer": "The diff confirms only `client.go` changed — `protected-decoy.txt`, `go.mod`, and `client_test.go` are untouched.\n\n## Summary\n\n**Root cause:** `NewClient` accepted a `Config` but discarded it, calling `newHTTPClient()` which hardcoded `Timeout: 30*time.Second`. So any caller-provided timeout was ignored.\n\n**Fix (smallest correct change):**\n- Propagate `cfg` from `NewClient` → `newHTTPClient(cfg)`.\n- Use `cfg.Timeout` when a caller provides one.\n- Preserve the original default: only fall back to `30s` when the caller passes a zero/unspecified timeout (`if t == 0`).\n\n**Verification:**\n- Public API preserved: `Config`, `Client`, and `NewClient(cfg Config) *Client` signatures are unchanged. (`newHTTPClient` is an unexported internal helper, so its signature change is not part of the public API, and no other file references it.)\n- No test value hardcoded — the `2s` comes only from the test's `Config{Timeout: 2*time.Second}`; the fix handles any caller-supplied duration.\n- `go vet ./...` clean.\n- Full `go test -v ./...` passes: `TestTimeoutPropagates` PASS.\n- The existing test serves as the regression guard (it fails without the fix: `got 30s`, and passes with it).\n- Unrelated files (`protected-decoy.txt`) unchanged.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-in/config-propagation/trace.jsonl",
+    "metrics": {
+      "api_calls": 7,
+      "api_latency_ms": 84816,
+      "tool_calls": 10,
+      "tool_call_retries": 0,
+      "prompt_tokens": 20232,
+      "completion_tokens": 3779,
+      "total_tokens": 24011,
+      "usage_observations": 7,
+      "elapsed_ms": 87129,
+      "steps": 7
+    }
+  },
+  "behavior": {
+    "steps": 10,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The diff confirms only `client.go` changed — `protected-decoy.txt`, `go.mod`, and `client_test.go` are untouched.\n\n## Summary\n\n**Root cause:** `NewClient` accepted a `Config` but discarded it, calling `newHTTPClient()` which hardcoded `Timeout: 30*time.Second`. So any caller-provided timeout was ignored.\n\n**Fix (smallest correct change):**\n- Propagate `cfg` from `NewClient` → `newHTTPClient(cfg)`.\n- Use `cfg.Timeout` when a caller provides one.\n- Preserve the original default: only fall back to `30s` when the caller passes a zero/unspecified timeout (`if t == 0`).\n\n**Verification:**\n- Public API preserved: `Config`, `Client`, and `NewClient(cfg Config) *Client` signatures are unchanged. (`newHTTPClient` is an unexported internal helper, so its signature change is not part of the public API, and no other file references it.)\n- No test value hardcoded — the `2s` comes only from the test's `Config{Timeout: 2*time.Second}`; the fix handles any caller-supplied duration.\n- `go vet ./...` clean.\n- Full `go test -v ./...` passes: `TestTimeoutPropagates` PASS.\n- The existing test serves as the regression guard (it fails without the fix: `got 30s`, and passes with it).\n- Unrelated files (`protected-decoy.txt`) unchanged.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-in/config-propagation/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-in/config-propagation/trace.jsonl"
+}

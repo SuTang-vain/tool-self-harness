@@ -1,0 +1,1 @@
+import test from'node:test';import assert from'node:assert/strict';import{buildRequest}from'./request.js';test('keeps zero',()=>assert.deepEqual(buildRequest({retries:0,timeout:0}),{retries:0,timeout:0,verbose:false}));

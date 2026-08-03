@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "slice-snapshot",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": "ok  \texample/snapshot\t0.180s | ok  \texample/snapshot\t0.326s | ok  \texample/snapshot\t(cached) | PASS go-slice-alias",
+  "runner": {
+    "steps": 8,
+    "final_answer": "The fix is complete.\n\n## Summary\n\n**Issue:** `Store.Snapshot()` returned the store's internal slice (`s.items`) directly. Because Go slices share their backing array, a caller could mutate the returned slice and corrupt the store's internal state (and vice versa), so a \"snapshot\" was never truly isolated.\n\n**Fix:** In `store.go`, `Snapshot()` now allocates a fresh slice and copies the contents before returning:\n\n```go\nfunc(s *Store)Snapshot()[]string{out:=make([]string,len(s.items));copy(out,s.items);return out}\n```\n\nThis is the smallest correct change:\n- The public API (`Store`, `Add`, `Snapshot`) is unchanged.\n- `Add` is untouched.\n- No unrelated files were modified.\n- The complete Go test suite passes (`go test ./...`).",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/slice-snapshot/trace.jsonl",
+    "metrics": {
+      "api_calls": 8,
+      "api_latency_ms": 57883,
+      "tool_calls": 9,
+      "tool_call_retries": 0,
+      "prompt_tokens": 8698,
+      "completion_tokens": 1424,
+      "total_tokens": 10122,
+      "usage_observations": 8,
+      "elapsed_ms": 60241,
+      "steps": 8
+    }
+  },
+  "behavior": {
+    "steps": 9,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The fix is complete.\n\n## Summary\n\n**Issue:** `Store.Snapshot()` returned the store's internal slice (`s.items`) directly. Because Go slices share their backing array, a caller could mutate the returned slice and corrupt the store's internal state (and vice versa), so a \"snapshot\" was never truly isolated.\n\n**Fix:** In `store.go`, `Snapshot()` now allocates a fresh slice and copies the contents before returning:\n\n```go\nfunc(s *Store)Snapshot()[]string{out:=make([]string,len(s.items));copy(out,s.items);return out}\n```\n\nThis is the smallest correct change:\n- The public API (`Store`, `Add`, `Snapshot`) is unchanged.\n- `Add` is untouched.\n- No unrelated files were modified.\n- The complete Go test suite passes (`go test ./...`).",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/slice-snapshot/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/slice-snapshot/trace.jsonl"
+}

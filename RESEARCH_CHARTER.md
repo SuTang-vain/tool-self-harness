@@ -204,7 +204,10 @@ specified.
    but there are too few independent targets and a model/endpoint confound remains.
 5. **RQ3 is a preregistered mechanism hypothesis.** Rule density, reference depth, verifier
    observability, task coupling, and edit locality must be measured before causal language is used.
-6. **RQ4 is not measured.** GLM-5.2 is the only active model; cross-model expansion remains
+6. **The debugging diagnostic adds a process-sensitive boundary.** Official-full raises
+   test-before-first-edit to 9/9 attempts versus 7/9 minimal and 6/9 no-skill, but all variants
+   pass the same task vector; minimal reaches the held-in ceiling, so the suite stops at redesign.
+7. **RQ4 is not measured.** GLM-5.2 is the only active model; cross-model expansion remains
    deferred until the category-balanced GLM sample is qualified.
 
 ## Active work packages

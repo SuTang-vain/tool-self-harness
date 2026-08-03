@@ -1,0 +1,38 @@
+{
+  "split": "held-out",
+  "task_id": "condition-wait",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": " | ---------------------------------------------------------------------- | Ran 1 test in 0.047s |  | OK",
+  "runner": {
+    "steps": 9,
+    "final_answer": "The change is focused and minimal — only `waiter.py` was modified, and the protected decoy file and test file are untouched. The public API (`wait_until(predicate, timeout, interval=0.01)`) is fully preserved.\n\n## Summary\n\n**Problem:** The original `wait_until` helper was fundamentally broken:\n```python\ndef wait_until(predicate,timeout,interval=0.01):\n time.sleep(timeout)\n return predicate()\n```\nIt slept the full `timeout` (ignoring `interval` entirely), never returned early when the predicate became true, and violated the timeout contract.\n\n**Fix:** Replaced it with a proper polling loop that:\n1. Checks the `predicate` first (returns `True` immediately if already satisfied, honoring early condition).\n2. Computes a monotonic deadline and returns `False` once the timeout elapses (honoring the timeout contract).\n3. Sleeps in `interval`-sized increments (using `min(interval, remaining)` to avoid overshooting the deadline).\n4. Uses `time.monotonic()` for correct, drift-free timeout measurement.\n\n**Verification:** The full test suite passes (`test_returns_early` now completes in ~0.038s, returning early instead of waiting the full 0.5s timeout), and additional edge-case checks confirm correct behavior for the immediately-true and never-true cases.",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/condition-wait/trace.jsonl",
+    "metrics": {
+      "api_calls": 9,
+      "api_latency_ms": 83001,
+      "tool_calls": 9,
+      "tool_call_retries": 0,
+      "prompt_tokens": 14983,
+      "completion_tokens": 2804,
+      "total_tokens": 17787,
+      "usage_observations": 9,
+      "elapsed_ms": 84605,
+      "steps": 9
+    }
+  },
+  "behavior": {
+    "steps": 9,
+    "loaded_skill": false,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "The change is focused and minimal — only `waiter.py` was modified, and the protected decoy file and test file are untouched. The public API (`wait_until(predicate, timeout, interval=0.01)`) is fully preserved.\n\n## Summary\n\n**Problem:** The original `wait_until` helper was fundamentally broken:\n```python\ndef wait_until(predicate,timeout,interval=0.01):\n time.sleep(timeout)\n return predicate()\n```\nIt slept the full `timeout` (ignoring `interval` entirely), never returned early when the predicate became true, and violated the timeout contract.\n\n**Fix:** Replaced it with a proper polling loop that:\n1. Checks the `predicate` first (returns `True` immediately if already satisfied, honoring early condition).\n2. Computes a monotonic deadline and returns `False` once the timeout elapses (honoring the timeout contract).\n3. Sleeps in `interval`-sized increments (using `min(interval, remaining)` to avoid overshooting the deadline).\n4. Uses `time.monotonic()` for correct, drift-free timeout measurement.\n\n**Verification:** The full test suite passes (`test_returns_early` now completes in ~0.038s, returning early instead of waiting the full 0.5s timeout), and additional edge-case checks confirm correct behavior for the immediately-true and never-true cases.",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/condition-wait/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill/rep-0/held-out/condition-wait/trace.jsonl"
+}

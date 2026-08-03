@@ -1,0 +1,750 @@
+{
+  "experiment": "debugging-error-recovery-glm-planv3-diagnostic-fallback-v1",
+  "stage": "diagnostic-qualification",
+  "repeats": 1,
+  "q2": "not-established-by-diagnostic",
+  "q4": "not_measured",
+  "variants": {
+    "no-skill": {
+      "result_path": "/Users/tangyaoyue/DEV/tool-self-harness/results/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/no-skill.json",
+      "held_in": {
+        "passes": 6,
+        "attempts": 6,
+        "pass_rate": 1,
+        "stable_tasks": [
+          "async-write",
+          "cache-key",
+          "config-propagation",
+          "event-listener-cleanup",
+          "path-boundary",
+          "state-isolation"
+        ],
+        "stable_task_count": 6,
+        "task_count": 6
+      },
+      "held_out": {
+        "passes": 2,
+        "attempts": 3,
+        "pass_rate": 0.6666666666666666,
+        "stable_tasks": [
+          "condition-wait",
+          "slice-snapshot"
+        ],
+        "stable_task_count": 2,
+        "task_count": 3
+      },
+      "process": {
+        "attempts": 9,
+        "loaded_skill_rate": 0,
+        "test_before_first_edit_rate": 0.6666666666666666,
+        "test_after_last_edit_rate": 1,
+        "ran_tests_rate": 1,
+        "mean_steps": 10.333333333333334,
+        "task_errors": 0
+      },
+      "metrics": {
+        "attempts": 9,
+        "usage_coverage": 1,
+        "api_calls": 76,
+        "api_latency_ms": 693263,
+        "tool_calls": 93,
+        "tool_call_retries": 0,
+        "prompt_tokens": 114501,
+        "completion_tokens": 23141,
+        "total_tokens": 137642,
+        "elapsed_ms": 704147,
+        "mean_tokens_per_attempt": 15293.555555555555,
+        "mean_tool_calls_per_attempt": 10.333333333333334,
+        "mean_elapsed_ms_per_attempt": 78238.55555555556,
+        "tokens_per_successful_attempt": 17205.25,
+        "tokens_per_reliable_task": 17205.25
+      },
+      "task_passes": {
+        "held-in/async-write": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 10,
+              "loaded_skill": false,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": false,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete.\n\n## Summary\n\n**Problem:** `saveReport` invoked `writeFile` (which returns a Promise) without `await`ing it. Because the `async` function returns before the actual write settled, awaiting `saveReport` did not guarantee the report was durable on disk — violating the caller's completion contract.\n\n**Fix (one-line change in `report.js`):** Added `await` before the `writeFile` call so the returned promise is properly awaited before `saveReport` resolves.\n\n```js\nawait writeFile(path, JSON.stringify(report, null, 2), 'utf8');\n```\n\n**Verification:**\n- The full test suite (`node --test`) passes — including the test that asserts awaiting `saveReport` means the report is durable.\n- The public API (`saveReport(path, report)`) is unchanged.\n- No unrelated files were modified (confirmed via `git_diff`, which shows only the single change in `report.js`).",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/cache-key": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 9,
+              "loaded_skill": false,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": false,
+              "test_after_last_edit": true,
+              "final_answer": "## Summary\n\n**The bug:** The cache key in `total_with_tax` was derived only from `subtotal`, ignoring `tax_rate`. After computing `total_with_tax(100, 0.05)` and caching `105.0` under key `100`, a subsequent call `total_with_tax(100, 0.20)` would return the stale cached `105.0` instead of the correct `120.0`.\n\n**The fix:** Include `tax_rate` in the cache key by making it a tuple `(subtotal, tax_rate)`, so each distinct `(subtotal, tax_rate)` pair gets its own cached entry.\n\nThe change is minimal and focused:\n- The public API (`total_with_tax` and `clear_cache`) is unchanged.\n- The unrelated `protected-decoy.txt` file is untouched.\n- The complete test suite passes, including the previously-failing `test_same_subtotal_different_tax_rates` and the repeated-call caching test.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/config-propagation": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 9,
+              "loaded_skill": false,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** `NewClient(cfg Config)` accepted a `Config` with a `Timeout` field but completely ignored it, always returning a client with a hardcoded 30-second timeout from `newHTTPClient()`.\n\n**Fix:** I made the smallest correct change in `client.go` — `NewClient` now applies the caller-provided timeout when it is positive, otherwise preserving the default 30s from `newHTTPClient()`:\n\n```go\nfunc NewClient(cfg Config)*Client{c:=newHTTPClient();if cfg.Timeout>0{c.Timeout=cfg.Timeout};return c}\n```\n\nThis change:\n- **Preserves the public API** — `Config`, `Client`, and `NewClient` signatures are unchanged.\n- **Doesn't hardcode test values** — the default 30s remains in `newHTTPClient`, and the caller's `cfg.Timeout` is used as provided.\n- **Preserves unrelated behavior** — when no timeout is configured (zero value), the 30s default still applies.\n- **Preserves unrelated files** — only `client.go` was modified; `protected-decoy.txt` and others are untouched.\n\nThe complete Go test suite passes.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/event-listener-cleanup": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 9,
+              "loaded_skill": false,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": false,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete. Here's a summary of what I did:\n\n## Problem\nThe `connect` function in `subscription.js` registered a listener for the `'data'` event:\n```javascript\nemitter.on('data', onData);\n```\nBut the returned cleanup/disconnect function incorrectly removed a `'close'` listener instead of the `'data'` listener:\n```javascript\nreturn () => emitter.off('close', onData)\n```\nThis meant that after a caller disconnected, the `'data'` listener was never actually removed, so the subscriber kept receiving `'data'` events — incorrect behavior after disconnect.\n\n## Fix\nChanged the cleanup function to remove the correct event name (`'data'` instead of `'close'`), matching the event that was actually subscribed to:\n```javascript\nexport function connect(emitter,onData){emitter.on('data',onData);return ()=>emitter.off('data',onData)}\n```\n\n## Verification\n- The public API (`connect`) is preserved.\n- Only `subscription.js` was changed; `protected-decoy.txt` and all other files remain untouched.\n- The full test suite passes (1 test, 0 failures).",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/path-boundary": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 12,
+              "loaded_skill": false,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The diff confirms a minimal, focused change to a single file (`paths.js`); `protected-decoy.txt`, `paths.test.js`, and `package.json` are untouched, and the public API (`resolveWorkspace`) is preserved.\n\n## Summary\n\n**Bug:** The workspace path guard in `paths.js` used `String.startsWith` on the resolved path, which doesn't respect path boundaries. A request like `../workspace-secret` resolved to `/tmp/workspace-secret`, and since that string literally *starts with* the characters `/tmp/work`, the guard passed — allowing access to a sibling directory outside the workspace.\n\n**Fix:** A target is inside the workspace only if it either equals the workspace root exactly, or is a proper descendant — i.e. the resolved path equals `base` or begins with `base + path.sep`:\n\n```js\nconst base=path.resolve(root);\nif(!(target===base||target.startsWith(base+path.sep)))throw new Error('outside workspace');\n```\n\nThis rejects sibling-prefix escapes (`../workspace-secret`, `../work-evil`), parent traversal (`..`), and absolute escapes (`/etc/passwd`), while still allowing legitimate children and the root itself. The full test suite passes (2/2), and unrelated files are unchanged.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/state-isolation": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 14,
+              "loaded_skill": false,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** The classic Python mutable-default-argument pitfall. `DEFAULT_TAGS=[]` is evaluated once at module import, so every `Registry()` instance that relies on the default shared the *same* list object. Calling `add()` mutated that shared list, leaking state between independent instances — `test_fresh` failed because an earlier `add('a')` persisted.\n\n**Fix (one line in `registry.py`):**\n```python\ndef __init__(self,tags=DEFAULT_TAGS): self.tags=list(tags) if tags is DEFAULT_TAGS else tags\n```\n\nWhen the caller uses the default, each instance now gets a fresh `list(...)` copy (identified via `is DEFAULT_TAGS` so the copy only happens for the default sentinel — passing an explicit list still uses that list object directly, preserving the original sharing semantics for callers who intentionally pass a shared list).\n\n**What was preserved:**\n- Public API unchanged: `Registry(tags=...)`, `.tags`, `.add(tag)` all intact.\n- `DEFAULT_TAGS` module constant retained and no longer mutated.\n- `test_registry.py` untouched.\n- `protected-decoy.txt` untouched (only `registry.py` is in the diff).\n\n**Verification:** The complete test suite (`test_add`, `test_fresh`) now passes, and additional manual checks confirmed instance isolation, no mutation of `DEFAULT_TAGS`, and correct behavior with explicit list arguments.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-out/condition-wait": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 9,
+              "loaded_skill": false,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The change is focused and minimal — only `waiter.py` was modified, and the protected decoy file and test file are untouched. The public API (`wait_until(predicate, timeout, interval=0.01)`) is fully preserved.\n\n## Summary\n\n**Problem:** The original `wait_until` helper was fundamentally broken:\n```python\ndef wait_until(predicate,timeout,interval=0.01):\n time.sleep(timeout)\n return predicate()\n```\nIt slept the full `timeout` (ignoring `interval` entirely), never returned early when the predicate became true, and violated the timeout contract.\n\n**Fix:** Replaced it with a proper polling loop that:\n1. Checks the `predicate` first (returns `True` immediately if already satisfied, honoring early condition).\n2. Computes a monotonic deadline and returns `False` once the timeout elapses (honoring the timeout contract).\n3. Sleeps in `interval`-sized increments (using `min(interval, remaining)` to avoid overshooting the deadline).\n4. Uses `time.monotonic()` for correct, drift-free timeout measurement.\n\n**Verification:** The full test suite passes (`test_returns_early` now completes in ~0.038s, returning early instead of waiting the full 0.5s timeout), and additional edge-case checks confirm correct behavior for the immediately-true and never-true cases.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-out/options-defaults": {
+          "passes": 0,
+          "attempts": 1,
+          "pass": false,
+          "process": [
+            {
+              "steps": 12,
+              "loaded_skill": false,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "All edge cases behave correctly:\n\n1. **No options** → defaults applied: `{retries:3, timeout:5000, verbose:false}` ✓\n2. **Explicit zeros** → preserved: `{retries:0, timeout:0, verbose:false}` ✓\n3. **Explicit values** → preserved: `{retries:5, timeout:1000, verbose:false}` ✓\n4. **Explicit `verbose:true`** → preserved, other defaults applied: `{retries:3, timeout:5000, verbose:true}` ✓\n5. **Explicit `null`** → falls back to default: `{retries:3, timeout:5000, verbose:false}` ✓\n\n## Summary\n\n**Issue:** The request builder used the logical OR operator (`||`) to apply default option values. This treats any valid-but-falsy value (e.g., `retries: 0`, `timeout: 0`, `verbose: false`) the same as a missing option, incorrectly overwriting them with defaults.\n\n**Fix:** Replaced `||` with the nullish coalescing operator (`??`) for all three options (`retries`, `timeout`, `verbose`). The `??` operator only falls back to the default when the value is `null` or `undefined`, correctly preserving explicit falsy values while still applying defaults for omitted options.\n\n**Verification:**\n- The complete test suite passes (1/1 tests).\n- The public API signature (`buildRequest(options={})`) and return shape are unchanged.\n- The unrelated `protected-decoy.txt` file remains untouched.\n- The change is minimal — only the operator was swapped (`||` → `??`), three occurrences in one file.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-out/slice-snapshot": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 9,
+              "loaded_skill": false,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete.\n\n## Summary\n\n**Issue:** `Store.Snapshot()` returned the store's internal slice (`s.items`) directly. Because Go slices share their backing array, a caller could mutate the returned slice and corrupt the store's internal state (and vice versa), so a \"snapshot\" was never truly isolated.\n\n**Fix:** In `store.go`, `Snapshot()` now allocates a fresh slice and copies the contents before returning:\n\n```go\nfunc(s *Store)Snapshot()[]string{out:=make([]string,len(s.items));copy(out,s.items);return out}\n```\n\nThis is the smallest correct change:\n- The public API (`Store`, `Add`, `Snapshot`) is unchanged.\n- `Add` is untouched.\n- No unrelated files were modified.\n- The complete Go test suite passes (`go test ./...`).",
+              "task_error": null
+            }
+          ]
+        }
+      }
+    },
+    "minimal": {
+      "result_path": "/Users/tangyaoyue/DEV/tool-self-harness/results/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/minimal.json",
+      "held_in": {
+        "passes": 6,
+        "attempts": 6,
+        "pass_rate": 1,
+        "stable_tasks": [
+          "async-write",
+          "cache-key",
+          "config-propagation",
+          "event-listener-cleanup",
+          "path-boundary",
+          "state-isolation"
+        ],
+        "stable_task_count": 6,
+        "task_count": 6
+      },
+      "held_out": {
+        "passes": 2,
+        "attempts": 3,
+        "pass_rate": 0.6666666666666666,
+        "stable_tasks": [
+          "condition-wait",
+          "slice-snapshot"
+        ],
+        "stable_task_count": 2,
+        "task_count": 3
+      },
+      "process": {
+        "attempts": 9,
+        "loaded_skill_rate": 0.8888888888888888,
+        "test_before_first_edit_rate": 0.7777777777777778,
+        "test_after_last_edit_rate": 1,
+        "ran_tests_rate": 1,
+        "mean_steps": 11.666666666666666,
+        "task_errors": 0
+      },
+      "metrics": {
+        "attempts": 9,
+        "usage_coverage": 1,
+        "api_calls": 80,
+        "api_latency_ms": 668006,
+        "tool_calls": 105,
+        "tool_call_retries": 0,
+        "prompt_tokens": 123042,
+        "completion_tokens": 20755,
+        "total_tokens": 143797,
+        "elapsed_ms": 679385,
+        "mean_tokens_per_attempt": 15977.444444444445,
+        "mean_tool_calls_per_attempt": 11.666666666666666,
+        "mean_elapsed_ms_per_attempt": 75487.22222222222,
+        "tokens_per_successful_attempt": 17974.625,
+        "tokens_per_reliable_task": 17974.625
+      },
+      "task_passes": {
+        "held-in/async-write": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 13,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "## Summary\n\n**Problem:** The `saveReport` function in `report.js` called `writeFile(...)` without `await`ing it. Although the function was declared `async`, it returned (resolved) before the asynchronous file write completed. This violated the caller's completion contract — the test asserts that \"awaiting `saveReport` means the report is durable,\" but the floating promise meant the write could still be in flight when `saveReport` resolved. The test passed only by luck/race, not reliably.\n\n**Fix:** Added the missing `await` so the returned promise resolves only once the file write has actually completed:\n\n```diff\n export async function saveReport(path, report) {\n-  writeFile(path, JSON.stringify(report, null, 2), 'utf8');\n+  await writeFile(path, JSON.stringify(report, null, 2), 'utf8');\n }\n```\n\nThis is the smallest correct production change. The public API (`saveReport(path, report)`) is preserved, the unrelated files (`protected-decoy.txt`, `hidden-report.json`) are untouched, and the complete test suite passes.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/cache-key": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 11,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete. Here's a summary of what I did:\n\n## Problem\nThe `total_with_tax` function in `pricing.py` cached results using only the `subtotal` as the key, ignoring the `tax_rate`. This meant that once a result was cached for a given subtotal (e.g. `total_with_tax(100, 0.05)` → `105.0`), a subsequent call with the **same subtotal but a different tax rate** (`total_with_tax(100, 0.20)`) returned the stale cached value `105.0` instead of the correct `120.0`.\n\n## Fix\nMade the cache key a tuple of `(subtotal, tax_rate)` so each distinct combination is cached and retrieved independently:\n\n```python\nkey = (round(float(subtotal), 2), round(float(tax_rate), 2))\n```\n\nThis is the smallest correct change that:\n- Preserves the public API (`total_with_tax` and `clear_cache` signatures unchanged)\n- Preserves the caching behavior (repeated identical calls still hit the cache — verified by `test_repeated_call`)\n- Keeps the existing rounding convention for both inputs\n- Leaves `protected-decoy.txt` and all unrelated files untouched\n\n## Verification\nThe complete test suite passes:\n- `test_same_subtotal_different_tax_rates` ✓ (the previously failing test)\n- `test_repeated_call` ✓ (cache still works for repeated identical calls)",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/config-propagation": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 11,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "Done. Here's a summary of the fix.\n\n## Summary\n\n**Problem:** The Go client ignored any caller-provided timeout. `NewClient(cfg)` called `newHTTPClient()` with no arguments, which always hardcoded a 30-second timeout. So `NewClient(Config{Timeout: 2 * time.Second})` produced a client with `Timeout == 30s`.\n\n**Root cause:** The `Config` value was never threaded through to the `Client` construction.\n\n**Fix (smallest correct change in `client.go`):**\n- `NewClient` now passes `cfg` to `newHTTPClient`.\n- `newHTTPClient` keeps the existing 30s default, but overrides it when the caller specifies a positive `cfg.Timeout`.\n\n```go\nfunc NewClient(cfg Config)*Client{return newHTTPClient(cfg)}\nfunc newHTTPClient(cfg Config)*Client{c:=&Client{Timeout:30*time.Second};if cfg.Timeout>0{c.Timeout=cfg.Timeout};return c}\n```\n\n**Behavior preserved:**\n- Public API (`Config`, `Client`, `NewClient`) is unchanged in signature.\n- A zero-value/omitted timeout still yields the original 30s default (no behavior change for existing callers).\n- No hardcoded test values were introduced.\n\n**Verification:** The complete Go test suite (`go test ./...`) passes, and only `client.go` was modified — the decoy file and tests are untouched.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/event-listener-cleanup": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 13,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": false,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Bug:** The `connect` function in `subscription.js` registered a listener on the `'data'` event but the returned cleanup function removed a listener from the **`'close'`** event. This event-name mismatch meant disconnecting did nothing useful — the `data` listener kept firing after a caller disconnected.\n\n**Fix (smallest correct change):** Changed the cleanup callback to remove the same `'data'` event listener that was registered:\n- `emitter.off('close', onData)` → `emitter.off('data', onData)`\n\n**Verification:**\n- The public API (`connect(emitter, onData)` returning a cleanup function) is preserved.\n- Only `subscription.js` was modified; the unrelated `protected-decoy.txt` file is untouched.\n- The complete test suite (`node --test`) passes: 1 test, 0 failures.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/path-boundary": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 11,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "## Summary\n\nThe workspace path guard had a prefix-matching bug.\n\n**Root cause:** The guard used `target.startsWith(path.resolve(root))`, which matches on raw string prefixes rather than path-segment boundaries. A sibling directory whose name begins with the root's name — e.g. root `/tmp/work` vs. request `../workspace-secret` → `/tmp/workspace-secret` — passed the check because the string `\"workspace-secret\"` starts with `\"work\"`.\n\n**Fix (in `paths.js`):** Enforce a real path boundary. A resolved `target` is allowed only if it equals the resolved root exactly, or starts with `root + path.sep`. This rejects sibling-prefixed paths while still permitting legitimate children and the root itself.\n\nThe public API (`resolveWorkspace(root, requested)`) is unchanged, no unrelated files were touched, and the complete test suite (2/2) passes.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/state-isolation": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 13,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "Done. The fix is complete and verified.\n\n## Summary\n\n**Root cause:** The classic Python mutable default argument anti-pattern. `Registry.__init__` used `tags=DEFAULT_TAGS`, binding the default to a single shared module-level list object. When `add()` called `self.tags.append(tag)`, it mutated that shared list in place, so every `Registry` instance that used the default shared the same mutable state. After `test_add` ran `r.add('a')`, a fresh `Registry().tags` returned `['a']` instead of `[]`.\n\n**The fix (one line, `registry.py`):**\n```python\ndef __init__(self,tags=None): self.tags=tags if tags is not None else []\n```\n\nThis:\n- Uses a `None` sentinel and allocates a fresh `[]` per instance, so independent instances no longer share mutable state.\n- Preserves the existing behavior for an explicitly-passed `tags` list (stored by reference, unchanged).\n- Keeps the public API intact (`DEFAULT_TAGS` module attribute remains, `Registry`/`add` signatures are compatible — passing `tags` still works, omitting it now behaves correctly).\n\n**Verification:**\n- Full test suite (`test_registry`) now passes — both `test_add` and `test_fresh` are `ok`.\n- The unrelated `protected-decoy.txt` is unchanged.\n- The git diff is a single focused line.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-out/condition-wait": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 12,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete. \n\n## Summary\n\n**Issue:** The `wait_until` helper in `waiter.py` did not correctly honor its contracts:\n- It `time.sleep(timeout)` once and then checked the predicate a single time, so it never returned early when the condition became true.\n- The timeout contract was effectively \"sleep then check once,\" which overshoots the timeout and returns stale results.\n\n**Fix (smallest correct change):** Replaced the sleep-then-check with a polling loop that:\n1. Checks the predicate first, returning `True` immediately if it's already satisfied (early return).\n2. Computes the remaining time until the deadline; if the deadline has passed, returns `False`.\n3. Otherwise sleeps for `min(interval, remaining)` so the final sleep never overshoots the deadline.\n\nThe public API (`wait_until(predicate, timeout, interval=0.01)`) is preserved. Only `waiter.py` was changed; `test_waiter.py` and the unrelated `protected-decoy.txt` are untouched.\n\n**Verification:** The complete test suite passes (`Ran 1 test in 0.038s — OK`), confirming the early-return behavior. Additional manual checks confirmed the timeout boundary (never-true → `False` at ~timeout) and immediate-return (already-true → `True` instantly) contracts.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-out/options-defaults": {
+          "passes": 0,
+          "attempts": 1,
+          "pass": false,
+          "process": [
+            {
+              "steps": 7,
+              "loaded_skill": false,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": false,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete and the full test suite passes.\n\n## Summary\n\n**Problem:** `request.js` used the logical OR (`||`) operator to apply option defaults, which discards valid-but-falsy values like `0`. So `buildRequest({retries:0, timeout:0})` returned `{retries:3, timeout:5000, verbose:false}` instead of preserving the explicit zeros.\n\n**Fix:** Changed `||` to the nullish coalescing operator (`??`) for all three options. `??` only falls back to the default when the value is `null` or `undefined`, so explicit valid values such as `0` (and `false` for `verbose`) are preserved.\n\n```js\nexport function buildRequest(options={}){return{retries:options.retries??3,timeout:options.timeout??5000,verbose:options.verbose??false}}\n```\n\nThis is the smallest correct change, keeps the public API identical, and leaves all unrelated files untouched. The test suite (`node --test`) reports 1 passed, 0 failed.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-out/slice-snapshot": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 14,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "Only `store.go` was modified; the decoy file and test file are untouched.\n\n## Summary\n\n**The bug:** `Snapshot()` returned the store's internal slice directly (`return s.items`), so the returned slice shared the same backing array as the store's internal state. This meant a snapshot could be affected by later caller mutation of the returned slice, and vice-versa.\n\n**The fix:** `Snapshot()` now returns an independent copy of the internal slice:\n\n```go\nfunc(s *Store)Snapshot()[]string{out:=make([]string,len(s.items));copy(out,s.items);return out}\n```\n\n**Why this is the smallest correct change:**\n- Preserves the public API (same method signature, same package, same `Store`/`Add`).\n- Touches only the one production file (`store.go`); unrelated files (`protected-decoy.txt`, `store_test.go`) untouched.\n- Uses `make` with the exact length plus `copy`, so the snapshot is decoupled in both directions: store mutations don't leak into prior snapshots, and caller mutations of a returned snapshot can't corrupt the store's internal state.\n\n**Verification:** `go vet ./...` clean, the full test suite passes, and an additional check confirmed that caller mutation (`snap[0] = \"X\"` and appending) of a snapshot no longer corrupts the store.",
+              "task_error": null
+            }
+          ]
+        }
+      }
+    },
+    "official-full": {
+      "result_path": "/Users/tangyaoyue/DEV/tool-self-harness/results/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full.json",
+      "held_in": {
+        "passes": 6,
+        "attempts": 6,
+        "pass_rate": 1,
+        "stable_tasks": [
+          "async-write",
+          "cache-key",
+          "config-propagation",
+          "event-listener-cleanup",
+          "path-boundary",
+          "state-isolation"
+        ],
+        "stable_task_count": 6,
+        "task_count": 6
+      },
+      "held_out": {
+        "passes": 2,
+        "attempts": 3,
+        "pass_rate": 0.6666666666666666,
+        "stable_tasks": [
+          "condition-wait",
+          "slice-snapshot"
+        ],
+        "stable_task_count": 2,
+        "task_count": 3
+      },
+      "process": {
+        "attempts": 9,
+        "loaded_skill_rate": 1,
+        "test_before_first_edit_rate": 1,
+        "test_after_last_edit_rate": 0.8888888888888888,
+        "ran_tests_rate": 1,
+        "mean_steps": 12.333333333333334,
+        "task_errors": 0
+      },
+      "metrics": {
+        "attempts": 9,
+        "usage_coverage": 1,
+        "api_calls": 83,
+        "api_latency_ms": 799768,
+        "tool_calls": 111,
+        "tool_call_retries": 0,
+        "prompt_tokens": 301457,
+        "completion_tokens": 31422,
+        "total_tokens": 332879,
+        "elapsed_ms": 816575,
+        "mean_tokens_per_attempt": 36986.555555555555,
+        "mean_tool_calls_per_attempt": 12.333333333333334,
+        "mean_elapsed_ms_per_attempt": 90730.55555555556,
+        "tokens_per_successful_attempt": 41609.875,
+        "tokens_per_reliable_task": 41609.875
+      },
+      "task_passes": {
+        "held-in/async-write": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 14,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete and verified. Here's a summary of what I did.\n\n## Summary\n\n### Root Cause\nIn `report.js`, the `saveReport` function called `writeFile(...)` without `await`ing (or returning) the resulting Promise:\n\n```js\nexport async function saveReport(path, report) {\n  writeFile(path, JSON.stringify(report, null, 2), 'utf8');  // fire-and-forget\n}\n```\n\nBecause the write was fire-and-forget, `saveReport` resolved before the file write completed. A caller `await`ing `saveReport(...)` therefore had no guarantee the report was actually durable on disk — the completion contract was violated. This surfaced in the test as a flaky/racy `ENOENT` when reading the file back immediately after the await.\n\n### Fix (smallest correct change)\nAdded a single `await` so the returned Promise only resolves once the write is complete:\n\n```js\nexport async function saveReport(path, report) {\n  await writeFile(path, JSON.stringify(report, null, 2), 'utf8');\n}\n```\n\n### Verification\n- **Reproduced** the failure first (`ENOENT: no such file or directory`).\n- After the fix, the full test suite (`node --test`) passes: **1 pass, 0 fail**.\n- Ran the suite 5× consecutively to confirm the timing-dependent bug is genuinely resolved rather than masked.\n- The public API (`saveReport(path, report)`) is unchanged.\n- Only `report.js` was modified; `protected-decoy.txt` and `hidden-report.json` remain untouched (confirmed via `git status` / `git diff`).",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/cache-key": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 11,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "Done. The fix is complete and verified.\n\n## Summary\n\n**Root cause:** The pricing cache used only `subtotal` as its key, but the computed total depends on **both** `subtotal` and `tax_rate`. When the same subtotal was requested with a different tax rate, the stale cached result from the first call was returned (e.g., `total_with_tax(100, 0.20)` returned `105.0` from the earlier `0.05` call instead of `120.0`).\n\n**Fix (one line, smallest correct change):** The cache key now includes the rounded `tax_rate` alongside the rounded `subtotal`:\n\n```python\nkey = (round(float(subtotal), 2), round(float(tax_rate), 2))\n```\n\nThis preserves the public API (`total_with_tax` and `clear_cache` signatures are unchanged), keeps the caching behavior intact for identical inputs (`test_repeated_call` still passes), and corrects the bug for differing tax rates (`test_same_subtotal_different_tax_rates` now passes). The unrelated `protected-decoy.txt` is untouched.\n\n**Verification:** Full test suite passes (2/2 tests OK).",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/config-propagation": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 10,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The diff confirms only `client.go` changed — `protected-decoy.txt`, `go.mod`, and `client_test.go` are untouched.\n\n## Summary\n\n**Root cause:** `NewClient` accepted a `Config` but discarded it, calling `newHTTPClient()` which hardcoded `Timeout: 30*time.Second`. So any caller-provided timeout was ignored.\n\n**Fix (smallest correct change):**\n- Propagate `cfg` from `NewClient` → `newHTTPClient(cfg)`.\n- Use `cfg.Timeout` when a caller provides one.\n- Preserve the original default: only fall back to `30s` when the caller passes a zero/unspecified timeout (`if t == 0`).\n\n**Verification:**\n- Public API preserved: `Config`, `Client`, and `NewClient(cfg Config) *Client` signatures are unchanged. (`newHTTPClient` is an unexported internal helper, so its signature change is not part of the public API, and no other file references it.)\n- No test value hardcoded — the `2s` comes only from the test's `Config{Timeout: 2*time.Second}`; the fix handles any caller-supplied duration.\n- `go vet ./...` clean.\n- Full `go test -v ./...` passes: `TestTimeoutPropagates` PASS.\n- The existing test serves as the regression guard (it fails without the fix: `got 30s`, and passes with it).\n- Unrelated files (`protected-decoy.txt`) unchanged.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/event-listener-cleanup": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 11,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Reported issue:** A JavaScript event subscription left incorrect behavior after a caller disconnected.\n\n**Root cause:** In `subscription.js`, the `connect()` function registered the `onData` listener on the `'data'` event, but the returned cleanup function called `emitter.off('close', onData)` — removing from the wrong event. The listener was never actually attached to `'close'`, so this no-op left the `'data'` listener live. Any subsequent `'data'` emit kept firing the callback even after the caller \"disconnected.\"\n\n**Fix (smallest correct change):** Make the cleanup detach from the same event it subscribed to:\n\n```js\n// before\nreturn ()=>emitter.off('close',onData)\n// after\nreturn ()=>emitter.off('data',onData)\n```\n\n**Verification:**\n- The pre-existing test `cleanup removes data listener` reproduced the bug (`2 !== 1`) and now passes.\n- Full suite (`node --test`) passes: 1 test, 0 failures.\n- The public API (`connect(emitter, onData)` returning a disconnect function) is unchanged; no unrelated files were touched.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/path-boundary": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 13,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "## Summary\n\n**Root cause:** The workspace path guard in `paths.js` used `String.prototype.startsWith`, which performs a *character-prefix* match rather than a *path-boundary* match. This let a sibling directory whose name merely extended the root's name slip through — e.g., `resolveWorkspace('/tmp/work', '../workspace-secret')` produced `/tmp/workspace-secret`, which literally starts with `/tmp/work` and was wrongly accepted.\n\n**Fix (smallest correct change):** Replaced the character-prefix check with a real containment check using `path.relative`:\n- Compute `target = path.resolve(base, requested)`\n- Compute `rel = path.relative(base, target)`\n- The target is inside the workspace only if `rel` is `''` (the root itself) or a relative path that doesn't start with `..` and isn't absolute (handles Windows drive roots).\n\n**Why this is the root-cause fix, not a symptom fix:** It correctly recognizes path *boundaries*, so all escape attempts are rejected while legitimate children (including normalized back-references like `a/../b`) are allowed.\n\n**Verification (Step 6):**\n- Complete test suite: `2 pass, 0 fail`.\n- Extra boundary sanity checks confirmed: root, children, and normalized-in-bounds paths are allowed; sibling-prefix names, `..`, `../../etc/passwd`, and absolute outside paths are rejected.\n- Only `paths.js` was modified; `protected-decoy.txt` and the public API (`resolveWorkspace`) are preserved.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-in/state-isolation": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 13,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": false,
+              "final_answer": "## Summary\n\n**Bug:** Independent `Registry` instances shared mutable state. A new `Registry()` would report a non-empty `.tags` list polluted by prior instances that called `add()`.\n\n**Root cause:** The classic Python mutable-default-argument pitfall. `__init__(self, tags=DEFAULT_TAGS)` bound the *same* list object (created once at module load) as the default for every instance. `add()` mutated that shared list, so the mutation leaked across instances and into `DEFAULT_TAGS`.\n\n**Triage (per debugging-and-error-recovery skill):**\n1. **Reproduce:** Ran `test_registry.py` → `test_fresh` failed with `['a'] != []` (a new `Registry()` inherited the `['a']` that `test_add` appended).\n2. **Localize:** `registry.py`, the `__init__` default argument.\n3. **Reduce:** Minimal repro is exactly `test_add` → `test_fresh`.\n4. **Fix root cause:** Use `None` as a sentinel and allocate a fresh list per instance via `list(DEFAULT_TAGS)` when no argument is given.\n\n**The change (single line):**\n```python\ndef __init__(self,tags=DEFAULT_TAGS): self.tags=tags\n```\n→\n```python\ndef __init__(self,tags=None): self.tags=list(DEFAULT_TAGS) if tags is None else tags\n```\n\n**Public API preserved:**\n- `DEFAULT_TAGS` (module-level, still `[]`) untouched.\n- `Registry()` → fresh empty `.tags` each time.\n- `Registry(tags=[...])` → uses the caller's list (same aliasing behavior as before).\n- `add()` and `.tags` attribute unchanged.\n\n**Verification:**\n- Full test suite passes (`test_add`, `test_fresh` both OK).\n- Extra isolation check: two instances (`a`, `b`) get independent tags; `DEFAULT_TAGS` stays `[]`; explicit-list passthrough still aliases as before.\n- Only `registry.py` modified; `protected-decoy.txt` unchanged.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-out/condition-wait": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 11,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "The fix is complete and verified. Here's a summary:\n\n## Root Cause\n\nThe `wait_until` helper in `waiter.py` was broken in its implementation:\n\n```python\ndef wait_until(predicate,timeout,interval=0.01):\n time.sleep(timeout)\n return predicate()\n```\n\nIt slept the **entire** `timeout` duration before ever checking the predicate. This violated both contracts:\n\n1. **Early condition** — When the predicate becomes true (e.g. at ~0.03s), it should return immediately with `True`. Instead it always blocked for the full `timeout` (0.5s), so the elapsed-time assertion (`< 0.2s`) failed.\n2. **Timeout contract** — The `interval` parameter was completely ignored, and the function never polled repeatedly. It returned the result of a single late check, with no proper \"give up after `timeout`\" semantics.\n\n## Fix\n\nReplaced the body with a polling loop that honors both the early-return and timeout contracts, preserving the public API signature `wait_until(predicate, timeout, interval=0.01)`:\n\n```python\nimport time\ndef wait_until(predicate,timeout,interval=0.01):\n deadline=time.monotonic()+timeout\n while True:\n  if predicate():\n   return True\n  now=time.monotonic()\n  if now>=deadline:\n   return False\n  time.sleep(min(interval,deadline-now))\n```\n\n- Checks the predicate first; returns `True` immediately when it becomes true (honors **early condition**).\n- Computes a `deadline` from `time.monotonic()` (clock-monotonic, immune to wall-clock changes).\n- Sleeps in `interval` increments, capped at the remaining time until the deadline so it never overshoots (honors **timeout contract**).\n- Returns `False` once the deadline is reached.\n\n## Verification\n\n- Reproduced the failure first (elapsed ~0.505s, expected < 0.2s).\n- After the fix, the test passes, completing in ~0.036s.\n- Full test suite: `python3 -m unittest test_waiter -v` → `OK`.\n- The unrelated file (`protected-decoy.txt`) is unchanged; only `waiter.py` was modified.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-out/options-defaults": {
+          "passes": 0,
+          "attempts": 1,
+          "pass": false,
+          "process": [
+            {
+              "steps": 11,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "All edge cases behave correctly:\n\n- **Defaults preserved** (no options → `{retries:3, timeout:5000, verbose:false}`)\n- **Zero values preserved** (the bug fix — `{retries:0, timeout:0}`)\n- **Explicit `true` preserved** (`verbose:true`)\n- **Explicit non-zero values preserved** (`{retries:5, timeout:1000}`)\n- **Explicit `undefined` falls back to defaults** (`??` only treats `null`/`undefined` as missing)\n\n## Summary\n\n**Root cause:** The `buildRequest` function used the logical OR operator (`||`) to apply option defaults. The `||` operator treats *all* falsy values as \"missing,\" so valid-but-falsy values like `retries: 0` and `timeout: 0` were incorrectly discarded and replaced with defaults (3 and 5000 respectively).\n\n**Fix:** Replaced `||` with the nullish coalescing operator (`??`), which only falls back to the default when the option is `null` or `undefined` — preserving valid falsy values like `0`, `false`, and empty strings. This is the smallest correct change (three operator swaps on one line), preserves the public API (`buildRequest(options)`), and leaves all other files untouched.\n\n**Verification:** The full test suite passes (`✔ keeps zero`), and edge-case spot checks confirm default behavior is unchanged while falsy values are now respected.",
+              "task_error": null
+            }
+          ]
+        },
+        "held-out/slice-snapshot": {
+          "passes": 1,
+          "attempts": 1,
+          "pass": true,
+          "process": [
+            {
+              "steps": 17,
+              "loaded_skill": true,
+              "read_skill_reference": false,
+              "ran_tests": true,
+              "test_before_first_edit": true,
+              "test_after_last_edit": true,
+              "final_answer": "## Summary\n\n### Root cause\n`Store.Snapshot()` returned the slice header of the internal `items` field directly (`return s.items`). In Go, a slice header is a view over a backing array, so this shared the store's backing array with callers. Two failure modes followed:\n- A later `Store.Add()` could write into the spare capacity of that shared backing array, corrupting a previously-taken snapshot.\n- Two snapshots taken from the same store aliased one another, so mutating one mutated the other.\n\nThe given `TestSnapshotIsStable` only passed by luck: appending `\"b\"` to a one-element slice triggered a reallocation, so the snapshot happened to remain stable. The isolation bug was real and latent.\n\n### Fix (smallest correct change)\nIn `store.go`, `Snapshot()` now returns a defensive copy instead of the live slice:\n\n```go\nfunc (s *Store) Snapshot() []string {\n    out := make([]string, len(s.items))\n    copy(out, s.items)\n    return out\n}\n```\n\nThe public API (`Store`, `Add`, `Snapshot` signatures) is unchanged, and only `store.go` was modified. `protected-decoy.txt` and the test file remain untouched.\n\n### Verification\n- I reproduced the bug with a temporary test where two snapshots aliased each other; it failed before the fix and passes after.\n- `go vet ./...` is clean.\n- The complete test suite (`go test -v -count=1 ./...`) passes.",
+              "task_error": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  "process_differences": {
+    "test_before_first_edit_rate": {
+      "no_skill": 0.6666666666666666,
+      "minimal": 0.7777777777777778,
+      "official_full": 1,
+      "range": 0.33333333333333337
+    },
+    "test_after_last_edit_rate": {
+      "no_skill": 1,
+      "minimal": 1,
+      "official_full": 0.8888888888888888,
+      "range": 0.11111111111111116
+    },
+    "ran_tests_rate": {
+      "no_skill": 1,
+      "minimal": 1,
+      "official_full": 1,
+      "range": 0
+    },
+    "mean_steps": {
+      "no_skill": 10.333333333333334,
+      "minimal": 11.666666666666666,
+      "official_full": 12.333333333333334,
+      "range": 2
+    }
+  },
+  "per_task": [
+    {
+      "task": "held-in/async-write",
+      "no-skill": true,
+      "minimal": true,
+      "official-full": true
+    },
+    {
+      "task": "held-in/cache-key",
+      "no-skill": true,
+      "minimal": true,
+      "official-full": true
+    },
+    {
+      "task": "held-in/config-propagation",
+      "no-skill": true,
+      "minimal": true,
+      "official-full": true
+    },
+    {
+      "task": "held-in/event-listener-cleanup",
+      "no-skill": true,
+      "minimal": true,
+      "official-full": true
+    },
+    {
+      "task": "held-in/path-boundary",
+      "no-skill": true,
+      "minimal": true,
+      "official-full": true
+    },
+    {
+      "task": "held-in/state-isolation",
+      "no-skill": true,
+      "minimal": true,
+      "official-full": true
+    },
+    {
+      "task": "held-out/condition-wait",
+      "no-skill": true,
+      "minimal": true,
+      "official-full": true
+    },
+    {
+      "task": "held-out/options-defaults",
+      "no-skill": false,
+      "minimal": false,
+      "official-full": false
+    },
+    {
+      "task": "held-out/slice-snapshot",
+      "no-skill": true,
+      "minimal": true,
+      "official-full": true
+    }
+  ],
+  "gates": {
+    "gate_0": {
+      "decision": "pass"
+    },
+    "genuine_variant_separation": {
+      "decision": "pass",
+      "task_vectors_differ": false,
+      "process_vectors_differ": true
+    },
+    "minimal_headroom": {
+      "decision": "fail",
+      "observed": "6/6"
+    },
+    "official_full_exposure": {
+      "decision": "pass",
+      "loaded_skill_rate": 1
+    },
+    "intended_process_or_task_movement": {
+      "decision": "pass"
+    },
+    "saturation": {
+      "decision": "pass",
+      "floor_saturated": false,
+      "ceiling_saturated": false
+    }
+  },
+  "decision": "stop-redesign",
+  "interpretation_boundary": "One-repeat diagnostic results qualify or reject the benchmark only; they are not per-task reliability or Self-Harness evolution evidence.",
+  "generated_at": "2026-08-03T03:33:15.984Z"
+}

@@ -1,0 +1,38 @@
+{
+  "split": "held-in",
+  "task_id": "cache-key",
+  "repeat": 0,
+  "pass": true,
+  "verify_exit": 0,
+  "verify_msg": " | ---------------------------------------------------------------------- | Ran 2 tests in 0.000s |  | OK",
+  "runner": {
+    "steps": 10,
+    "final_answer": "Done. The fix is complete and verified.\n\n## Summary\n\n**Root cause:** The pricing cache used only `subtotal` as its key, but the computed total depends on **both** `subtotal` and `tax_rate`. When the same subtotal was requested with a different tax rate, the stale cached result from the first call was returned (e.g., `total_with_tax(100, 0.20)` returned `105.0` from the earlier `0.05` call instead of `120.0`).\n\n**Fix (one line, smallest correct change):** The cache key now includes the rounded `tax_rate` alongside the rounded `subtotal`:\n\n```python\nkey = (round(float(subtotal), 2), round(float(tax_rate), 2))\n```\n\nThis preserves the public API (`total_with_tax` and `clear_cache` signatures are unchanged), keeps the caching behavior intact for identical inputs (`test_repeated_call` still passes), and corrects the bug for differing tax rates (`test_same_subtotal_different_tax_rates` now passes). The unrelated `protected-decoy.txt` is untouched.\n\n**Verification:** Full test suite passes (2/2 tests OK).",
+    "error": null,
+    "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-in/cache-key/trace.jsonl",
+    "metrics": {
+      "api_calls": 10,
+      "api_latency_ms": 49808,
+      "tool_calls": 11,
+      "tool_call_retries": 0,
+      "prompt_tokens": 34839,
+      "completion_tokens": 1624,
+      "total_tokens": 36463,
+      "usage_observations": 10,
+      "elapsed_ms": 50402,
+      "steps": 10
+    }
+  },
+  "behavior": {
+    "steps": 11,
+    "loaded_skill": true,
+    "read_skill_reference": false,
+    "ran_tests": true,
+    "test_before_first_edit": true,
+    "test_after_last_edit": true,
+    "final_answer": "Done. The fix is complete and verified.\n\n## Summary\n\n**Root cause:** The pricing cache used only `subtotal` as its key, but the computed total depends on **both** `subtotal` and `tax_rate`. When the same subtotal was requested with a different tax rate, the stale cached result from the first call was returned (e.g., `total_with_tax(100, 0.20)` returned `105.0` from the earlier `0.05` call instead of `120.0`).\n\n**Fix (one line, smallest correct change):** The cache key now includes the rounded `tax_rate` alongside the rounded `subtotal`:\n\n```python\nkey = (round(float(subtotal), 2), round(float(tax_rate), 2))\n```\n\nThis preserves the public API (`total_with_tax` and `clear_cache` signatures are unchanged), keeps the caching behavior intact for identical inputs (`test_repeated_call` still passes), and corrects the bug for differing tax rates (`test_same_subtotal_different_tax_rates` now passes). The unrelated `protected-decoy.txt` is untouched.\n\n**Verification:** Full test suite passes (2/2 tests OK).",
+    "task_error": null
+  },
+  "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-in/cache-key/workspace",
+  "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/debugging-error-recovery-glm-planv3-diagnostic-fallback-v1/official-full/rep-0/held-in/cache-key/trace.jsonl"
+}

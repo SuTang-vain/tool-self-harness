@@ -42,6 +42,9 @@ positive and negative results are retained as observations to be explained by th
   held-out task despite unchanged aggregate and reliable-task counts.
 - **Stopped by protocol:** Path C does not freeze h0 or generate a candidate because per-task held-out
   safety fails (`secret-fallback-logging` 3/3 minimal vs 2/3 official-full).
+- **Debugging diagnostic boundary:** the new `debugging-and-error-recovery` suite is process-sensitive
+  (official-full tests before first edit in 9/9 attempts versus 7/9 minimal and 6/9 no-skill), but
+  minimal reaches the 6/6 held-in ceiling; it stops before formal baseline and candidate generation.
 - **Not supported yet:** a universal four-class taxonomy, universal fitting paths, general
   Self-Harness improvement, Path C/D effectiveness, cross-model generality, or human utility.
 
@@ -52,8 +55,8 @@ positive and negative results are retained as observations to be explained by th
 1. Freeze inclusion and labeling rules from `protocols/TAXONOMY_AND_4D_V1.md`.
 2. Retain `mcp-builder` as the resource/event and schema-contract anchor, with its mixed Path-A/Path-D
    nature explicitly labeled.
-3. Redesign `systematic-debugging` tasks so process adherence changes observable outcomes before
-   using it as a Path-B/C target.
+3. Redesign the new `debugging-and-error-recovery` suite with harder held-in root-cause fixtures;
+   keep the process-sensitive diagnostic as a boundary record, not Self-Harness evidence.
 4. Add a real CLI workflow target with state transitions and recovery semantics.
 5. Add a knowledge-rule Skill with deep references and measurable context-loading behavior.
 
