@@ -1,6 +1,6 @@
 # Tool-Side Harness Research Program
 
-This directory is the active entry point for the redirected study. The historical
+This directory is the active entry point for the category-conditioned study. The historical
 `experiments/general-skills/` tree is preserved as Stage-0 evidence and runner infrastructure; it
 is not discarded or relabeled as proof of the full taxonomy.
 
@@ -9,12 +9,13 @@ is not discarded or relabeled as proof of the full taxonomy.
 The paper should progress in this order:
 
 1. define the tool-side harness and progressive surfaces;
-2. inventory tool structures and preregister taxonomy labels;
-3. calibrate a four-dimensional baseline for qualified benchmarks;
-4. test bounded fitting-path interventions;
-5. apply the Q2-first cascaded gate;
-6. update lineages and the attention-conflict matrix;
-7. test method ablations and replication boundaries.
+2. answer RQ1 by measuring target-level heterogeneity;
+3. answer RQ2 with a category-balanced, target-level sample pool;
+4. code RQ3 structural features before candidate outcomes are observed;
+5. calibrate four-dimensional baselines and run bounded fitting-path interventions;
+6. apply the Q2-first per-task cascaded gate;
+7. replicate RQ2/RQ3 across independent targets, then defer RQ4 across models;
+8. update lineages, conflict records, and boundary claims.
 
 The project must not start from “Self-Harness works” and search for supporting examples. Existing
 positive and negative results are retained as observations to be explained by the framework.
@@ -24,11 +25,12 @@ positive and negative results are retained as observations to be explained by th
 | WP | Objective | Current status | Exit criterion |
 |---|---|---|---|
 | WP0 | Lock prior evidence | complete | compact, expanded, replication, and ablation results mapped without overclaiming |
-| WP1 | Build taxonomy sample pool | in progress | at least 2 qualified implementations per claimed class and coverage of Skill, MCP, CLI |
-| WP2 | Calibrate 4D baselines | Path B complete locally; Path C formal stopped at Q2 safety; MCP evidence retained | benchmark sensitivity, repeat variance, family coverage, and Q3 coverage documented |
-| WP3 | Run progressive evolution | compact Path A and local Path B complete; Path C blocked before h0 freeze | one frozen single-surface study for each qualified path |
-| WP4 | Run method ablations | Q2 and surface-placement evidence partial | preregistered Q2/no-Q2 and bounded/unrestricted comparisons |
-| WP5 | Replicate and evaluate utility | model/distribution rejection recorded; Q4 pending | independent replication before taxonomy-level or product claims |
+| WP1 | Build category-balanced sample pool | v2 registry frozen; Wave-1 candidates shortlisted | at least 2 qualified independent targets per exploratory category |
+| WP2 | Structural feature coding | rubric frozen; historical anchors coded provisionally | feature vectors frozen before new candidate outcomes |
+| WP3 | Calibrate 4D baselines | Path B qualified/evolved; Path C formal stopped at per-task safety | diagnostic + formal sensitivity and Q3 coverage |
+| WP4 | Run category-conditioned evolution | next target is fixture-authoring only | one frozen bounded lineage per qualified target |
+| WP5 | Mechanism and replication | RQ3/RQ4 deferred until independent targets qualify | preselected ablation and category replication |
+| WP6 | Evaluate utility | Q4 deferred | independent human/expert protocol |
 
 ## Frozen current interpretation
 
@@ -91,6 +93,16 @@ Run preregistered comparisons of:
 
 Cross-model or large-suite expansion follows only after a local path effect is repeatable. Negative
 replication remains a first-class result.
+
+## Formal RQ framework
+
+- `protocols/CATEGORY_CONDITIONED_RESEARCH_V1.md` — RQ1-RQ4, target-level estimands, staged gates,
+  claim levels, and confound controls.
+- `protocols/STRUCTURAL_FEATURES_V1.md` — preregistered multi-label structural coding and task-
+  exchange metrics.
+- `registries/sample-pool-v2.json` — category-balanced target registry; v1 remains historical.
+- `registries/market-skill-inventory-v1.json` — popularity/license sampling frame only.
+- `rounds/target-selection-v2/protocol.md` — next debugging diagnostic design; no attempts run.
 
 ## Files
 

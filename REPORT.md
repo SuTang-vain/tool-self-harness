@@ -856,3 +856,36 @@ reliable task because it produces three reliable tasks overall versus minimal's 
 `not_measured`. The supported conclusion is narrow: the canonical-ID Path-C benchmark is valid and
 benchmark-sensitive, but the official skill's local held-in benefit is not Q2-safe under per-task
 held-out gating for GLM-5.2 via Volcengine `plan/v3`.
+
+
+## 17. Formal Category-Conditioned Research Questions
+
+As of **August 3, 2026**, the research direction is formally anchored on four hierarchical
+questions rather than a universal Self-Harness claim:
+
+1. **RQ1 — target heterogeneity:** do Self-Harness outcomes differ materially across target skills?
+2. **RQ2 — category association:** are promotion rate, stable gains, and task exchange associated
+   with structural category?
+3. **RQ3 — structural mechanisms:** do rule density, reference depth, verifier observability, task
+   coupling, and edit locality explain or mediate category differences?
+4. **RQ4 — replication:** does the pattern replicate across independent targets and later models?
+
+The current evidence supports only a narrow RQ1 observation: Path B (`using-git-worktrees`) has an
+E2 replicated expanded local evolution result, while Path C (`security-review`) has a valid formal
+baseline with a per-task held-out safety stop before h0 freeze. The Path B/Path C contrast is
+consistent with category-conditioned behavior, but it is not yet a category effect because the
+target count is small and the endpoints differ (`coding/v3` versus `plan/v3`).
+
+The next registered target is the MIT-licensed `addyosmani/agent-skills`
+`debugging-and-error-recovery` skill at frozen commit
+`7829ffd90d973b6325f5f12f1b1226dcace74443`. Its 6-held-in/3-held-out, one-repeat diagnostic is
+only a benchmark qualification step: it must first demonstrate verifier sensitivity to
+reproduce-before-edit, root-cause localization, recurrence guards, and end-to-end verification.
+No candidate generation is authorized before the diagnostic stop/go gate passes.
+
+The formal registries and protocols are:
+
+- `experiments/tool-side-harness/protocols/CATEGORY_CONDITIONED_RESEARCH_V1.md`;
+- `experiments/tool-side-harness/protocols/STRUCTURAL_FEATURES_V1.md`;
+- `experiments/tool-side-harness/registries/sample-pool-v2.json`;
+- `experiments/tool-side-harness/registries/market-skill-inventory-v1.json`.

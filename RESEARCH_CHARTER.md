@@ -1,6 +1,6 @@
 # Tool-Side Harness Research Charter
 
-Status: redirected and frozen as the active research direction on 2026-07-30.
+Status: category-conditioned research direction formally established on 2026-08-03.
 
 Source framing: the aligned paper and research outlines titled *Tool-Side Harness for
 Progressive Tool Structures: Taxonomy, 4D Baseline Modeling, and Self-Evolution for Skills, MCP,
@@ -19,16 +19,27 @@ The project is no longer organized around the broad claim that Self-Harness gene
 skill. Its primary objective is to explain and test **which bounded change, on which surface, for
 which tool structure, moves which outcome dimension, and with what non-local cost**.
 
-## Research questions
+## Research questions — formally established 2026-08-03
 
-- **RQ1 — Taxonomy:** Can common tool-side harnesses be classified by dominant task structure and
-  failure signature?
-- **RQ2 — Fitting paths:** Do four bounded fitting paths explain the useful and harmful effects of
-  local Markdown, prompt, schema, and workflow edits?
-- **RQ3 — 4D drift:** Can each edit be represented as a measurable change in correctness,
-  reliability, efficiency, and human utility without hiding regressions in a weighted score?
-- **RQ4 — Progressive evolution:** Does single-surface attribution and patching, followed by a
-  cascaded gate and lineage update, yield safer evolution than aggregate or unrestricted editing?
+The active study is now organized around **category-conditioned Self-Harness evolution**. The
+four questions are hierarchical: RQ1 establishes whether target heterogeneity exists; RQ2 tests
+whether that heterogeneity tracks structural category; RQ3 tests candidate mechanisms; and RQ4
+asks whether the pattern replicates. The questions are deliberately narrower than a universal
+claim that Self-Harness improves skills.
+
+- **RQ1 — Target heterogeneity:** Do Self-Harness outcomes differ materially across target skills?
+  The primary outcomes are promotion rate, per-task stable gains/losses, task exchange, held-out
+  regression, and Q3 movement under the same frozen protocol.
+- **RQ2 — Category association:** Are promotion rate, stable gains, and task exchange systematically
+  associated with the structural category of the target skill?
+- **RQ3 — Structural mechanisms:** Do rule density, reference depth, verifier observability, task
+  coupling, and edit locality explain or mediate the observed category differences?
+- **RQ4 — Replication:** Does the category-conditioned pattern replicate across independent targets
+  and, after the current GLM-only phase, across models?
+
+The earlier taxonomy, fitting-path, 4D, and progressive-evolution questions remain supporting
+method questions. They are not discarded; they are now operational subquestions used to answer
+RQ1-RQ4.
 
 ## Taxonomy under test
 
@@ -38,10 +49,27 @@ which tool structure, moves which outcome dimension, and with what non-local cos
 | Multi-step workflow | ordered commands and state transitions | skipped preconditions, state confusion, blind retry | Path B: state transition and recovery protocol |
 | Knowledge-rule / policy | dense conditional guidance | rule conflict, attention dilution, hallucinated exceptions | Path C: constraint-density control and pruning |
 | Resource / event-stream interaction | dynamic tools, resources, prompts, events | discovery failure, boundary spillover, context inflation | Path D: progressive exposure and context reduction |
+| Debugging / diagnosis | reproduce, localize, fix, guard, verify | edit-before-reproduce, symptom fixing, missing regression guard, incomplete verification | Path B/C: state recovery and process/rule ordering |
 
 These classes and paths are hypotheses, not established universal categories. They become paper
 claims only after the registered sample pool contains representative systems and replicated
 failure signatures from more than one implementation per claimed class.
+
+### Category-conditioned interpretation boundary
+
+A target is the unit of analysis for category claims; tasks and attempts are nested observations,
+not independent category replicates. Categories are multi-label structural annotations with a
+registered primary category and secondary features. Market popularity is used only to construct a
+sampling frame, never as an explanatory variable. The current GLM-only phase can establish RQ1
+and provide exploratory RQ2/RQ3 evidence, but cannot establish RQ4 across models.
+
+The minimum claim discipline is:
+
+- one target: local target observation only;
+- two qualified targets in a category: exploratory within-category comparison;
+- three qualified targets in a category plus an independent replication: stronger category-level
+  claim, still bounded by model and endpoint;
+- cross-model evidence is deferred until the GLM target-by-category map is stable.
 
 ## Progressive structure and editable surfaces
 
@@ -159,30 +187,40 @@ critical correctness or reliability regression.
 Use the narrowest supported level. “Better” is prohibited unless the dimension and claim level are
 specified.
 
-## Current evidence under the redirected framing
+## Current evidence under the category-conditioned framing
 
-1. The compact GLM MCP edit is an **E2 local Path-A evolution** on the original 12-task suite.
-2. MiniMax and DeepSeek reject model transfer of that edit; it is not a model-general promotion.
-3. Two independent expanded GLM evaluations reject promotion and expose task exchange and
-   non-local regressions. This is **E3 mechanism evidence about Path-A over-constraint risk**, not
-   evidence of a generally better MCP harness.
-4. The targeted description/body/checklist ablation shows that surface placement changes the
-   4D outcome, but no tested variant is non-regressive. It is diagnostic E1 evidence only.
-5. The systematic-debugging pilot is outcome-flat and does not yet qualify as a process-sensitive
-   Path-B/C benchmark.
-6. No current experiment establishes the four-class taxonomy, Path B/C/D effectiveness, or Q4.
+1. **RQ1 has initial support at target level.** The workflow target
+   `using-git-worktrees` has an E2 replicated expanded local evolution result, while the MCP and
+   Security Review targets show different boundaries and task-exchange behavior.
+2. **Path B is a direct positive local-evolution anchor.** Within GLM-5.2 and the frozen
+   `using-git-worktrees` distribution, a bounded L1 edit increased the reliable task set from 8/12
+   to 12/12 with no reliable loss and held-out gains.
+3. **Path C is a qualification/safety boundary, not a failed Self-Harness run.** The Security
+   Review formal baseline had held-in movement, deep-reference sensitivity, and unchanged held-out
+   aggregate counts, but per-task identity exchange caused the Q2 stop before h0 freeze and
+   candidate generation.
+4. **RQ2 is not yet established.** The observed B-versus-C contrast is consistent with a
+   workflow/state-transition target being more locally patchable than a dense knowledge-rule target,
+   but there are too few independent targets and a model/endpoint confound remains.
+5. **RQ3 is a preregistered mechanism hypothesis.** Rule density, reference depth, verifier
+   observability, task coupling, and edit locality must be measured before causal language is used.
+6. **RQ4 is not measured.** GLM-5.2 is the only active model; cross-model expansion remains
+   deferred until the category-balanced GLM sample is qualified.
 
 ## Active work packages
 
-- **WP1 — Taxonomy inventory:** freeze a labeled sample pool spanning Skill, MCP, and CLI forms.
-- **WP2 — 4D baseline calibration:** measure baseline vectors and verify that each benchmark is
-  sensitive to its intended failure signatures.
-- **WP3 — Progressive evolution prototypes:** run registered single-surface loops on 2-3 qualified
-  representative targets.
-- **WP4 — Method ablations:** compare Q2/no-Q2, bounded/unrestricted patches, local/deep-reference
-  changes, and lineage/no-lineage reporting.
-- **WP5 — Replication and utility:** expand models and distributions only after a local path effect
-  is stable; defer Q4 until the capability protocol is mature.
+- **WP1 — Category-balanced inventory:** freeze a licensed sample pool with at least two candidate
+  targets per category where feasible, while preserving the historical v1 registry unchanged.
+- **WP2 — Structural coding:** assign primary/secondary categories and the preregistered feature
+  vector before observing new evolution outcomes.
+- **WP3 — Baseline qualification:** run diagnostic and formal no-skill/minimal/official-full
+  comparisons; stop on verifier, ceiling/floor, or missing variant separation.
+- **WP4 — Category-conditioned evolution:** run one bounded single-surface lineage per qualified
+  target, with per-task stable acceptance and hidden held-out tasks.
+- **WP5 — Mechanism and replication:** preselect surface-placement/ablation contrasts, then add
+  independent targets within categories before any cross-model RQ4 study.
+- **WP6 — Q3/Q4 boundaries:** report usage descriptively after Q1/Q2; keep Q4 `not_measured` until
+  an independent human/expert protocol is preregistered.
 
 The executable research program, registries, and protocol links live in
 `experiments/tool-side-harness/README.md`.

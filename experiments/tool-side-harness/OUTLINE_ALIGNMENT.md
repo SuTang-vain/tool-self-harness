@@ -19,6 +19,23 @@ Both outlines agree on the following active commitments:
 7. promote only passing patches and retain rejected edits in a lineage/conflict record;
 8. build the sample pool and calibrate baselines before broad self-evolution claims.
 
+## Formal RQ redirection adopted on 2026-08-03
+
+The paper-facing and research-facing outlines are now operationalized as four hierarchical
+questions:
+
+1. **RQ1 — target heterogeneity:** outcomes differ across target skills;
+2. **RQ2 — category association:** promotion, stable gain, and task exchange track structural
+   category;
+3. **RQ3 — structural mechanisms:** rule density, reference depth, verifier observability, task
+   coupling, and edit locality explain or mediate those differences;
+4. **RQ4 — replication:** the pattern replicates across independent targets and later models.
+
+This redirection changes the analysis unit from pooled tasks/attempts to the frozen target skill.
+The existing four classes remain a multi-label hypothesis vocabulary, and market popularity is only
+a sampling-frame variable. The full operational rules are in
+`protocols/CATEGORY_CONDITIONED_RESEARCH_V1.md` and `protocols/STRUCTURAL_FEATURES_V1.md`.
+
 ## Empirical corrections applied
 
 The outlines contain proposed directional priors, not facts already established. The repository
@@ -74,7 +91,7 @@ Q1 classification, then separately preregistered Q3/Q4 claims.
 
 ## Immediate priority after redirection
 
-The next formal activity is **sample-pool qualification and benchmark calibration**, not another
-unregistered global MCP instruction. In parallel, the current MCP suite can be used to prototype a
-properly frozen, conditional/local candidate, but it cannot substitute for the missing CLI,
-knowledge-rule, and direct Path-D evidence.
+The next formal activity is **category-balanced sample-pool qualification and benchmark
+calibration**. The next registered diagnostic target is
+`addyosmani/agent-skills/debugging-and-error-recovery`; it is source-frozen but has no model
+attempts yet. No cross-model experiment or Q4 study is authorized in this phase.
