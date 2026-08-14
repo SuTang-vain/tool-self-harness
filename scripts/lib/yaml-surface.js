@@ -28,7 +28,11 @@ function rowBlock(src, rowId) {
   const start = m.index + (m[0].startsWith('\n') ? 1 : 0);
   const next = new RegExp('\\n- id: ').exec(src.slice(start + 1));
   const end = next ? start + 1 + next.index + 1 : src.length; // keep the newline before next row out
-  return { start, end, content: src.slice(start, end).replace(/\n$/, '') };
+  // Comment banners between two rows document the NEXT row: trim trailing
+  // comment/blank lines so the block covers exactly the row's own bytes.
+  let content = src.slice(start, end);
+  content = content.replace(/(?:\n[ \t]*(?:#[^\n]*)?[ \t]*)*$/, '');
+  return { start, end, contentEnd: start + content.length, content };
 }
 
 function getSurface(surface, sandboxRoot) {
@@ -56,8 +60,10 @@ function applyPatch(surface, newContent, sandboxRoot) {
     const id = String(surface.selector || '').replace(/^row:/, '');
     const b = rowBlock(src, id);
     if (!b) throw new Error('row not found: ' + id);
-    const replacement = newContent.endsWith('\n') ? newContent : newContent + '\n';
-    out = src.slice(0, b.start) + replacement + '\n' + src.slice(b.end);
+    // Replace exactly the row's own bytes: banners before the next row and the
+    // kept newline between them survive (src.slice(b.contentEnd) starts with \n).
+    const replacement = newContent.replace(/\n+$/, '');
+    out = src.slice(0, b.start) + replacement + src.slice(b.contentEnd);
   } else if (surface.type === 'preset-field') {
     const field = String(surface.selector || '').replace(/^frontmatter\./, '');
     const re = new RegExp('^' + field + ':.*$', 'm');
