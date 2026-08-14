@@ -194,6 +194,7 @@ function makeExecutor(workDir, skill) {
         const command = String(args.command || '');
         const deny = (reason) => ({ error: 'run_command blocked by workspace isolation: ' + reason });
         if (/~/.test(command)) return deny('home-directory expansion is not allowed');
+        if (/\$\{?HOME\}?/.test(command)) return deny('HOME variable references are not allowed');
         if (/(^|[^A-Za-z0-9_.@-])\.\.(\/|[^A-Za-z0-9_.@-]|$)/.test(command)) return deny('parent-directory traversal is not allowed');
         const absTokens = command.match(/(\/[A-Za-z0-9_.@-]+){2,}/g) || [];
         for (const token of absTokens) {

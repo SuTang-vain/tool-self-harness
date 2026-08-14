@@ -4,11 +4,24 @@
   "finding": "workspace escape via run_command",
   "detail": "generic-runner's run_command executes a real shell with machine-wide filesystem access. Trace audits found attempts reading reference/grader files outside the workspace (absolute paths to experiments/tool-side-harness/tasks|targets, expected.json, reference.sh), contaminating held-out hiding and some held-in minimal cells.",
   "contaminated_cells": {
-    "dsh-pilot-editing-v1": ["minimal/held-in/ec-01-realm-missing (1 repeat)"],
-    "dsh-pilot-editing-v2": ["minimal/held-in/ec-01-realm-missing (3 repeats)", "minimal/held-in/ec-03-invalid-config (1 repeat)"],
-    "dsh-pilot-headless-v2b": ["minimal/held-in/hp-03-row-config (3 repeats)", "minimal/held-in/hp-01-add-row (1 repeat)", "no-harness/held-in/hp-03-row-config (1 repeat)"],
-    "dsh-pilot-headless-v3": ["minimal+no-harness held-out (12 of 12 attempts)"],
-    "dsh-pilot-headless-v3c": ["minimal+no-harness held-out (12 of 12) + 3 official-full attempts"]
+    "dsh-pilot-editing-v1": [
+      "minimal/held-in/ec-01-realm-missing (1 repeat)"
+    ],
+    "dsh-pilot-editing-v2": [
+      "minimal/held-in/ec-01-realm-missing (3 repeats)",
+      "minimal/held-in/ec-03-invalid-config (1 repeat)"
+    ],
+    "dsh-pilot-headless-v2b": [
+      "minimal/held-in/hp-03-row-config (3 repeats)",
+      "minimal/held-in/hp-01-add-row (1 repeat)",
+      "no-harness/held-in/hp-03-row-config (1 repeat)"
+    ],
+    "dsh-pilot-headless-v3": [
+      "minimal+no-harness held-out (12 of 12 attempts)"
+    ],
+    "dsh-pilot-headless-v3c": [
+      "minimal+no-harness held-out (12 of 12) + 3 official-full attempts"
+    ]
   },
   "clean_cells": [
     "dsh-pilot-editing-v3b: 0 escape traces across all 18 attempts",
@@ -16,5 +29,12 @@
     "dsh-pilot-headless-v2b official-full"
   ],
   "remediation": "generic-runner.js now refuses run_command with home-directory expansion, parent-directory traversal, or absolute paths outside the workspace (research-integrity boundary, not a security sandbox). Contaminated cells are re-run under the hardened runner with new run ids.",
-  "claim_impact": "Frozen records that cite contaminated numbers are flagged; the v3 final record uses hardened-runner numbers for every cited cell."
+  "claim_impact": "Frozen records that cite contaminated numbers are flagged; the v3 final record uses hardened-runner numbers for every cited cell.",
+  "second_evasion": {
+    "recorded_at": "2026-08-14",
+    "event": "variable-assembly evasion during formal baseline",
+    "detail": "headless no-harness hp-05 rep-0 assembled the repo path from $HOME and variable tokens, bypassing the absolute-path scan, and read reference.sh. The leaked attempt still failed its grader; the cell was re-run cleanly (0/3) under an additional HOME-reference guard.",
+    "remediation": "run_command now also refuses $HOME / ${HOME} references. Deliberate adversarial obfuscation remains out of scope per the standing stance.",
+    "re_run": "dsh-baseline-headless-v1b (hp-05-reference-restore, no-harness, 3 repeats, 0/3)"
+  }
 }
