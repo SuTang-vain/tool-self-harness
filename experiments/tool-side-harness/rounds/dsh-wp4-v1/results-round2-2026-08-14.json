@@ -1,0 +1,37 @@
+{
+  "event": "wp4-efficiency-round2-results",
+  "recorded_at": "2026-08-14",
+  "preregistration": "protocols/DSH_WP4_EFFICIENCY_TRACK_V1.md (round 2 addendum)",
+  "runner": "hardened generic-runner; official-full; full suite; 3 fresh repeats; seed 20260817",
+  "gate0_aborts": [
+    {"run": "dsh-wp4-headless-c2", "error": "API InvalidParameter on hp-05 rep0", "action": "aborted; fresh re-run dsh-wp4-headless-c2b"}
+  ],
+  "candidates": [
+    {
+      "id": "editing-c2-remove-roster",
+      "target": "editing-cordis-compositions",
+      "q2_preserve": {"held_in": "9/9", "held_in_reliable": 3, "held_out": "6/6", "held_out_reliable": 2, "gate": "pass"},
+      "q3": {
+        "mean_tokens_per_attempt": {"h0": 28665.6, "c2": 24056.7, "delta_pct": -16.1},
+        "total_tokens": {"h0": 429984, "c2": 360851},
+        "api_calls": {"h0": 110, "c2": 110},
+        "mean_elapsed_ms_per_attempt": {"h0": 44171, "c2": 30731, "delta_pct": -30.4}
+      },
+      "decision": "accept-into-efficiency-lineage",
+      "reason": "Q2 fully preserved; token and latency deltas align with the intended direction at a magnitude comparable to the observed noise band; a replication run is required before any stronger (E2+) efficiency claim",
+      "lineage": "lineages/dsh-efficiency/editing-cordis-compositions/h1-efficiency"
+    },
+    {
+      "id": "headless-c2-strip-comments",
+      "target": "headless-preset",
+      "q2_preserve": {"held_in": "9/9", "held_in_reliable": 3, "held_out": "5/6", "held_out_reliable": 1, "gate": "fail"},
+      "failure": "hp-05-reference-restore rep0 kept window: 7 (grader expects 42)",
+      "q3": {"mean_tokens_per_attempt": {"h0": 28303.1, "c2": 29967.9, "delta_pct": 5.9}},
+      "decision": "reject-q2-regression",
+      "reason": "hard gate failed: stripping the comment banners removed the eval-pin localization guidepost, costing one held-out silent-restoration attempt; any attempt failure rejects per the preregistered gate"
+    }
+  ],
+  "interpretation": "A clean density contrast: pruning non-load-bearing prose (roster-service, 27.3% of SKILL.md) is behavior-free and direction-consistently cheaper; pruning guidepost comments (48.5% of the composition body) regresses silent reference-restoration, where comments are the only localization cue. Path C is not uniformly free — density interacts with task structure.",
+  "routing": "editing-c2 -> lineages/dsh-efficiency/editing-cordis-compositions/h1-efficiency; headless-c2 -> registries/attention-conflict-matrix-v2.json",
+  "claim_level": "E1 local results (direction-consistent Q3 with Q2 preserved for editing; Q2 regression for headless). Replication required before stronger claims."
+}

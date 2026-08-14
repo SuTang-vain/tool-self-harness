@@ -20,3 +20,13 @@ Status: 2026-08-14。能力轨在 h0 天花板关闭（预注册）；两个效�
 
 两个候选按预注册路由进入 `registries/attention-conflict-matrix-v2.json`；
 本轨不产生 lineage 晋升。
+
+## 第 2 轮（大编辑候选）
+
+| 候选 | Q2 | Q3 | 判定 |
+|---|---|---|---|
+| editing c2（删 roster-service 节，-27.3%） | ✅ 全保持 | tokens **-16.1%**、latency -30.4%（方向一致） | **接受 → 效率 lineage h1**（复制验证后方可升级主张） |
+| headless c2（剥注释横幅，-48.5%） | ❌ hp-05 2/3 | tokens +5.9% | 拒绝（硬门回归） |
+
+解读：密度裁剪并非一律免费——非承重散文（roster-service）可安全剪；注释横幅是静默
+参考还原任务的**定位路标**，剥掉即丢 held-out 可靠性。路径 C 的效果与任务结构交互。
