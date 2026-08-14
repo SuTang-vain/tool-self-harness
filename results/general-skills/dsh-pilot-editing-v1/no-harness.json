@@ -1,0 +1,672 @@
+{
+  "run_id": "dsh-pilot-editing-v1",
+  "variant": "no-harness",
+  "model_config": "/Users/tangyaoyue/DEV/tool-self-harness/.tmp-config-dsh-pilot.yaml",
+  "skill_repo": "none",
+  "suite": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/tasks/editing-cordis-compositions",
+  "repeats": 3,
+  "task_order_seed": 20260814,
+  "task_filter": null,
+  "held_in": {
+    "passes": 6,
+    "attempts": 9,
+    "pass_rate": 0.6666666666666666,
+    "stable_tasks": [
+      "ec-02-never-activated",
+      "ec-03-invalid-config"
+    ],
+    "stable_task_count": 2,
+    "task_count": 3
+  },
+  "held_out": {
+    "passes": 6,
+    "attempts": 6,
+    "pass_rate": 1,
+    "stable_tasks": [
+      "ec-04-shared-label-realm",
+      "ec-05-metadata"
+    ],
+    "stable_task_count": 2,
+    "task_count": 2
+  },
+  "metrics": {
+    "attempts": 15,
+    "usage_coverage": 1,
+    "api_calls": 109,
+    "api_latency_ms": 1081543,
+    "tool_calls": 95,
+    "tool_call_retries": 0,
+    "prompt_tokens": 149690,
+    "completion_tokens": 44226,
+    "total_tokens": 193916,
+    "elapsed_ms": 1085377,
+    "mean_tokens_per_attempt": 12927.733333333334,
+    "mean_tool_calls_per_attempt": 6.333333333333333,
+    "mean_elapsed_ms_per_attempt": 72358.46666666666,
+    "tokens_per_successful_attempt": 16159.666666666666,
+    "tokens_per_reliable_task": 48479
+  },
+  "behavior": {
+    "loaded_skill_rate": 0,
+    "test_before_edit_rate": 0,
+    "test_after_edit_rate": 0
+  },
+  "per_task": [
+    {
+      "split": "held-in",
+      "task_id": "ec-01-realm-missing",
+      "passes": 0,
+      "attempts": 3,
+      "stable_pass": false,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "ec-01-realm-missing",
+          "repeat": 0,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "row-in-group: group \"delegation\" missing | row-in-group: group \"delegation\" missing | group-contains: group \"delegation\" missing",
+          "runner": {
+            "steps": 16,
+            "final_answer": "The fix is complete. The `agent.cordis.yml` now:\n\n- Wraps both `workflow-worker-thread` (the provider publishing `workflows`) and its consumer `tool-workflow` inside **one** `cordis:group` row.\n- The group has `group: true` and an isolate realm `{ workflows: true }`.\n- Neither row remains loose at the top level (the top-level list has exactly one element — the group).\n- Nothing else changed (comment header preserved, no other fields altered).\n\nYAML parses cleanly and all structural assertions pass.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-in/ec-01-realm-missing/trace.jsonl",
+            "metrics": {
+              "api_calls": 16,
+              "api_latency_ms": 451451,
+              "tool_calls": 14,
+              "tool_call_retries": 0,
+              "prompt_tokens": 38263,
+              "completion_tokens": 24488,
+              "total_tokens": 62751,
+              "usage_observations": 16,
+              "elapsed_ms": 452689,
+              "steps": 16
+            }
+          },
+          "behavior": {
+            "steps": 14,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete. The `agent.cordis.yml` now:\n\n- Wraps both `workflow-worker-thread` (the provider publishing `workflows`) and its consumer `tool-workflow` inside **one** `cordis:group` row.\n- The group has `group: true` and an isolate realm `{ workflows: true }`.\n- Neither row remains loose at the top level (the top-level list has exactly one element — the group).\n- Nothing else changed (comment header preserved, no other fields altered).\n\nYAML parses cleanly and all structural assertions pass.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-in/ec-01-realm-missing/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-in/ec-01-realm-missing/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-01-realm-missing",
+          "repeat": 2,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "row-in-group: group \"delegation\" missing | row-in-group: group \"delegation\" missing | group-contains: group \"delegation\" missing",
+          "runner": {
+            "steps": 9,
+            "final_answer": "The fix is complete and verified. Here's a summary of what was done:\n\n## Problem\nThe `agent.cordis.yml` preset had `workflow-worker-thread` (which publishes the `workflows` service) and `tool-workflow` sitting as two loose top-level rows. A provider row publishing a service must not sit loose in a preset, otherwise the second session mounting the preset would collide with the first.\n\n## Fix\nWrapped both rows inside a single `cordis:group` row that has:\n- `group: true` — marking it as a group\n- `realm: { workflows: true }` — an isolate realm so the `workflows` service published by `workflow-worker-thread` is scoped to this group and won't collide across sessions\n\n## Verification\n- The provider `workflow-worker-thread` and its consumer `tool-workflow` are both nested inside the single group row.\n- No rows remain loose at the top level (only the one group row exists at the top).\n- The isolate realm `{ workflows: true }` is present.\n- The original row contents (`id`, `name`, `config`) are preserved exactly — nothing else changed.\n- The YAML parses correctly and all structural assertions pass.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-in/ec-01-realm-missing/trace.jsonl",
+            "metrics": {
+              "api_calls": 9,
+              "api_latency_ms": 157499,
+              "tool_calls": 8,
+              "tool_call_retries": 0,
+              "prompt_tokens": 12696,
+              "completion_tokens": 7298,
+              "total_tokens": 19994,
+              "usage_observations": 9,
+              "elapsed_ms": 157941,
+              "steps": 9
+            }
+          },
+          "behavior": {
+            "steps": 8,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete and verified. Here's a summary of what was done:\n\n## Problem\nThe `agent.cordis.yml` preset had `workflow-worker-thread` (which publishes the `workflows` service) and `tool-workflow` sitting as two loose top-level rows. A provider row publishing a service must not sit loose in a preset, otherwise the second session mounting the preset would collide with the first.\n\n## Fix\nWrapped both rows inside a single `cordis:group` row that has:\n- `group: true` — marking it as a group\n- `realm: { workflows: true }` — an isolate realm so the `workflows` service published by `workflow-worker-thread` is scoped to this group and won't collide across sessions\n\n## Verification\n- The provider `workflow-worker-thread` and its consumer `tool-workflow` are both nested inside the single group row.\n- No rows remain loose at the top level (only the one group row exists at the top).\n- The isolate realm `{ workflows: true }` is present.\n- The original row contents (`id`, `name`, `config`) are preserved exactly — nothing else changed.\n- The YAML parses correctly and all structural assertions pass.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-in/ec-01-realm-missing/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-in/ec-01-realm-missing/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-01-realm-missing",
+          "repeat": 1,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "row-in-group: group \"delegation\" missing | row-in-group: group \"delegation\" missing | group-contains: group \"delegation\" missing",
+          "runner": {
+            "steps": 14,
+            "final_answer": "The fix is complete and verified. Here's a summary of what I did:\n\n## Summary\n\nThe preset `agent.cordis.yml` was broken because the provider row `workflow-worker-thread` (which publishes the `workflows` service) sat loose at the top level — meaning a second session mounting the preset would collide with the first.\n\n### Change made\n\nI wrapped both the provider (`workflow-worker-thread`) and its consumer (`tool-workflow`) into a single top-level `cordis:group` row with:\n- `group: true`\n- an isolate `realm: { workflows: true }`\n\nBoth rows now live as children under `cordis:group.rows`, and nothing is loose at the top level. The only top-level entry is the group row itself. All other values (ids, names, `config.provider: spawn`) are unchanged.\n\n### Verification\n\nI validated the parsed YAML structure:\n- ✅ Top level is a list with exactly one row (the group row) — no loose publisher/consumer.\n- ✅ `cordis:group` has `group: true`.\n- ✅ `cordis:group.realm == { workflows: true }` (isolate realm present).\n- ✅ `rows` contains `workflow-worker-thread` (with its original `config.provider: spawn`) followed by `tool-workflow`, preserving order and content.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-in/ec-01-realm-missing/trace.jsonl",
+            "metrics": {
+              "api_calls": 14,
+              "api_latency_ms": 129106,
+              "tool_calls": 13,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26412,
+              "completion_tokens": 6508,
+              "total_tokens": 32920,
+              "usage_observations": 14,
+              "elapsed_ms": 129964,
+              "steps": 14
+            }
+          },
+          "behavior": {
+            "steps": 13,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete and verified. Here's a summary of what I did:\n\n## Summary\n\nThe preset `agent.cordis.yml` was broken because the provider row `workflow-worker-thread` (which publishes the `workflows` service) sat loose at the top level — meaning a second session mounting the preset would collide with the first.\n\n### Change made\n\nI wrapped both the provider (`workflow-worker-thread`) and its consumer (`tool-workflow`) into a single top-level `cordis:group` row with:\n- `group: true`\n- an isolate `realm: { workflows: true }`\n\nBoth rows now live as children under `cordis:group.rows`, and nothing is loose at the top level. The only top-level entry is the group row itself. All other values (ids, names, `config.provider: spawn`) are unchanged.\n\n### Verification\n\nI validated the parsed YAML structure:\n- ✅ Top level is a list with exactly one row (the group row) — no loose publisher/consumer.\n- ✅ `cordis:group` has `group: true`.\n- ✅ `cordis:group.realm == { workflows: true }` (isolate realm present).\n- ✅ `rows` contains `workflow-worker-thread` (with its original `config.provider: spawn`) followed by `tool-workflow`, preserving order and content.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-in/ec-01-realm-missing/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-in/ec-01-realm-missing/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "ec-02-never-activated",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "ec-02-never-activated",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The fix is complete and verified. The YAML parses correctly and meets all requirements:\n\n- **`compaction-basic` is inside the `compaction` group** — it now appears as a sibling entry under the group's `config` array, right next to `tool-result-pruner`.\n- **Isolate realm preserved** — the group still has `isolate: { compaction: true, toolResultPruner: true }`, unchanged.\n- **No loose top-level copy** — the top level now has only the single `compaction` group entry; the standalone `compaction-basic` row is gone.\n- **Nothing else changed** — the group id/name, the pruner config (`thresholdChars: 8192`), and the comments all remain intact.\n\nBecause `compaction-basic` now resolves `toolResultPruner` via `ctx.get` from within the same isolate realm as `tool-result-pruner`, the row will activate instead of falling through to the host's (unpopulated) registry.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-in/ec-02-never-activated/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 39043,
+              "tool_calls": 6,
+              "tool_call_retries": 0,
+              "prompt_tokens": 9352,
+              "completion_tokens": 1080,
+              "total_tokens": 10432,
+              "usage_observations": 7,
+              "elapsed_ms": 39656,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 6,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete and verified. The YAML parses correctly and meets all requirements:\n\n- **`compaction-basic` is inside the `compaction` group** — it now appears as a sibling entry under the group's `config` array, right next to `tool-result-pruner`.\n- **Isolate realm preserved** — the group still has `isolate: { compaction: true, toolResultPruner: true }`, unchanged.\n- **No loose top-level copy** — the top level now has only the single `compaction` group entry; the standalone `compaction-basic` row is gone.\n- **Nothing else changed** — the group id/name, the pruner config (`thresholdChars: 8192`), and the comments all remain intact.\n\nBecause `compaction-basic` now resolves `toolResultPruner` via `ctx.get` from within the same isolate realm as `tool-result-pruner`, the row will activate instead of falling through to the host's (unpopulated) registry.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-in/ec-02-never-activated/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-in/ec-02-never-activated/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-02-never-activated",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 6,
+            "final_answer": "The fix is complete and verified. Let me confirm the structure meets all requirements:\n\n1. **`compaction-basic` sits INSIDE the `compaction` group next to `tool-result-pruner`** ✓ — It's now a sibling entry in the group's `config` array, placed after `tool-result-pruner`.\n2. **The group keeps its isolate realm `{ compaction: true, toolResultPruner: true }`** ✓ — The `isolate` block is unchanged.\n3. **`compaction-basic` no longer appears loose at the top level** ✓ — The top-level loose entry was removed.\n4. **Nothing else changes** ✓ — The diff shows only the move (indentation + removal of the loose top-level entry).\n\nThe YAML parses correctly, so the file is valid. Now `compaction-basic` shares the isolate realm with `tool-result-pruner` and will resolve `toolResultPruner` through `ctx.get`, causing the row to activate as intended.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-in/ec-02-never-activated/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 33750,
+              "tool_calls": 6,
+              "tool_call_retries": 0,
+              "prompt_tokens": 7675,
+              "completion_tokens": 1161,
+              "total_tokens": 8836,
+              "usage_observations": 6,
+              "elapsed_ms": 33945,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 6,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete and verified. Let me confirm the structure meets all requirements:\n\n1. **`compaction-basic` sits INSIDE the `compaction` group next to `tool-result-pruner`** ✓ — It's now a sibling entry in the group's `config` array, placed after `tool-result-pruner`.\n2. **The group keeps its isolate realm `{ compaction: true, toolResultPruner: true }`** ✓ — The `isolate` block is unchanged.\n3. **`compaction-basic` no longer appears loose at the top level** ✓ — The top-level loose entry was removed.\n4. **Nothing else changes** ✓ — The diff shows only the move (indentation + removal of the loose top-level entry).\n\nThe YAML parses correctly, so the file is valid. Now `compaction-basic` shares the isolate realm with `tool-result-pruner` and will resolve `toolResultPruner` through `ctx.get`, causing the row to activate as intended.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-in/ec-02-never-activated/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-in/ec-02-never-activated/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-02-never-activated",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 6,
+            "final_answer": "The change is complete. The `compaction-basic` row now sits inside the `compaction` group's `config` list, right next to `tool-result-pruner`, while:\n\n- the group retains its isolate realm `{ compaction: true, toolResultPruner: true }`\n- `compaction-basic` is no longer loose at the top level\n- nothing else changed (same file header, same pruner config)\n\nThis means the consumer (`compaction-basic`) now resolves `toolResultPruner` through `ctx.get` against the same isolate group realm that provides the pruner, so the row will activate correctly.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-in/ec-02-never-activated/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 34831,
+              "tool_calls": 5,
+              "tool_call_retries": 0,
+              "prompt_tokens": 6692,
+              "completion_tokens": 487,
+              "total_tokens": 7179,
+              "usage_observations": 6,
+              "elapsed_ms": 34853,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 5,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The change is complete. The `compaction-basic` row now sits inside the `compaction` group's `config` list, right next to `tool-result-pruner`, while:\n\n- the group retains its isolate realm `{ compaction: true, toolResultPruner: true }`\n- `compaction-basic` is no longer loose at the top level\n- nothing else changed (same file header, same pruner config)\n\nThis means the consumer (`compaction-basic`) now resolves `toolResultPruner` through `ctx.get` against the same isolate group realm that provides the pruner, so the row will activate correctly.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-in/ec-02-never-activated/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-in/ec-02-never-activated/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "ec-03-invalid-config",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "ec-03-invalid-config",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 6,
+            "final_answer": "The fix is complete. The `tool-subagent` row now declares `config.provider: spawn`, with `toolName` and `backgroundMode` preserved unchanged.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-in/ec-03-invalid-config/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 38026,
+              "tool_calls": 5,
+              "tool_call_retries": 0,
+              "prompt_tokens": 5471,
+              "completion_tokens": 215,
+              "total_tokens": 5686,
+              "usage_observations": 6,
+              "elapsed_ms": 38067,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 5,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete. The `tool-subagent` row now declares `config.provider: spawn`, with `toolName` and `backgroundMode` preserved unchanged.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-in/ec-03-invalid-config/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-in/ec-03-invalid-config/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-03-invalid-config",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 6,
+            "final_answer": "The fix is complete. The `agent.cordis.yml` file now has the `tool-subagent` row with `config.provider: spawn` declared, while keeping `toolName` and `backgroundMode` unchanged.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-in/ec-03-invalid-config/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 18805,
+              "tool_calls": 5,
+              "tool_call_retries": 0,
+              "prompt_tokens": 5471,
+              "completion_tokens": 212,
+              "total_tokens": 5683,
+              "usage_observations": 6,
+              "elapsed_ms": 18827,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 5,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete. The `agent.cordis.yml` file now has the `tool-subagent` row with `config.provider: spawn` declared, while keeping `toolName` and `backgroundMode` unchanged.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-in/ec-03-invalid-config/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-in/ec-03-invalid-config/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-03-invalid-config",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 6,
+            "final_answer": "The fix is complete. I added `provider: spawn` to the `config` block of the `tool-subagent` row, keeping `toolName` and `backgroundMode` unchanged and altering nothing else. The minimal diff confirms only the one required field was added:\n\n```diff\n   config:\n+    provider: spawn\n     toolName: subagent\n     backgroundMode: continuable\n```",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-in/ec-03-invalid-config/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 32640,
+              "tool_calls": 5,
+              "tool_call_retries": 0,
+              "prompt_tokens": 5471,
+              "completion_tokens": 320,
+              "total_tokens": 5791,
+              "usage_observations": 6,
+              "elapsed_ms": 32692,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 5,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete. I added `provider: spawn` to the `config` block of the `tool-subagent` row, keeping `toolName` and `backgroundMode` unchanged and altering nothing else. The minimal diff confirms only the one required field was added:\n\n```diff\n   config:\n+    provider: spawn\n     toolName: subagent\n     backgroundMode: continuable\n```",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-in/ec-03-invalid-config/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-in/ec-03-invalid-config/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "ec-04-shared-label-realm",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "ec-04-shared-label-realm",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 6,
+            "final_answer": "The diff confirms the smallest correct change: only the isolate realm value changed from `shared` (string label) to `true` (a realm private to each mounting session). The group and its two rows remain intact.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-out/ec-04-shared-label-realm/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 29991,
+              "tool_calls": 5,
+              "tool_call_retries": 0,
+              "prompt_tokens": 6008,
+              "completion_tokens": 236,
+              "total_tokens": 6244,
+              "usage_observations": 6,
+              "elapsed_ms": 30087,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 5,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The diff confirms the smallest correct change: only the isolate realm value changed from `shared` (string label) to `true` (a realm private to each mounting session). The group and its two rows remain intact.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-out/ec-04-shared-label-realm/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-out/ec-04-shared-label-realm/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-04-shared-label-realm",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 5,
+            "final_answer": "The fix is complete. The isolate realm now reads `workflows: true` (a realm private to each mounting session) instead of the string label `workflows: shared` (which joined subtrees into one shared realm where `provide()` still collides on the second registration).\n\nThe group (`id: delegation`, `group: true`) and its two rows (`workflow-worker-thread` and `tool-workflow`) remain unchanged — only the `workflows` value under `isolate` was changed from `shared` to `true`.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-out/ec-04-shared-label-realm/trace.jsonl",
+            "metrics": {
+              "api_calls": 5,
+              "api_latency_ms": 23187,
+              "tool_calls": 4,
+              "tool_call_retries": 0,
+              "prompt_tokens": 5158,
+              "completion_tokens": 453,
+              "total_tokens": 5611,
+              "usage_observations": 5,
+              "elapsed_ms": 23187,
+              "steps": 5
+            }
+          },
+          "behavior": {
+            "steps": 4,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete. The isolate realm now reads `workflows: true` (a realm private to each mounting session) instead of the string label `workflows: shared` (which joined subtrees into one shared realm where `provide()` still collides on the second registration).\n\nThe group (`id: delegation`, `group: true`) and its two rows (`workflow-worker-thread` and `tool-workflow`) remain unchanged — only the `workflows` value under `isolate` was changed from `shared` to `true`.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-out/ec-04-shared-label-realm/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-out/ec-04-shared-label-realm/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-04-shared-label-realm",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 5,
+            "final_answer": "The diff confirms the minimal correct change: `workflows: shared` → `workflows: true`. Nothing else was modified. The group (`id: delegation`, `group: true`) and its two rows (`workflow-worker-thread`, `tool-workflow`) are untouched.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-out/ec-04-shared-label-realm/trace.jsonl",
+            "metrics": {
+              "api_calls": 5,
+              "api_latency_ms": 15713,
+              "tool_calls": 5,
+              "tool_call_retries": 0,
+              "prompt_tokens": 5894,
+              "completion_tokens": 406,
+              "total_tokens": 6300,
+              "usage_observations": 5,
+              "elapsed_ms": 15733,
+              "steps": 5
+            }
+          },
+          "behavior": {
+            "steps": 5,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The diff confirms the minimal correct change: `workflows: shared` → `workflows: true`. Nothing else was modified. The group (`id: delegation`, `group: true`) and its two rows (`workflow-worker-thread`, `tool-workflow`) are untouched.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-out/ec-04-shared-label-realm/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-out/ec-04-shared-label-realm/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "ec-05-metadata",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "ec-05-metadata",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 5,
+            "final_answer": "The `preset.yml` now has:\n\n- `name: delegation-workflow` — present and satisfies the id constraint `[a-z0-9][a-z0-9-]*` (starts with a lowercase letter, followed by lowercase letters/digits/hyphens).\n- `description` still mentions the workflow toolchain (\"runs the workflow toolchain for delegation tasks.\").\n\nNo other files were created or edited.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-out/ec-05-metadata/trace.jsonl",
+            "metrics": {
+              "api_calls": 5,
+              "api_latency_ms": 21866,
+              "tool_calls": 4,
+              "tool_call_retries": 0,
+              "prompt_tokens": 4254,
+              "completion_tokens": 325,
+              "total_tokens": 4579,
+              "usage_observations": 5,
+              "elapsed_ms": 21885,
+              "steps": 5
+            }
+          },
+          "behavior": {
+            "steps": 4,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The `preset.yml` now has:\n\n- `name: delegation-workflow` — present and satisfies the id constraint `[a-z0-9][a-z0-9-]*` (starts with a lowercase letter, followed by lowercase letters/digits/hyphens).\n- `description` still mentions the workflow toolchain (\"runs the workflow toolchain for delegation tasks.\").\n\nNo other files were created or edited.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-out/ec-05-metadata/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-1/held-out/ec-05-metadata/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-05-metadata",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Both requirements are satisfied:\n\n1. **`name` is present** and matches the id constraint `[a-z0-9][a-z0-9-]*` — the value `delegation-workflow` starts with a lowercase letter and contains only lowercase letters, digits, and hyphens.\n2. **`description` still mentions the workflow toolchain** — the description \"A preset that runs the workflow toolchain for delegation tasks.\" contains the word \"workflow\".\n\nThe change is minimal: only added the `name` field while preserving the existing `description` exactly as it was.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-out/ec-05-metadata/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 40135,
+              "tool_calls": 6,
+              "tool_call_retries": 0,
+              "prompt_tokens": 6619,
+              "completion_tokens": 601,
+              "total_tokens": 7220,
+              "usage_observations": 7,
+              "elapsed_ms": 40349,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 6,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Both requirements are satisfied:\n\n1. **`name` is present** and matches the id constraint `[a-z0-9][a-z0-9-]*` — the value `delegation-workflow` starts with a lowercase letter and contains only lowercase letters, digits, and hyphens.\n2. **`description` still mentions the workflow toolchain** — the description \"A preset that runs the workflow toolchain for delegation tasks.\" contains the word \"workflow\".\n\nThe change is minimal: only added the `name` field while preserving the existing `description` exactly as it was.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-out/ec-05-metadata/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-0/held-out/ec-05-metadata/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-05-metadata",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 5,
+            "final_answer": "The edit is complete and satisfies all the requirements:\n\n- **`name: delegation-workflow`** — present and matches the id constraint `[a-z0-9][a-z0-9-]*` (starts with a lowercase letter, followed by lowercase letters and hyphens only).\n- **`description`** — unchanged, still mentions \"workflow toolchain\".\n\nThe `name` becomes the directory name, while the `description` retains the source's wording about what the preset does. No other files were touched.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-out/ec-05-metadata/trace.jsonl",
+            "metrics": {
+              "api_calls": 5,
+              "api_latency_ms": 15500,
+              "tool_calls": 4,
+              "tool_call_retries": 0,
+              "prompt_tokens": 4254,
+              "completion_tokens": 436,
+              "total_tokens": 4690,
+              "usage_observations": 5,
+              "elapsed_ms": 15502,
+              "steps": 5
+            }
+          },
+          "behavior": {
+            "steps": 4,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The edit is complete and satisfies all the requirements:\n\n- **`name: delegation-workflow`** — present and matches the id constraint `[a-z0-9][a-z0-9-]*` (starts with a lowercase letter, followed by lowercase letters and hyphens only).\n- **`description`** — unchanged, still mentions \"workflow toolchain\".\n\nThe `name` becomes the directory name, while the `description` retains the source's wording about what the preset does. No other files were touched.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-out/ec-05-metadata/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v1/no-harness/rep-2/held-out/ec-05-metadata/trace.jsonl"
+        }
+      ]
+    }
+  ],
+  "generated_at": "2026-08-14T07:28:06.622Z"
+}
