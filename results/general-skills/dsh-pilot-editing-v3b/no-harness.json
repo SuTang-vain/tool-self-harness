@@ -1,0 +1,302 @@
+{
+  "run_id": "dsh-pilot-editing-v3b",
+  "variant": "no-harness",
+  "model_config": "/Users/tangyaoyue/DEV/tool-self-harness/.tmp-config-dsh-pilot.yaml",
+  "skill_repo": "none",
+  "suite": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/tasks/editing-cordis-compositions",
+  "repeats": 3,
+  "task_order_seed": 20260814,
+  "task_filter": [
+    "ec-06-split-realms",
+    "ec-07-double-violation"
+  ],
+  "held_in": {
+    "passes": 0,
+    "attempts": 0,
+    "pass_rate": 0,
+    "stable_tasks": [],
+    "stable_task_count": 0,
+    "task_count": 0
+  },
+  "held_out": {
+    "passes": 3,
+    "attempts": 6,
+    "pass_rate": 0.5,
+    "stable_tasks": [
+      "ec-07-double-violation"
+    ],
+    "stable_task_count": 1,
+    "task_count": 2
+  },
+  "metrics": {
+    "attempts": 6,
+    "usage_coverage": 1,
+    "api_calls": 50,
+    "api_latency_ms": 1102711,
+    "tool_calls": 58,
+    "tool_call_retries": 0,
+    "prompt_tokens": 91038,
+    "completion_tokens": 58286,
+    "total_tokens": 149324,
+    "elapsed_ms": 1110843,
+    "mean_tokens_per_attempt": 24887.333333333332,
+    "mean_tool_calls_per_attempt": 9.666666666666666,
+    "mean_elapsed_ms_per_attempt": 185140.5,
+    "tokens_per_successful_attempt": 49774.666666666664,
+    "tokens_per_reliable_task": 149324
+  },
+  "behavior": {
+    "loaded_skill_rate": 0,
+    "test_before_edit_rate": 0,
+    "test_after_edit_rate": 0
+  },
+  "per_task": [
+    {
+      "split": "held-out",
+      "task_id": "ec-06-split-realms",
+      "passes": 0,
+      "attempts": 3,
+      "stable_pass": false,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 0,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "group-contains: group \"delegation\" missing | row-in-group: group \"delegation\" missing",
+          "runner": {
+            "steps": 9,
+            "final_answer": "## Summary\n\n**Problem diagnosed:** The `agent.cordis.yml` preset published the workflow service (`workflow-worker-thread`) directly into the root realm — it was a top-level row. The contract checker flagged this with `row(s) published process-global service(s) [workflows]`, because no top-level group nested the provider.\n\nThere was also a latent second violation: the consumer `tool-workflow` sat at the same loose top level, so if the provider had been moved into a sub-realm without also moving the consumer, the checker would report `row 'tool-workflow' did not activate: waiting for service 'workflows'` (provider/consumer in different realms).\n\n**Fix (minimal change):** Wrapped both `workflow-worker-thread` (provider) and `tool-workflow` (consumer) as `children` of a single top-level realm group (`workflow-realm`). This pulls the service publication out of the root realm and keeps provider and consumer colocated so the consumer can resolve the service.\n\n**Verification:** `bash check.sh` now reports `check passed: no root-realm publications, no waiting rows` (exit 0). Only `agent.cordis.yml` was modified; `check.js`/`check.sh` are untouched.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-0/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 9,
+              "api_latency_ms": 255199,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 15602,
+              "completion_tokens": 13285,
+              "total_tokens": 28887,
+              "usage_observations": 9,
+              "elapsed_ms": 256972,
+              "steps": 9
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "## Summary\n\n**Problem diagnosed:** The `agent.cordis.yml` preset published the workflow service (`workflow-worker-thread`) directly into the root realm — it was a top-level row. The contract checker flagged this with `row(s) published process-global service(s) [workflows]`, because no top-level group nested the provider.\n\nThere was also a latent second violation: the consumer `tool-workflow` sat at the same loose top level, so if the provider had been moved into a sub-realm without also moving the consumer, the checker would report `row 'tool-workflow' did not activate: waiting for service 'workflows'` (provider/consumer in different realms).\n\n**Fix (minimal change):** Wrapped both `workflow-worker-thread` (provider) and `tool-workflow` (consumer) as `children` of a single top-level realm group (`workflow-realm`). This pulls the service publication out of the root realm and keeps provider and consumer colocated so the consumer can resolve the service.\n\n**Verification:** `bash check.sh` now reports `check passed: no root-realm publications, no waiting rows` (exit 0). Only `agent.cordis.yml` was modified; `check.js`/`check.sh` are untouched.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-0/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-0/held-out/ec-06-split-realms/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 2,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "group-contains: group \"delegation\" missing | row-in-group: group \"delegation\" missing",
+          "runner": {
+            "steps": 10,
+            "final_answer": "The task is complete. Here's a summary of what I did:\n\n## Diagnosis\n\n`bash check.sh` reported: `row(s) published process-global service(s) [workflows]`\n\nAnalyzing the contract checker (`check.js`), I found it verifies two things:\n1. A top-level group must exist whose **nested** rows (4-space indented) include `workflow-worker-thread` — so the workflow service is NOT published into the root/process-global realm.\n2. That same group must also nest `tool-workflow` — so the tool can find the `workflows` service in the same realm to activate (otherwise it would \"wait for service 'workflows'\").\n\nIn the original `agent.cordis.yml`, both `workflow-worker-thread` and `tool-workflow` sat at column 0 (the root realm). The checker's `topLevelRows` regex detected them as top-level, so the worker's `workflows` service was \"published process-global\" — a mount-audit violation.\n\n## Fix\n\nI wrapped both entries under a single dedicated realm container (`workflow-realm`), nesting them at 4-space indentation so they share a realm rather than polluting the root realm:\n\n- The `workflow-worker-thread` now publishes its `workflows` service into the `workflow-realm` (not the root realm).\n- The `tool-workflow` is in the same realm, so it can resolve the `workflows` service and activate.\n\nAll original content (names, configs) is preserved — only the structural grouping changed.\n\n## Verification\n\n`bash check.sh` now reports: `check passed: no root-realm publications, no waiting rows` (exit 0).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-2/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 10,
+              "api_latency_ms": 261830,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 21393,
+              "completion_tokens": 16066,
+              "total_tokens": 37459,
+              "usage_observations": 10,
+              "elapsed_ms": 263452,
+              "steps": 10
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The task is complete. Here's a summary of what I did:\n\n## Diagnosis\n\n`bash check.sh` reported: `row(s) published process-global service(s) [workflows]`\n\nAnalyzing the contract checker (`check.js`), I found it verifies two things:\n1. A top-level group must exist whose **nested** rows (4-space indented) include `workflow-worker-thread` — so the workflow service is NOT published into the root/process-global realm.\n2. That same group must also nest `tool-workflow` — so the tool can find the `workflows` service in the same realm to activate (otherwise it would \"wait for service 'workflows'\").\n\nIn the original `agent.cordis.yml`, both `workflow-worker-thread` and `tool-workflow` sat at column 0 (the root realm). The checker's `topLevelRows` regex detected them as top-level, so the worker's `workflows` service was \"published process-global\" — a mount-audit violation.\n\n## Fix\n\nI wrapped both entries under a single dedicated realm container (`workflow-realm`), nesting them at 4-space indentation so they share a realm rather than polluting the root realm:\n\n- The `workflow-worker-thread` now publishes its `workflows` service into the `workflow-realm` (not the root realm).\n- The `tool-workflow` is in the same realm, so it can resolve the `workflows` service and activate.\n\nAll original content (names, configs) is preserved — only the structural grouping changed.\n\n## Verification\n\n`bash check.sh` now reports: `check passed: no root-realm publications, no waiting rows` (exit 0).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-2/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-2/held-out/ec-06-split-realms/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 1,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "group-contains: group \"delegation\" missing | row-in-group: group \"delegation\" missing",
+          "runner": {
+            "steps": 11,
+            "final_answer": "Done. The contract checker now passes (`exit=0`).\n\n**Diagnosis:** Both `workflow-worker-thread` (the `workflows` service provider) and `tool-workflow` (which depends on the `workflows` service) were published as top-level rows, i.e. into the root realm. The checker flags a process-global service published to the root realm.\n\n**Fix:** Introduced a single non-root `workflows-realm` row and nested both the worker-thread provider and the `tool-workflow` consumer under its `members`, so the service is published only inside that realm and the tool can find it within the same realm — no root-realm publication, no waiting row.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-1/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 11,
+              "api_latency_ms": 446404,
+              "tool_calls": 11,
+              "tool_call_retries": 0,
+              "prompt_tokens": 21633,
+              "completion_tokens": 24611,
+              "total_tokens": 46244,
+              "usage_observations": 11,
+              "elapsed_ms": 448794,
+              "steps": 11
+            }
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Done. The contract checker now passes (`exit=0`).\n\n**Diagnosis:** Both `workflow-worker-thread` (the `workflows` service provider) and `tool-workflow` (which depends on the `workflows` service) were published as top-level rows, i.e. into the root realm. The checker flags a process-global service published to the root realm.\n\n**Fix:** Introduced a single non-root `workflows-realm` row and nested both the worker-thread provider and the `tool-workflow` consumer under its `members`, so the service is published only inside that realm and the tool can find it within the same realm — no root-realm publication, no waiting row.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-1/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-1/held-out/ec-06-split-realms/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "ec-07-double-violation",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 5,
+            "final_answer": "The fix passes the audit. \n\nThe violation was that two top-level groups (`delegation` and `delegation-copy`) each registered the `workflow-worker-thread` service, causing the \"registered more than once\" violation. I removed the duplicate `delegation-copy` block, leaving the original `delegation` group intact. `bash check.sh` now reports `check passed: service registered exactly once`.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-2/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 5,
+              "api_latency_ms": 26160,
+              "tool_calls": 7,
+              "tool_call_retries": 0,
+              "prompt_tokens": 7534,
+              "completion_tokens": 873,
+              "total_tokens": 8407,
+              "usage_observations": 5,
+              "elapsed_ms": 26430,
+              "steps": 5
+            }
+          },
+          "behavior": {
+            "steps": 7,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix passes the audit. \n\nThe violation was that two top-level groups (`delegation` and `delegation-copy`) each registered the `workflow-worker-thread` service, causing the \"registered more than once\" violation. I removed the duplicate `delegation-copy` block, leaving the original `delegation` group intact. `bash check.sh` now reports `check passed: service registered exactly once`.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-2/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-2/held-out/ec-07-double-violation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The task is complete. \n\n## Summary\n\n**Diagnosis:** The bundled contract checker (`check.sh`) reported `service 'workflows' has been registered more than once`. Inspection of `agent.cordis.yml` revealed two top-level groups — `delegation` and `delegation-copy` — both registering the `workflow-worker-thread` provider under `isolate.workflows: true`.\n\n**Fix:** Removed the entire duplicate `delegation-copy` block, which was a redundant re-registration of the workflows provider. The original `delegation` group (which also includes `tool-workflow`) is preserved unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: service registered exactly once` (exit code 0). The diff is minimal — only the duplicate block was removed, leaving everything else intact.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-1/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 28596,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 10488,
+              "completion_tokens": 850,
+              "total_tokens": 11338,
+              "usage_observations": 7,
+              "elapsed_ms": 29577,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The task is complete. \n\n## Summary\n\n**Diagnosis:** The bundled contract checker (`check.sh`) reported `service 'workflows' has been registered more than once`. Inspection of `agent.cordis.yml` revealed two top-level groups — `delegation` and `delegation-copy` — both registering the `workflow-worker-thread` provider under `isolate.workflows: true`.\n\n**Fix:** Removed the entire duplicate `delegation-copy` block, which was a redundant re-registration of the workflows provider. The original `delegation` group (which also includes `tool-workflow`) is preserved unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: service registered exactly once` (exit code 0). The diff is minimal — only the duplicate block was removed, leaving everything else intact.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-1/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-1/held-out/ec-07-double-violation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 8,
+            "final_answer": "The task is complete. \n\n## Summary\n\nThe mount audit was failing because the `workflows` service (registered via the `workflow-worker-thread` provider) was being registered twice in `agent.cordis.yml`:\n1. Once in the `delegation` group block\n2. Again in a duplicate `delegation-copy` group block\n\nThe contract checker detected this and reported: `service 'workflows' has been registered more than once`.\n\n### Fix\nI removed the duplicate `delegation-copy` block entirely, leaving the single `delegation` group that registers `workflow-worker-thread` exactly once (alongside the unrelated `tool-workflow` entry). This is the smallest correct change — all other content is left unchanged.\n\n### Verification\n`bash check.sh` now reports: `check passed: service registered exactly once` (exit code 0).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-0/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 84522,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 14388,
+              "completion_tokens": 2601,
+              "total_tokens": 16989,
+              "usage_observations": 8,
+              "elapsed_ms": 85618,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The task is complete. \n\n## Summary\n\nThe mount audit was failing because the `workflows` service (registered via the `workflow-worker-thread` provider) was being registered twice in `agent.cordis.yml`:\n1. Once in the `delegation` group block\n2. Again in a duplicate `delegation-copy` group block\n\nThe contract checker detected this and reported: `service 'workflows' has been registered more than once`.\n\n### Fix\nI removed the duplicate `delegation-copy` block entirely, leaving the single `delegation` group that registers `workflow-worker-thread` exactly once (alongside the unrelated `tool-workflow` entry). This is the smallest correct change — all other content is left unchanged.\n\n### Verification\n`bash check.sh` now reports: `check passed: service registered exactly once` (exit code 0).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-0/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3b/no-harness/rep-0/held-out/ec-07-double-violation/trace.jsonl"
+        }
+      ]
+    }
+  ],
+  "generated_at": "2026-08-14T09:15:51.330Z"
+}

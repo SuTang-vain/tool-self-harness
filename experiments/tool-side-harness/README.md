@@ -27,7 +27,7 @@ positive and negative results are retained as observations to be explained by th
 | WP0 | Lock prior evidence | complete | compact, expanded, replication, and ablation results mapped without overclaiming |
 | WP1 | Build category-balanced sample pool | v2 registry frozen; Wave-1 candidates shortlisted; DSH self-target wave registered (`registries/sample-pool-dsh-v1.json`) | at least 2 qualified independent targets per exploratory category |
 | WP2 | Structural feature coding | rubric frozen; historical anchors coded provisionally | feature vectors frozen before new candidate outcomes |
-| WP3 | Calibrate 4D baselines | Path B qualified/evolved; Path C formal stopped at per-task safety; DSH pilot v1/v2 executed — held-in discriminates in both suites, held-out v3 pending | diagnostic + formal sensitivity and Q3 coverage |
+| WP3 | Calibrate 4D baselines | Path B qualified/evolved; Path C formal stopped at per-task safety; DSH pilots v1–v3 complete — both targets pilot-qualified on all four partitions, formal baseline next | diagnostic + formal sensitivity and Q3 coverage |
 | WP4 | Run category-conditioned evolution | next target is fixture-authoring only | one frozen bounded lineage per qualified target |
 | WP5 | Mechanism and replication | RQ3/RQ4 deferred until independent targets qualify | preselected ablation and category replication |
 | WP6 | Evaluate utility | Q4 deferred | independent human/expert protocol |
@@ -45,12 +45,13 @@ positive and negative results are retained as observations to be explained by th
 - **Debugging diagnostic boundary:** the new `debugging-and-error-recovery` suite is process-sensitive
   (official-full tests before first edit in 9/9 attempts versus 7/9 minimal and 6/9 no-skill), but
   minimal reaches the 6/6 held-in ceiling; it stops before formal baseline and candidate generation.
-- **DSH self-targets (E0, pilot v1/v2):** after the v2 fixture redesign both DSH suites discriminate on
-  held-in — editing 9/9 → 4/9 → 3/9 (anchors ec-01 3/3→1/3→0/3, ec-03 3/3→0/3→0/3), headless 8/9 →
-  6/9 → 5/9 (anchor hp-01 2/3→0/3→0/3). Both held-out partitions remain ceiling-saturated in every
-  variant and need a v3 fixture pass. Methodological findings (harness consultation gating,
-  checker feedback trap, over-specification ceiling) are codified in
-  `protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md`.
+- **DSH self-targets (E0, pilots v1–v3):** both DSH suites now discriminate on every partition —
+  editing held-in 9/9 → 3/9 → 3/9, held-out 6/6 → 3/6 → 3/6; headless held-in 8/9 → 3/9 → 3/9,
+  held-out 6/6 → 0/6 → 1/6 (anchors in `rounds/dsh-pilot-v3`). Both targets are pilot-qualified;
+  the formal 4D baseline is next. Methodological findings (harness consultation gating, checker
+  feedback trap, over-specification ceiling, and run_command workspace-integrity enforcement) are
+  codified in `protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md` and
+  `rounds/dsh-pilot-v3/integrity-finding-2026-08-14.json`.
 - **Not supported yet:** a universal four-class taxonomy, universal fitting paths, general
   Self-Harness improvement, Path C/D effectiveness, cross-model generality, or human utility.
 
@@ -67,8 +68,8 @@ positive and negative results are retained as observations to be explained by th
 5. Add a knowledge-rule Skill with deep references and measurable context-loading behavior.
 6. DSH self-targets entered the sample pool (`registries/sample-pool-dsh-v1.json`): the
    knowledge-rule `editing-cordis-compositions` skill and the composition-unit `headless-preset`
-   are piloted (`rounds/dsh-pilot-v1`, `rounds/dsh-pilot-v2`); held-in discriminates, held-out
-   v3 redesign is the next fixture pass.
+   are piloted (`rounds/dsh-pilot-v1` … `rounds/dsh-pilot-v3`) and pilot-qualified on all four
+   partitions; the formal 4D baseline is the next stage.
 
 ### Phase 2 — 4D baseline calibration
 

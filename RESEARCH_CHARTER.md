@@ -209,19 +209,26 @@ specified.
    pass the same task vector; minimal reaches the held-in ceiling, so the suite stops at redesign.
 7. **RQ4 is not measured.** GLM-5.2 is the only active model; cross-model expansion remains
    deferred until the category-balanced GLM sample is qualified.
-8. **DSH self-targets show held-in benchmark sensitivity (E0, pilot v1/v2).** The
+8. **DSH self-targets show held-in and held-out benchmark sensitivity (E0, pilots v1–v3).** The
    `editing-cordis-compositions` target (knowledge-rule-policy, the second Path C data point in
-   qualification) discriminates on held-in — 9/9 → 4/9 → 3/9 across official-full/minimal/
-   no-harness, with anchors ec-01 (3/3→1/3→0/3) and ec-03 (3/3→0/3→0/3); the `headless-preset`
-   target (atomic-validation, the first composition-unit target) shows 8/9 → 6/9 → 5/9 with
-   anchor hp-01 (2/3→0/3→0/3). Both suites' held-out partitions remain ceiling-saturated in
-   every variant and require a third fixture pass before formal qualification.
+   qualification) discriminates on every partition — held-in 9/9 → 3/9 → 3/9 across
+   official-full/minimal/no-harness (anchors ec-01, ec-03 3/3→0/3→0/3), held-out 6/6 → 3/6 → 3/6
+   (anchor ec-06); the `headless-preset` target (atomic-validation, the first composition-unit
+   target) shows held-in 8/9 → 3/9 → 3/9 (anchors hp-01, hp-03) and held-out 6/6 → 0/6 → 1/6
+   (silent reference-restoration with non-standard `eval-pin` values). Both targets are
+   pilot-qualified; the formal 4D baseline is the next stage.
 9. **Fixture-authoring discipline derived (E0, methodological).** Three findings are codified in
    `experiments/tool-side-harness/protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md`: task text that
    states the fix erases all variant discrimination; harness content is consumed only when the
    task explicitly directs consultation (official-full `loaded_skill_rate` 0.0 → 0.8);
    bounds-only checkers trap models on any in-bounds value and must instead direct restoration
    to the harness reference.
+10. **Workspace integrity is a runner property, not a prompt property (E0, methodological).**
+    Agents escape honor-system workspace isolation through unrestricted `run_command` shells and
+    read reference/grader files outside the workspace; held-out hiding must be enforced in the
+    runner (absolute-path/traversal/home-expansion refusal). Hardening materially changed the
+    headless held-out result (minimal 6/6 → 0/6). This extends the discipline protocol and is
+    recorded in `experiments/tool-side-harness/rounds/dsh-pilot-v3/integrity-finding-2026-08-14.json`.
 
 ## Active work packages
 

@@ -1,0 +1,303 @@
+{
+  "run_id": "dsh-pilot-editing-v3",
+  "variant": "minimal",
+  "model_config": "/Users/tangyaoyue/DEV/tool-self-harness/.tmp-config-dsh-pilot.yaml",
+  "skill_repo": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/targets/editing-cordis-compositions/minimal",
+  "suite": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/tasks/editing-cordis-compositions",
+  "repeats": 3,
+  "task_order_seed": 20260814,
+  "task_filter": [
+    "ec-06-split-realms",
+    "ec-07-double-violation"
+  ],
+  "held_in": {
+    "passes": 0,
+    "attempts": 0,
+    "pass_rate": 0,
+    "stable_tasks": [],
+    "stable_task_count": 0,
+    "task_count": 0
+  },
+  "held_out": {
+    "passes": 6,
+    "attempts": 6,
+    "pass_rate": 1,
+    "stable_tasks": [
+      "ec-06-split-realms",
+      "ec-07-double-violation"
+    ],
+    "stable_task_count": 2,
+    "task_count": 2
+  },
+  "metrics": {
+    "attempts": 6,
+    "usage_coverage": 1,
+    "api_calls": 48,
+    "api_latency_ms": 480810,
+    "tool_calls": 73,
+    "tool_call_retries": 0,
+    "prompt_tokens": 112337,
+    "completion_tokens": 23972,
+    "total_tokens": 136309,
+    "elapsed_ms": 484752,
+    "mean_tokens_per_attempt": 22718.166666666668,
+    "mean_tool_calls_per_attempt": 12.166666666666666,
+    "mean_elapsed_ms_per_attempt": 80792,
+    "tokens_per_successful_attempt": 22718.166666666668,
+    "tokens_per_reliable_task": 68154.5
+  },
+  "behavior": {
+    "loaded_skill_rate": 1,
+    "test_before_edit_rate": 0,
+    "test_after_edit_rate": 0
+  },
+  "per_task": [
+    {
+      "split": "held-out",
+      "task_id": "ec-06-split-realms",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 11,
+            "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Diagnosis.** The composition's `workflows` realm was split across two groups. Both top-level groups declared `isolate: workflows: true`, but because they were *separate* groups each establishing its own isolate realm, the consumer (`tool-workflow`) lived in a different realm from the provider (`workflow-worker-thread`). Per the skill guidance, a service publisher and its consumers must sit together behind one `isolate` realm; the split meant the consumer never saw the published `workflows` service and never activated.\n\n**Fix (minimal change).** Merged the consumer into the provider's group — moving the `tool-workflow` row into the `delegation` group's `config` (which already had the `workflows` isolate realm) and removing the now-redundant second group (`workflows-consumer`). Everything else is unchanged.\n\n**Verification.** `bash check.sh` now reports `check passed: no waiting rows` (exit 0). The diff shows only the consolidation — two separate top-level groups collapsed into one shared `workflows` isolate realm with both rows nested under it.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-0/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 11,
+              "api_latency_ms": 100952,
+              "tool_calls": 18,
+              "tool_call_retries": 0,
+              "prompt_tokens": 29435,
+              "completion_tokens": 4912,
+              "total_tokens": 34347,
+              "usage_observations": 11,
+              "elapsed_ms": 102013,
+              "steps": 11
+            }
+          },
+          "behavior": {
+            "steps": 18,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Diagnosis.** The composition's `workflows` realm was split across two groups. Both top-level groups declared `isolate: workflows: true`, but because they were *separate* groups each establishing its own isolate realm, the consumer (`tool-workflow`) lived in a different realm from the provider (`workflow-worker-thread`). Per the skill guidance, a service publisher and its consumers must sit together behind one `isolate` realm; the split meant the consumer never saw the published `workflows` service and never activated.\n\n**Fix (minimal change).** Merged the consumer into the provider's group — moving the `tool-workflow` row into the `delegation` group's `config` (which already had the `workflows` isolate realm) and removing the now-redundant second group (`workflows-consumer`). Everything else is unchanged.\n\n**Verification.** `bash check.sh` now reports `check passed: no waiting rows` (exit 0). The diff shows only the consolidation — two separate top-level groups collapsed into one shared `workflows` isolate realm with both rows nested under it.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-0/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-0/held-out/ec-06-split-realms/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Problem diagnosed:** The `workflows` realm was split across two separate `cordis:group` blocks. Per the Cordis composition contract, *\"a row that publishes a service must sit behind an `isolate` realm together with its consumers.\"*\n\n- The provider `workflow-worker-thread` lived in the `delegation` group.\n- The consumer `tool-workflow` lived in a separate `workflows-consumer` group.\n\nAlthough both groups declared `isolate: workflows: true`, they were distinct groups, so the consumer never saw the provider's published service and never activated — `check.sh` reported `row 'tool-workflow' did not activate: waiting for service 'workflows'`.\n\n**Fix applied (minimal change):** Moved the `tool-workflow` consumer row into the same `delegation` group as the provider `workflow-worker-thread`, and removed the now-redundant `workflows-consumer` group. The two rows now share a single `workflows` isolate realm, so the consumer activates.\n\n**Verification:** `bash check.sh` now reports `check passed: no waiting rows` (exit 0). The diff shows only the consolidation of the two groups, with everything else left unchanged.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-2/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 57159,
+              "tool_calls": 11,
+              "tool_call_retries": 0,
+              "prompt_tokens": 14711,
+              "completion_tokens": 2022,
+              "total_tokens": 16733,
+              "usage_observations": 7,
+              "elapsed_ms": 57759,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete and verified.\n\n## Summary\n\n**Problem diagnosed:** The `workflows` realm was split across two separate `cordis:group` blocks. Per the Cordis composition contract, *\"a row that publishes a service must sit behind an `isolate` realm together with its consumers.\"*\n\n- The provider `workflow-worker-thread` lived in the `delegation` group.\n- The consumer `tool-workflow` lived in a separate `workflows-consumer` group.\n\nAlthough both groups declared `isolate: workflows: true`, they were distinct groups, so the consumer never saw the provider's published service and never activated — `check.sh` reported `row 'tool-workflow' did not activate: waiting for service 'workflows'`.\n\n**Fix applied (minimal change):** Moved the `tool-workflow` consumer row into the same `delegation` group as the provider `workflow-worker-thread`, and removed the now-redundant `workflows-consumer` group. The two rows now share a single `workflows` isolate realm, so the consumer activates.\n\n**Verification:** `bash check.sh` now reports `check passed: no waiting rows` (exit 0). The diff shows only the consolidation of the two groups, with everything else left unchanged.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-2/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-2/held-out/ec-06-split-realms/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The fix is complete. \n\n## Summary\n\n**Problem:** The `tool-workflow` consumer row never activated because the `workflows` realm it needed was split across two groups. The provider (`workflow-worker-thread`) lived in one `cordis:group` with `isolate: workflows: true`, while the consumer lived in a *separate* `cordis:group` that declared its *own* `isolate: workflows: true`. Two groups each declaring an isolated realm of the same name create two distinct realms — they don't share — so the consumer's `workflows` service dependency was never satisfied.\n\n**Fix:** Moved the `tool-workflow` consumer row into the provider's group (`delegation`), so both the publisher and its consumer now sit behind one shared `workflows` isolate realm. This follows the skill's rule that *a row that publishes a service must sit behind an `isolate` realm together with its consumers*.\n\nThe change is minimal — only the consumer row was relocated into the existing provider group and the now-redundant second group was removed. `bash check.sh` now reports `check passed: no waiting rows`.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-1/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 45152,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 13745,
+              "completion_tokens": 1982,
+              "total_tokens": 15727,
+              "usage_observations": 7,
+              "elapsed_ms": 46003,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete. \n\n## Summary\n\n**Problem:** The `tool-workflow` consumer row never activated because the `workflows` realm it needed was split across two groups. The provider (`workflow-worker-thread`) lived in one `cordis:group` with `isolate: workflows: true`, while the consumer lived in a *separate* `cordis:group` that declared its *own* `isolate: workflows: true`. Two groups each declaring an isolated realm of the same name create two distinct realms — they don't share — so the consumer's `workflows` service dependency was never satisfied.\n\n**Fix:** Moved the `tool-workflow` consumer row into the provider's group (`delegation`), so both the publisher and its consumer now sit behind one shared `workflows` isolate realm. This follows the skill's rule that *a row that publishes a service must sit behind an `isolate` realm together with its consumers*.\n\nThe change is minimal — only the consumer row was relocated into the existing provider group and the now-redundant second group was removed. `bash check.sh` now reports `check passed: no waiting rows`.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-1/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-1/held-out/ec-06-split-realms/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "ec-07-double-violation",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The fix is complete. The diff confirms the smallest correct change addressing both violations:\n\n**Violation 1 — Root-realm publication**: Moved `tool-result-pruner` (the provider of the `toolResultPruner` service) from a top-level row into the `compaction` group's `config` block, so it now sits behind the `isolate` realm (which already declared `toolResultPruner: true`) rather than publishing process-globally into root.\n\n**Violation 2 — Consumer left outside the group**: Moved `compaction-basic` (the consumer waiting on `toolResultPruner`) from a loose top-level row into the same `compaction` group's `config` block, so the consumer now lives inside the group that owns its service.\n\nEverything else is unchanged — the header comment, the `isolate` realm declaration, `command-compact`, and the `thresholdChars: 8192` config are all preserved. `bash check.sh` now reports: `check passed: no root-realm publications, no waiting rows`.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-2/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 102634,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 15536,
+              "completion_tokens": 6126,
+              "total_tokens": 21662,
+              "usage_observations": 7,
+              "elapsed_ms": 103158,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete. The diff confirms the smallest correct change addressing both violations:\n\n**Violation 1 — Root-realm publication**: Moved `tool-result-pruner` (the provider of the `toolResultPruner` service) from a top-level row into the `compaction` group's `config` block, so it now sits behind the `isolate` realm (which already declared `toolResultPruner: true`) rather than publishing process-globally into root.\n\n**Violation 2 — Consumer left outside the group**: Moved `compaction-basic` (the consumer waiting on `toolResultPruner`) from a loose top-level row into the same `compaction` group's `config` block, so the consumer now lives inside the group that owns its service.\n\nEverything else is unchanged — the header comment, the `isolate` realm declaration, `command-compact`, and the `thresholdChars: 8192` config are all preserved. `bash check.sh` now reports: `check passed: no root-realm publications, no waiting rows`.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-2/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-2/held-out/ec-07-double-violation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 8,
+            "final_answer": "The composition is fixed and the contract checker passes. Let me summarize what was done:\n\n## Diagnosis\n\nThe bundled contract checker (`check.sh`) reported **three** violation messages stemming from **two** root-cause contract breaches:\n\n1. **Provider publishing into the root realm**: `tool-result-pruner` (the producer of the `toolResultPruner` service) was a top-level row. Per the skill docs, *\"a row that publishes a service must sit behind an `isolate` realm together with its consumers.\"* The `compaction` group already declared `isolate.toolResultPruner: true`, so the producer belonged *inside* that group, not at the root.\n\n2. **Consumer left outside the owning group**: `compaction-basic` consumes `toolResultPruner`, but it was also a top-level row — outside the `compaction` group that owns that service. The checker flagged it as \"did not activate: waiting for service 'toolResultPruner'\", because the consumer can only see a service published under the same isolate realm.\n\n## Repair\n\nThe smallest correct change moved both rows *into* the `compaction` group's `config` list (the producer `tool-result-pruner` first, then `command-compact`, then the consumer `compaction-basic`), removing them from the top level. No other content (names, configs, the `isolate` declaration) changed.\n\n## Verification\n\n`bash check.sh` now reports: `check passed: no root-realm publications, no waiting rows` (exit 0).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-1/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 105973,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 19447,
+              "completion_tokens": 5522,
+              "total_tokens": 24969,
+              "usage_observations": 8,
+              "elapsed_ms": 106409,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The composition is fixed and the contract checker passes. Let me summarize what was done:\n\n## Diagnosis\n\nThe bundled contract checker (`check.sh`) reported **three** violation messages stemming from **two** root-cause contract breaches:\n\n1. **Provider publishing into the root realm**: `tool-result-pruner` (the producer of the `toolResultPruner` service) was a top-level row. Per the skill docs, *\"a row that publishes a service must sit behind an `isolate` realm together with its consumers.\"* The `compaction` group already declared `isolate.toolResultPruner: true`, so the producer belonged *inside* that group, not at the root.\n\n2. **Consumer left outside the owning group**: `compaction-basic` consumes `toolResultPruner`, but it was also a top-level row — outside the `compaction` group that owns that service. The checker flagged it as \"did not activate: waiting for service 'toolResultPruner'\", because the consumer can only see a service published under the same isolate realm.\n\n## Repair\n\nThe smallest correct change moved both rows *into* the `compaction` group's `config` list (the producer `tool-result-pruner` first, then `command-compact`, then the consumer `compaction-basic`), removing them from the top level. No other content (names, configs, the `isolate` declaration) changed.\n\n## Verification\n\n`bash check.sh` now reports: `check passed: no root-realm publications, no waiting rows` (exit 0).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-1/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-1/held-out/ec-07-double-violation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 8,
+            "final_answer": "The fix is complete. Let me summarize the diagnosis and repair.\n\n## Diagnosis\n\nThe `check.sh` contract checker reported violations stemming from two root-cause failures:\n\n1. **Provider published into the root realm**: The `tool-result-pruner` row was a *top-level* row, so it published the `toolResultPruner` service into the root (process-global) realm. The mount contract requires a preset service to sit behind an `isolate` realm together with its consumers.\n\n2. **Consumer left outside its owning group**: The `compaction-basic` row was also a *top-level* row, sitting outside the `compaction` group that owns the `toolResultPruner` service it waits on. With the provider gone from its expected realm, the consumer was left waiting.\n\n## Repair\n\nBoth rows were moved *inside* the existing `compaction` group's `config:` block (the group already declares `isolate: { compaction: true, toolResultPruner: true }`), nesting them as `command-compact` already was:\n\n- `tool-result-pruner` → nested under `compaction.config`, so it publishes `toolResultPruner` behind the isolate realm instead of the root realm.\n- `compaction-basic` → nested under `compaction.config`, so the consumer sits in the group that owns its service.\n\nEverything else (the `compaction` group definition, the `isolate` realm, the `command-compact` row, all configs) is unchanged.\n\n## Verification\n\n`bash check.sh` now reports:\n\n```\ncheck passed: no root-realm publications, no waiting rows\n```",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-0/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 68940,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 19463,
+              "completion_tokens": 3408,
+              "total_tokens": 22871,
+              "usage_observations": 8,
+              "elapsed_ms": 69410,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete. Let me summarize the diagnosis and repair.\n\n## Diagnosis\n\nThe `check.sh` contract checker reported violations stemming from two root-cause failures:\n\n1. **Provider published into the root realm**: The `tool-result-pruner` row was a *top-level* row, so it published the `toolResultPruner` service into the root (process-global) realm. The mount contract requires a preset service to sit behind an `isolate` realm together with its consumers.\n\n2. **Consumer left outside its owning group**: The `compaction-basic` row was also a *top-level* row, sitting outside the `compaction` group that owns the `toolResultPruner` service it waits on. With the provider gone from its expected realm, the consumer was left waiting.\n\n## Repair\n\nBoth rows were moved *inside* the existing `compaction` group's `config:` block (the group already declares `isolate: { compaction: true, toolResultPruner: true }`), nesting them as `command-compact` already was:\n\n- `tool-result-pruner` → nested under `compaction.config`, so it publishes `toolResultPruner` behind the isolate realm instead of the root realm.\n- `compaction-basic` → nested under `compaction.config`, so the consumer sits in the group that owns its service.\n\nEverything else (the `compaction` group definition, the `isolate` realm, the `command-compact` row, all configs) is unchanged.\n\n## Verification\n\n`bash check.sh` now reports:\n\n```\ncheck passed: no root-realm publications, no waiting rows\n```",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-0/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/minimal/rep-0/held-out/ec-07-double-violation/trace.jsonl"
+        }
+      ]
+    }
+  ],
+  "generated_at": "2026-08-14T08:45:17.168Z"
+}

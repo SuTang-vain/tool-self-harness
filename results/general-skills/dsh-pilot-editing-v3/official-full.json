@@ -1,0 +1,303 @@
+{
+  "run_id": "dsh-pilot-editing-v3",
+  "variant": "official-full",
+  "model_config": "/Users/tangyaoyue/DEV/tool-self-harness/.tmp-config-dsh-pilot.yaml",
+  "skill_repo": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/targets/editing-cordis-compositions/full",
+  "suite": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/tasks/editing-cordis-compositions",
+  "repeats": 3,
+  "task_order_seed": 20260814,
+  "task_filter": [
+    "ec-06-split-realms",
+    "ec-07-double-violation"
+  ],
+  "held_in": {
+    "passes": 0,
+    "attempts": 0,
+    "pass_rate": 0,
+    "stable_tasks": [],
+    "stable_task_count": 0,
+    "task_count": 0
+  },
+  "held_out": {
+    "passes": 6,
+    "attempts": 6,
+    "pass_rate": 1,
+    "stable_tasks": [
+      "ec-06-split-realms",
+      "ec-07-double-violation"
+    ],
+    "stable_task_count": 2,
+    "task_count": 2
+  },
+  "metrics": {
+    "attempts": 6,
+    "usage_coverage": 1,
+    "api_calls": 60,
+    "api_latency_ms": 540556,
+    "tool_calls": 82,
+    "tool_call_retries": 0,
+    "prompt_tokens": 296151,
+    "completion_tokens": 26027,
+    "total_tokens": 322178,
+    "elapsed_ms": 546891,
+    "mean_tokens_per_attempt": 53696.333333333336,
+    "mean_tool_calls_per_attempt": 13.666666666666666,
+    "mean_elapsed_ms_per_attempt": 91148.5,
+    "tokens_per_successful_attempt": 53696.333333333336,
+    "tokens_per_reliable_task": 161089
+  },
+  "behavior": {
+    "loaded_skill_rate": 1,
+    "test_before_edit_rate": 0,
+    "test_after_edit_rate": 0
+  },
+  "per_task": [
+    {
+      "split": "held-out",
+      "task_id": "ec-06-split-realms",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 15,
+            "final_answer": "Done. The diff is now minimal and the comment line (with its em-dash) is preserved byte-for-byte.\n\n## Summary\n\n**Diagnosis.** The composition's `workflows` service realm was *split across two groups*. `workflow-worker-thread` (the provider) lived in the `delegation` group under `isolate: workflows: true`, while `tool-workflow` (the consumer) lived in a *separate* `workflows-consumer` group, also declaring `isolate: workflows: true`. Per the Cordis skill, `true` declares a realm *private to that group/session* — it does not pool instances across groups. So the consumer resolved a different, empty realm than the one the provider populated, and never activated. The contract checker reported exactly this: `row 'tool-workflow' did not activate: waiting for service 'workflows'`.\n\n**Fix.** The skill's worked example (`standard`'s `delegation` group) shows the rule: wrap the provider **and every consumer that reaches it** in *one* group carrying one `isolate` realm. I removed the redundant `workflows-consumer` group and merged its `tool-workflow` row into the existing `delegation` group, so both rows share a single `workflows` realm.\n\n**Verification.** `bash check.sh` reports `check passed: no waiting rows`. The only change is the structural merge; the file header and everything else are unchanged.\n\n(One subtlety worth noting: my first `write_file` attempt silently downgraded the em-dash in the comment to a plain hyphen, producing a spurious line-1 diff. I restored the original and used `edit_file` for a byte-exact minimal change instead.)",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-0/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 15,
+              "api_latency_ms": 109559,
+              "tool_calls": 20,
+              "tool_call_retries": 0,
+              "prompt_tokens": 83756,
+              "completion_tokens": 4727,
+              "total_tokens": 88483,
+              "usage_observations": 15,
+              "elapsed_ms": 111558,
+              "steps": 15
+            }
+          },
+          "behavior": {
+            "steps": 20,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Done. The diff is now minimal and the comment line (with its em-dash) is preserved byte-for-byte.\n\n## Summary\n\n**Diagnosis.** The composition's `workflows` service realm was *split across two groups*. `workflow-worker-thread` (the provider) lived in the `delegation` group under `isolate: workflows: true`, while `tool-workflow` (the consumer) lived in a *separate* `workflows-consumer` group, also declaring `isolate: workflows: true`. Per the Cordis skill, `true` declares a realm *private to that group/session* — it does not pool instances across groups. So the consumer resolved a different, empty realm than the one the provider populated, and never activated. The contract checker reported exactly this: `row 'tool-workflow' did not activate: waiting for service 'workflows'`.\n\n**Fix.** The skill's worked example (`standard`'s `delegation` group) shows the rule: wrap the provider **and every consumer that reaches it** in *one* group carrying one `isolate` realm. I removed the redundant `workflows-consumer` group and merged its `tool-workflow` row into the existing `delegation` group, so both rows share a single `workflows` realm.\n\n**Verification.** `bash check.sh` reports `check passed: no waiting rows`. The only change is the structural merge; the file header and everything else are unchanged.\n\n(One subtlety worth noting: my first `write_file` attempt silently downgraded the em-dash in the comment to a plain hyphen, producing a spurious line-1 diff. I restored the original and used `edit_file` for a byte-exact minimal change instead.)",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-0/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-0/held-out/ec-06-split-realms/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 12,
+            "final_answer": "The diff is now minimal and the comment (including the em-dash) is preserved byte-for-byte. The only change is:\n\n- Removed the separate `workflows-consumer` group (which had its own isolated `workflows` realm, splitting it from the provider's realm).\n- Moved the `tool-workflow` consumer row into the `delegation` group, where the `workflow-worker-thread` provider publishes the `workflows` service — both now share the single `isolate: workflows: true` realm.\n\n## Summary\n\n**Diagnosis:** The composition had its `workflows` realm split across two groups. The provider `workflow-worker-thread` (which publishes the `workflows` service) sat in the `delegation` group, while its consumer `tool-workflow` sat in a separate `workflows-consumer` group. Each `isolate: workflows: true` creates a *private* realm per group, so the consumer resolved into an empty realm and never activated — `bash check.sh` reported `row 'tool-workflow' did not activate: waiting for service 'workflows'`.\n\n**Fix (per the skill's realm rule — \"wrap the provider *and every consumer that reaches it* in one group carrying an `isolate` realm\"):** moved `tool-workflow` into the `delegation` group alongside its provider and removed the now-empty `workflows-consumer` group. The header comment is unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: no waiting rows`.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-2/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 12,
+              "api_latency_ms": 69863,
+              "tool_calls": 15,
+              "tool_call_retries": 0,
+              "prompt_tokens": 66657,
+              "completion_tokens": 2365,
+              "total_tokens": 69022,
+              "usage_observations": 12,
+              "elapsed_ms": 71246,
+              "steps": 12
+            }
+          },
+          "behavior": {
+            "steps": 15,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The diff is now minimal and the comment (including the em-dash) is preserved byte-for-byte. The only change is:\n\n- Removed the separate `workflows-consumer` group (which had its own isolated `workflows` realm, splitting it from the provider's realm).\n- Moved the `tool-workflow` consumer row into the `delegation` group, where the `workflow-worker-thread` provider publishes the `workflows` service — both now share the single `isolate: workflows: true` realm.\n\n## Summary\n\n**Diagnosis:** The composition had its `workflows` realm split across two groups. The provider `workflow-worker-thread` (which publishes the `workflows` service) sat in the `delegation` group, while its consumer `tool-workflow` sat in a separate `workflows-consumer` group. Each `isolate: workflows: true` creates a *private* realm per group, so the consumer resolved into an empty realm and never activated — `bash check.sh` reported `row 'tool-workflow' did not activate: waiting for service 'workflows'`.\n\n**Fix (per the skill's realm rule — \"wrap the provider *and every consumer that reaches it* in one group carrying an `isolate` realm\"):** moved `tool-workflow` into the `delegation` group alongside its provider and removed the now-empty `workflows-consumer` group. The header comment is unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: no waiting rows`.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-2/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-2/held-out/ec-06-split-realms/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 13,
+            "final_answer": "The check passes and the diff is now surgical — only the realm split is repaired, with the em dash on line 1 preserved.\n\n## Summary\n\n**Diagnosis:** The composition had the `workflows` service realm split across two groups. The provider (`workflow-worker-thread`) lived in the `delegation` group with `isolate: { workflows: true }`, while its consumer (`tool-workflow`) sat in a *separate* group (`workflows-consumer`) carrying its own `isolate: { workflows: true }`. Per the skill's realm rule, a consumer left outside its provider's group resolves the host's registry (which the preset never populated), so the consumer never activated — exactly the rejection the checker reported: `row 'tool-workflow' did not activate: waiting for service 'workflows'`. Each `isolate: true` declares a realm *private to that group*, so two separate groups get two separate realms and the consumer can't see the provider.\n\n**Fix:** Merged `tool-workflow` into the existing `delegation` group alongside `workflow-worker-thread`, so provider and consumer share one `isolate` realm, and removed the now-redundant `workflows-consumer` group. This matches the shape the skill documents for `workflows` in the shipped `standard` composition.\n\n**Verification:** `bash check.sh` now reports `check passed: no waiting rows`, and the git diff shows only the intended change (the split group removed, the consumer row moved up into `delegation`).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-1/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 13,
+              "api_latency_ms": 90292,
+              "tool_calls": 16,
+              "tool_call_retries": 0,
+              "prompt_tokens": 64196,
+              "completion_tokens": 2369,
+              "total_tokens": 66565,
+              "usage_observations": 13,
+              "elapsed_ms": 91838,
+              "steps": 13
+            }
+          },
+          "behavior": {
+            "steps": 16,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The check passes and the diff is now surgical — only the realm split is repaired, with the em dash on line 1 preserved.\n\n## Summary\n\n**Diagnosis:** The composition had the `workflows` service realm split across two groups. The provider (`workflow-worker-thread`) lived in the `delegation` group with `isolate: { workflows: true }`, while its consumer (`tool-workflow`) sat in a *separate* group (`workflows-consumer`) carrying its own `isolate: { workflows: true }`. Per the skill's realm rule, a consumer left outside its provider's group resolves the host's registry (which the preset never populated), so the consumer never activated — exactly the rejection the checker reported: `row 'tool-workflow' did not activate: waiting for service 'workflows'`. Each `isolate: true` declares a realm *private to that group*, so two separate groups get two separate realms and the consumer can't see the provider.\n\n**Fix:** Merged `tool-workflow` into the existing `delegation` group alongside `workflow-worker-thread`, so provider and consumer share one `isolate` realm, and removed the now-redundant `workflows-consumer` group. This matches the shape the skill documents for `workflows` in the shipped `standard` composition.\n\n**Verification:** `bash check.sh` now reports `check passed: no waiting rows`, and the git diff shows only the intended change (the split group removed, the consumer row moved up into `delegation`).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-1/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-1/held-out/ec-06-split-realms/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "ec-07-double-violation",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The fix is complete. `bash check.sh` now passes.\n\n## Summary\n\nThe `agent.cordis.yml` had two contract violations, both rooted in the same `toolResultPruner` service:\n\n1. **Provider published to the root realm**: `tool-result-pruner` sat as a loose top-level row, registering its `toolResultPruner` service process-globally (a second session would collide).\n2. **Consumer left outside the group**: `compaction-basic` (a consumer of `toolResultPruner`) was also loose at the top level, outside the `compaction` group's `isolate` realm, so it couldn't resolve the pruner.\n\nPer the skill's rule — *\"wrap the provider **and every consumer that reaches it** in one group carrying an `isolate` realm\"* — I moved both `tool-result-pruner` (the provider) and `compaction-basic` (the consumer) inside the existing `compaction` group, which already declared `isolate: { compaction: true, toolResultPruner: true }`. No other lines changed.\n\nThe diff confirms the minimal change, and the checker reports no violations.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-2/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 70476,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 28843,
+              "completion_tokens": 4095,
+              "total_tokens": 32938,
+              "usage_observations": 7,
+              "elapsed_ms": 71155,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete. `bash check.sh` now passes.\n\n## Summary\n\nThe `agent.cordis.yml` had two contract violations, both rooted in the same `toolResultPruner` service:\n\n1. **Provider published to the root realm**: `tool-result-pruner` sat as a loose top-level row, registering its `toolResultPruner` service process-globally (a second session would collide).\n2. **Consumer left outside the group**: `compaction-basic` (a consumer of `toolResultPruner`) was also loose at the top level, outside the `compaction` group's `isolate` realm, so it couldn't resolve the pruner.\n\nPer the skill's rule — *\"wrap the provider **and every consumer that reaches it** in one group carrying an `isolate` realm\"* — I moved both `tool-result-pruner` (the provider) and `compaction-basic` (the consumer) inside the existing `compaction` group, which already declared `isolate: { compaction: true, toolResultPruner: true }`. No other lines changed.\n\nThe diff confirms the minimal change, and the checker reports no violations.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-2/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-2/held-out/ec-07-double-violation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 6,
+            "final_answer": "Both violations are fixed and `bash check.sh` passes. Here's a summary of the diagnosis and repair.\n\n## Diagnosis\n\nThe checker reported two mount-contract violations:\n\n1. **Provider publishes into the root realm.** `tool-result-pruner` was a loose top-level row. A service registered without an isolate realm lands in the process-global realm, which collides on the second session mounting the preset — exactly the failure the skill describes.\n\n2. **Consumer left outside its provider's group.** `compaction-basic` (which consumes `toolResultPruner`) sat loose at the top level, outside the `compaction` group that owns the pruner service. With the provider living elsewhere, the consumer resolved a host registry the preset never populated and contributed nothing.\n\nThe `compaction` group already declared the correct `isolate` realm for both `compaction: true` and `toolResultPruner: true` — so the group was the right home; the two rows just weren't inside it.\n\n## Fix\n\nPer the skill's rule — *\"wrap the provider **and every consumer that reaches it** in one group carrying an isolate realm\"* — I moved both rows into the `compaction` group's `config`, provider (`tool-result-pruner`) before its consumers (`compaction-basic`, `command-compact`).\n\nNo package names, configs, or group/realm declarations were changed — only the placement of the two rows, leaving everything else intact. `bash check.sh` now reports `check passed: no root-realm publications, no waiting rows`.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-1/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 83491,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 23747,
+              "completion_tokens": 5014,
+              "total_tokens": 28761,
+              "usage_observations": 6,
+              "elapsed_ms": 83821,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Both violations are fixed and `bash check.sh` passes. Here's a summary of the diagnosis and repair.\n\n## Diagnosis\n\nThe checker reported two mount-contract violations:\n\n1. **Provider publishes into the root realm.** `tool-result-pruner` was a loose top-level row. A service registered without an isolate realm lands in the process-global realm, which collides on the second session mounting the preset — exactly the failure the skill describes.\n\n2. **Consumer left outside its provider's group.** `compaction-basic` (which consumes `toolResultPruner`) sat loose at the top level, outside the `compaction` group that owns the pruner service. With the provider living elsewhere, the consumer resolved a host registry the preset never populated and contributed nothing.\n\nThe `compaction` group already declared the correct `isolate` realm for both `compaction: true` and `toolResultPruner: true` — so the group was the right home; the two rows just weren't inside it.\n\n## Fix\n\nPer the skill's rule — *\"wrap the provider **and every consumer that reaches it** in one group carrying an isolate realm\"* — I moved both rows into the `compaction` group's `config`, provider (`tool-result-pruner`) before its consumers (`compaction-basic`, `command-compact`).\n\nNo package names, configs, or group/realm declarations were changed — only the placement of the two rows, leaving everything else intact. `bash check.sh` now reports `check passed: no root-realm publications, no waiting rows`.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-1/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-1/held-out/ec-07-double-violation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Both violations are fixed and `bash check.sh` passes with a clean exit. The diff shows only the minimal necessary changes:\n\n## Summary\n\n**Two contract violations diagnosed** via `bash check.sh`:\n\n1. **Provider publishing into the root realm** — `tool-result-pruner` sat loose at the top level. It publishes the `toolResultPruner` service, and a loose provider registers that service into the process-global realm, which collides on the second mounting session. The mount rejects this.\n\n2. **Consumer left outside the group** — `compaction-basic` consumes `toolResultPruner` but sat loose outside the `compaction` group, so it resolved the host's registry (which the preset never populated) and never activated.\n\n**The fix** follows the skill's rule precisely: when a preset genuinely owns a service, wrap the provider **and every consumer that reaches it** in one group carrying an `isolate` realm. The `compaction` group already declared `isolate: { toolResultPruner: true }` — I just moved both `tool-result-pruner` (the provider) and `compaction-basic` (the consumer) inside it, alongside the existing `command-compact` consumer.\n\nNothing else changed: the comment, the `thresholdChars: 8192` config, the `command-compact` row, and the `compaction` group definition are all preserved verbatim. The group's existing `isolate` realm already covered both `compaction` and `toolResultPruner`, so no realm declaration needed altering — only the placement of the two rows.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-0/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 116875,
+              "tool_calls": 11,
+              "tool_call_retries": 0,
+              "prompt_tokens": 28952,
+              "completion_tokens": 7457,
+              "total_tokens": 36409,
+              "usage_observations": 7,
+              "elapsed_ms": 117273,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Both violations are fixed and `bash check.sh` passes with a clean exit. The diff shows only the minimal necessary changes:\n\n## Summary\n\n**Two contract violations diagnosed** via `bash check.sh`:\n\n1. **Provider publishing into the root realm** — `tool-result-pruner` sat loose at the top level. It publishes the `toolResultPruner` service, and a loose provider registers that service into the process-global realm, which collides on the second mounting session. The mount rejects this.\n\n2. **Consumer left outside the group** — `compaction-basic` consumes `toolResultPruner` but sat loose outside the `compaction` group, so it resolved the host's registry (which the preset never populated) and never activated.\n\n**The fix** follows the skill's rule precisely: when a preset genuinely owns a service, wrap the provider **and every consumer that reaches it** in one group carrying an `isolate` realm. The `compaction` group already declared `isolate: { toolResultPruner: true }` — I just moved both `tool-result-pruner` (the provider) and `compaction-basic` (the consumer) inside it, alongside the existing `command-compact` consumer.\n\nNothing else changed: the comment, the `thresholdChars: 8192` config, the `command-compact` row, and the `compaction` group definition are all preserved verbatim. The group's existing `isolate` realm already covered both `compaction` and `toolResultPruner`, so no realm declaration needed altering — only the placement of the two rows.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-0/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-editing-v3/official-full/rep-0/held-out/ec-07-double-violation/trace.jsonl"
+        }
+      ]
+    }
+  ],
+  "generated_at": "2026-08-14T08:40:48.233Z"
+}
