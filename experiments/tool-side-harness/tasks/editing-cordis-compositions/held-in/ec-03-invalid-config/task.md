@@ -2,18 +2,19 @@
 
 ## Goal
 
-The preset composition in your workspace (`agent.cordis.yml`) is broken: the row
-`tool-subagent` is missing its required `provider` config field, so the row's
-config is invalid and the composition fails mount validation with
-`invalid config: $.<field> missing required value`.
+The preset composition in your workspace (`agent.cordis.yml`) fails mount
+validation because one row's config is invalid. Diagnose the failure with the
+bundled contract checker, fix the composition, and leave everything else
+unchanged.
+
+## What you have
+
+`bash check.sh` reports composition contract violations.
 
 ## What to produce
 
-Fix `agent.cordis.yml` so that:
-- row `tool-subagent` declares `config.provider: spawn` (keep `toolName` and
-  `backgroundMode` as they are);
-- nothing else changes.
+A fixed `agent.cordis.yml` in which `bash check.sh` passes.
 
 ## How to verify yourself
 
-The grader checks that the row exists with the required config field present.
+Run `bash check.sh` until it reports no violations.

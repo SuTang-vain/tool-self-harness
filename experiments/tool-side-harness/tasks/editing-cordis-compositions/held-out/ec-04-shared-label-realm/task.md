@@ -2,18 +2,19 @@
 
 ## Goal
 
-The preset composition in your workspace (`agent.cordis.yml`) declares an isolate
-realm with a STRING LABEL (`workflows: shared`) instead of `true`. A string label
-joins subtrees into one shared realm, and `provide()` still throws on the second
-registration under that symbol — a label does not pool instances and is not what a
-preset needs.
+The preset composition in your workspace (`agent.cordis.yml`) declares an
+isolate realm that is not private to each mounting session. Diagnose the
+failure with the bundled contract checker, fix the composition, and leave
+everything else unchanged.
+
+## What you have
+
+`bash check.sh` reports composition contract violations.
 
 ## What to produce
 
-Fix `agent.cordis.yml` so that the group's isolate realm reads
-`workflows: true` (a realm private to each mounting session). Keep the group and
-its two rows as they are; change nothing else.
+A fixed `agent.cordis.yml` in which `bash check.sh` passes.
 
 ## How to verify yourself
 
-The grader checks the isolate realm value and group membership.
+Run `bash check.sh` until it reports no violations.

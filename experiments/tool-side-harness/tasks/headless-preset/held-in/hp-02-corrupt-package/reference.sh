@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# reference.sh — apply the correct hp-02 fix (disable tool-ralph).
+# reference.sh — apply the correct hp-02 fix (restore the package name).
 set -euo pipefail
 workspace="$1"
 here="$(cd "$(dirname "$0")" && pwd)"
@@ -8,7 +8,6 @@ python3 - "$workspace/agent.cordis.yml" <<'PYEOF'
 import sys
 p = sys.argv[1]
 src = open(p).read()
-assert '- id: tool-ralph' in src
-src = src.replace('- id: tool-ralph\n  name:', '- id: tool-ralph\n  disabled: true\n  name:', 1)
-open(p, 'w').write(src)
+assert '@deepseek-ai/dsh-todo-tool' in src
+open(p, 'w').write(src.replace('@deepseek-ai/dsh-todo-tool', '@deepseek-ai/dsh-tool-todo', 1))
 PYEOF

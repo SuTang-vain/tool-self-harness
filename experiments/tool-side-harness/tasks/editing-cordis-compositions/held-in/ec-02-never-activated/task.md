@@ -2,21 +2,18 @@
 
 ## Goal
 
-The preset composition in your workspace (`agent.cordis.yml`) is broken: the row
-`compaction-basic` reads `toolResultPruner` through `ctx.get`, so the pruner must
-share its realm. The fixture puts the pruner inside an isolate group but leaves
-`compaction-basic` OUTSIDE the group — a consumer left outside the group resolves
-the host's registry, which this preset did not populate, so the row never activates.
+The preset composition in your workspace (`agent.cordis.yml`) does not mount
+cleanly: one of its rows never activates. Diagnose the failure with the bundled
+contract checker, fix the composition, and leave everything else unchanged.
+
+## What you have
+
+`bash check.sh` reports composition contract violations.
 
 ## What to produce
 
-Fix `agent.cordis.yml` so that:
-- `compaction-basic` sits INSIDE the `compaction` group next to `tool-result-pruner`;
-- the group keeps its isolate realm `{ compaction: true, toolResultPruner: true }`;
-- `compaction-basic` no longer appears loose at the top level;
-- nothing else changes.
+A fixed `agent.cordis.yml` in which `bash check.sh` passes.
 
 ## How to verify yourself
 
-The grader checks group membership, the isolate realm, and the absence of a loose
-top-level copy.
+Run `bash check.sh` until it reports no violations.

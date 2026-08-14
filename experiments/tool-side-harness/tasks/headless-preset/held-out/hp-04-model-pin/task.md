@@ -2,14 +2,19 @@
 
 ## Goal
 
-The headless-agent composition in your workspace (`agent.cordis.yml`) pins the
-`main` agent to the expensive model: `agent-spine` agents[0] declares
-`model: deepseek-v4-pro`. This preset must run on the flash model.
+The headless-agent composition in your workspace (`agent.cordis.yml`) has an
+inconsistent model registry: an agent references a model that is not registered.
+Diagnose the failure with the bundled contract checker, restore consistency, and
+leave everything else unchanged.
+
+## What you have
+
+`bash check.sh` reports contract violations.
 
 ## What to produce
 
-Set the `main` agent's model to `deepseek-v4-flash`. Change nothing else.
+A fixed `agent.cordis.yml` in which `bash check.sh` passes.
 
 ## How to verify yourself
 
-The grader navigates the nested agents list and checks the model value.
+Run `bash check.sh` until it reports no violations.

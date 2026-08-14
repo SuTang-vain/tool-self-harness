@@ -2,21 +2,19 @@
 
 ## Goal
 
-A preset directory was just created by `copy()` semantics: the copy keeps the
-source's description but DROPS the source's name and roster order. The
-`preset.yml` in your workspace currently has no `name`, so the preset would show
-up in every picker as its bare directory id.
+The preset directory in your workspace is incomplete: its `preset.yml` does not
+satisfy the roster contract, so the preset cannot be listed properly. Diagnose
+the failure with the bundled contract checker, fix the metadata, and leave
+everything else unchanged.
+
+## What you have
+
+`bash check.sh` reports metadata contract violations.
 
 ## What to produce
 
-Edit `preset.yml` so that:
-- `name` is present and satisfies the id constraint `[a-z0-9][a-z0-9-]*` (it
-  becomes the directory name);
-- the `description` keeps stating what the preset does — it must still mention
-  the workflow toolchain (match: `workflow`).
-
-Do not create or edit any other file.
+A fixed `preset.yml` in which `bash check.sh` passes.
 
 ## How to verify yourself
 
-The grader checks both fields of `preset.yml`.
+Run `bash check.sh` until it reports no violations.

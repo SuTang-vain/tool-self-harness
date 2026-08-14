@@ -323,6 +323,26 @@ for (const c of expected.checks || []) {
       if (!re.test(val)) errors.push('preset-field: ' + file + '.' + c.field + ' does not match /' + c.match + '/' + (c.flags || '') + ' (got: ' + val + ')');
       break;
     }
+    case 'row-name': {
+      const r = byId[c.id];
+      if (!r) { errors.push('row-name: row "' + c.id + '" missing'); break; }
+      const re = new RegExp(c.match, c.flags || '');
+      if (!re.test(String(r.name || ''))) errors.push('row-name: "' + c.id + '" name "' + r.name + '" does not match /' + c.match + '/');
+      break;
+    }
+    case 'config-list-contains': {
+      const r = byId[c.id];
+      if (!r) { errors.push('config-list-contains: row "' + c.id + '" missing'); break; }
+      let node = r.config || {};
+      for (const seg of c.path) {
+        if (node === null || typeof node !== 'object' || !(seg in node)) { node = undefined; break; }
+        node = node[seg];
+      }
+      if (!Array.isArray(node) || !node.some(item => item && typeof item === 'object' && deepEqual(item[c.field], c.value))) {
+        errors.push('config-list-contains: "' + c.id + '" config path ' + JSON.stringify(c.path) + ' has no item with ' + c.field + ' = ' + JSON.stringify(c.value) + ' (got: ' + JSON.stringify(node) + ')');
+      }
+      break;
+    }
     default:
       errors.push('unknown check kind: ' + c.kind);
   }

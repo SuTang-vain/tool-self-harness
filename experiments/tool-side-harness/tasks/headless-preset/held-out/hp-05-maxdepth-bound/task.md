@@ -1,10 +1,10 @@
-# Task: hp-03-row-config
+# Task: hp-05-maxdepth-bound
 
 ## Goal
 
 The headless-agent composition in your workspace (`agent.cordis.yml`) violates a
-configuration schema bound. Diagnose the failure with the bundled contract
-checker, correct the value, and leave everything else unchanged.
+configuration schema bound on a delegation row. Diagnose the failure with the
+bundled contract checker, correct the value, and leave everything else unchanged.
 
 ## What you have
 
