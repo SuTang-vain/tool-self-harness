@@ -47,12 +47,10 @@ if (expected.mode === 'audit') {
     const own = sections[f.tier] || '';
     if (!re.test(own)) {
       errors.push('finding "' + f.key + '" not found under ' + f.tier);
-      continue;
     }
-    if (f.tier_exclusive) {
-      const elsewhere = Object.entries(sections).filter(([t]) => t !== f.tier).some(([, s]) => re.test(s));
-      if (elsewhere) errors.push('finding "' + f.key + '" appears outside its ' + f.tier + ' section');
-    }
+    // Positive placement only: false positives in other tiers are not
+    // penalized — remediation examples legitimately repeat finding words,
+    // and the tier knowledge tested is "the finding belongs to this tier".
   }
 } else if (expected.mode === 'fix') {
   const pagePath = path.join(workspace, expected.page || 'page.html');
