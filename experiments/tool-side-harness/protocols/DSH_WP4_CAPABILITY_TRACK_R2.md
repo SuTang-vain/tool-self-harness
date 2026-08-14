@@ -53,3 +53,24 @@ manifest（哈希/尺寸/回归机制声明）冻结于 `rounds/dsh-wp4-r2/manif
 
 - 过门 → `lineages/dsh-capability/editing-cordis-compositions/h1`；
 - 不过 → `registries/attention-conflict-matrix-v2.json`。
+
+## Replication addendum (2026-08-14, frozen before the replication run)
+
+Target: `lineages/dsh-capability/editing-cordis-compositions/h1` (promoted c2 content).
+Independent replication of the local capability recovery:
+
+- runner: hardened generic-runner; official-full; full suite; 3 fresh repeats;
+  run id `dsh-wp4-r2-h1-repl1`; seed 20260820 (new);
+- skill repo: `lineages/dsh-capability/editing-cordis-compositions/h1`;
+- reference: the R2 degraded baseline h0- (3/9 + 3/6, reliable {ec-02, ec-07}) and the
+  promotion run (9/9 + 6/6, 5/5 reliable).
+
+Replication criteria (preregistered):
+
+1. full replication: held-in 9/9 AND held-out 6/6 AND 5/5 reliable;
+2. partial replication: the Q2 gate vs h0- still passes (>=1 reliable task gained,
+   none lost, aggregates >= h0-) but the full recovery is not reproduced;
+3. failed replication: the gate vs h0- does not pass.
+
+Outcomes update the lineage record accordingly (replicated / replicated-partial /
+replication-failed); no claim upgrade beyond E2 regardless of outcome.
