@@ -63,3 +63,24 @@ Gate procedure unchanged: Q2 preservation (5/5 reliable, 9/9 + 6/6 aggregates) i
 the hard gate; Q3 delta is reported against the same h0 baseline with the same
 noise caveat; acceptance routes to `lineages/dsh-efficiency/<target>/h1`, rejection
 to the attention-conflict matrix.
+
+## Replication addendum v1 (2026-08-14, frozen before the replication run)
+
+Target: editing-cordis-compositions h1-efficiency (candidate c2-remove-roster,
+promoted 2026-08-14). Independent replication of the local efficiency effect:
+
+- runner: hardened generic-runner; variant official-full; full suite; 3 fresh repeats;
+  run id `dsh-wp4-editing-h1-repl1`; seed 20260818 (new);
+- skill repo: `lineages/dsh-efficiency/editing-cordis-compositions/h1-efficiency`;
+- comparison: h0 formal baseline official-full
+  (`rounds/dsh-formal-baseline-v1/baseline-4d-2026-08-14.json`).
+
+Replication criteria (preregistered):
+
+1. Q2 preservation: 5/5 reliable tasks, held-in 9/9 and held-out 6/6 aggregates;
+2. Q3 direction: mean_tokens_per_attempt AND total_tokens both lower than h0.
+
+Pass → the h1-efficiency record is upgraded to "replicated-locally (E1-replicated,
+same distribution)"; fail → the promotion stays single-run and the record is flagged
+"replication failed" with the observed numbers. No significance claim either way;
+Q4 remains not_measured.
