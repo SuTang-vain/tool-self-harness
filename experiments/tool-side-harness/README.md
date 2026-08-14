@@ -25,9 +25,9 @@ positive and negative results are retained as observations to be explained by th
 | WP | Objective | Current status | Exit criterion |
 |---|---|---|---|
 | WP0 | Lock prior evidence | complete | compact, expanded, replication, and ablation results mapped without overclaiming |
-| WP1 | Build category-balanced sample pool | v2 registry frozen; Wave-1 candidates shortlisted | at least 2 qualified independent targets per exploratory category |
+| WP1 | Build category-balanced sample pool | v2 registry frozen; Wave-1 candidates shortlisted; DSH self-target wave registered (`registries/sample-pool-dsh-v1.json`) | at least 2 qualified independent targets per exploratory category |
 | WP2 | Structural feature coding | rubric frozen; historical anchors coded provisionally | feature vectors frozen before new candidate outcomes |
-| WP3 | Calibrate 4D baselines | Path B qualified/evolved; Path C formal stopped at per-task safety | diagnostic + formal sensitivity and Q3 coverage |
+| WP3 | Calibrate 4D baselines | Path B qualified/evolved; Path C formal stopped at per-task safety; DSH pilot v1/v2 executed — held-in discriminates in both suites, held-out v3 pending | diagnostic + formal sensitivity and Q3 coverage |
 | WP4 | Run category-conditioned evolution | next target is fixture-authoring only | one frozen bounded lineage per qualified target |
 | WP5 | Mechanism and replication | RQ3/RQ4 deferred until independent targets qualify | preselected ablation and category replication |
 | WP6 | Evaluate utility | Q4 deferred | independent human/expert protocol |
@@ -45,6 +45,12 @@ positive and negative results are retained as observations to be explained by th
 - **Debugging diagnostic boundary:** the new `debugging-and-error-recovery` suite is process-sensitive
   (official-full tests before first edit in 9/9 attempts versus 7/9 minimal and 6/9 no-skill), but
   minimal reaches the 6/6 held-in ceiling; it stops before formal baseline and candidate generation.
+- **DSH self-targets (E0, pilot v1/v2):** after the v2 fixture redesign both DSH suites discriminate on
+  held-in — editing 9/9 → 4/9 → 3/9 (anchors ec-01 3/3→1/3→0/3, ec-03 3/3→0/3→0/3), headless 8/9 →
+  6/9 → 5/9 (anchor hp-01 2/3→0/3→0/3). Both held-out partitions remain ceiling-saturated in every
+  variant and need a v3 fixture pass. Methodological findings (harness consultation gating,
+  checker feedback trap, over-specification ceiling) are codified in
+  `protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md`.
 - **Not supported yet:** a universal four-class taxonomy, universal fitting paths, general
   Self-Harness improvement, Path C/D effectiveness, cross-model generality, or human utility.
 
@@ -59,6 +65,10 @@ positive and negative results are retained as observations to be explained by th
    keep the process-sensitive diagnostic as a boundary record, not Self-Harness evidence.
 4. Add a real CLI workflow target with state transitions and recovery semantics.
 5. Add a knowledge-rule Skill with deep references and measurable context-loading behavior.
+6. DSH self-targets entered the sample pool (`registries/sample-pool-dsh-v1.json`): the
+   knowledge-rule `editing-cordis-compositions` skill and the composition-unit `headless-preset`
+   are piloted (`rounds/dsh-pilot-v1`, `rounds/dsh-pilot-v2`); held-in discriminates, held-out
+   v3 redesign is the next fixture pass.
 
 ### Phase 2 — 4D baseline calibration
 
@@ -103,7 +113,11 @@ replication remains a first-class result.
   claim levels, and confound controls.
 - `protocols/STRUCTURAL_FEATURES_V1.md` — preregistered multi-label structural coding and task-
   exchange metrics.
+- `protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md` — task text must not contain the fix; tasks must
+  direct harness consultation; checkers must not create feedback traps (DSH pilot findings).
 - `registries/sample-pool-v2.json` — category-balanced target registry; v1 remains historical.
+- `registries/sample-pool-dsh-v1.json` — DSH self-target wave (editing-cordis-compositions,
+  headless-preset) with frozen feature vectors; historical pilot outcomes.
 - `registries/market-skill-inventory-v1.json` — popularity/license sampling frame only.
 - `rounds/target-selection-v2/protocol.md` — next debugging diagnostic design; no attempts run.
 

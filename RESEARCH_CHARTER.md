@@ -209,6 +209,19 @@ specified.
    pass the same task vector; minimal reaches the held-in ceiling, so the suite stops at redesign.
 7. **RQ4 is not measured.** GLM-5.2 is the only active model; cross-model expansion remains
    deferred until the category-balanced GLM sample is qualified.
+8. **DSH self-targets show held-in benchmark sensitivity (E0, pilot v1/v2).** The
+   `editing-cordis-compositions` target (knowledge-rule-policy, the second Path C data point in
+   qualification) discriminates on held-in — 9/9 → 4/9 → 3/9 across official-full/minimal/
+   no-harness, with anchors ec-01 (3/3→1/3→0/3) and ec-03 (3/3→0/3→0/3); the `headless-preset`
+   target (atomic-validation, the first composition-unit target) shows 8/9 → 6/9 → 5/9 with
+   anchor hp-01 (2/3→0/3→0/3). Both suites' held-out partitions remain ceiling-saturated in
+   every variant and require a third fixture pass before formal qualification.
+9. **Fixture-authoring discipline derived (E0, methodological).** Three findings are codified in
+   `experiments/tool-side-harness/protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md`: task text that
+   states the fix erases all variant discrimination; harness content is consumed only when the
+   task explicitly directs consultation (official-full `loaded_skill_rate` 0.0 → 0.8);
+   bounds-only checkers trap models on any in-bounds value and must instead direct restoration
+   to the harness reference.
 
 ## Active work packages
 
