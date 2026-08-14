@@ -1,0 +1,672 @@
+{
+  "run_id": "dsh-pilot-headless-v2b",
+  "variant": "official-full",
+  "model_config": "/Users/tangyaoyue/DEV/tool-self-harness/.tmp-config-dsh-pilot.yaml",
+  "skill_repo": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/targets/headless-preset/full",
+  "suite": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/tasks/headless-preset",
+  "repeats": 3,
+  "task_order_seed": 20260814,
+  "task_filter": null,
+  "held_in": {
+    "passes": 8,
+    "attempts": 9,
+    "pass_rate": 0.8888888888888888,
+    "stable_tasks": [
+      "hp-02-corrupt-package",
+      "hp-03-row-config"
+    ],
+    "stable_task_count": 2,
+    "task_count": 3
+  },
+  "held_out": {
+    "passes": 6,
+    "attempts": 6,
+    "pass_rate": 1,
+    "stable_tasks": [
+      "hp-04-model-pin",
+      "hp-05-maxdepth-bound"
+    ],
+    "stable_task_count": 2,
+    "task_count": 2
+  },
+  "metrics": {
+    "attempts": 15,
+    "usage_coverage": 1,
+    "api_calls": 110,
+    "api_latency_ms": 903727,
+    "tool_calls": 153,
+    "tool_call_retries": 0,
+    "prompt_tokens": 417402,
+    "completion_tokens": 35159,
+    "total_tokens": 452561,
+    "elapsed_ms": 911896,
+    "mean_tokens_per_attempt": 30170.733333333334,
+    "mean_tool_calls_per_attempt": 10.2,
+    "mean_elapsed_ms_per_attempt": 60793.066666666666,
+    "tokens_per_successful_attempt": 32325.785714285714,
+    "tokens_per_reliable_task": 113140.25
+  },
+  "behavior": {
+    "loaded_skill_rate": 0.8,
+    "test_before_edit_rate": 0,
+    "test_after_edit_rate": 0
+  },
+  "per_task": [
+    {
+      "split": "held-in",
+      "task_id": "hp-01-add-row",
+      "passes": 2,
+      "attempts": 3,
+      "stable_pass": false,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "hp-01-add-row",
+          "repeat": 0,
+          "pass": false,
+          "verify_exit": 1,
+          "verify_msg": "row-exists: config mismatch for \"tool-todo\" — expected {\"allowParallelInProgress\":true}, got undefined",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The task is complete. \n\n## Summary\n\n**Diagnosis:** The contract checker (`check.sh`/`check.js`) validates that `agent.cordis.yml` contains a `- id: tool-todo` entry, which represents the `todo_write` tool surface. This row was missing entirely.\n\nA telltale sign: the comment `# \\`todo_write\\` replaces the logged whole list.` was orphaned directly above the unrelated `fs-local` entry — it belonged to the missing `tool-todo` row.\n\n**Fix:** Restored the single missing row, attaching the existing comment to its proper entry. The entry follows the same two-field (`id` + `name`) pattern used by neighboring tool entries like `tool-fs` and `tool-ralph`. No other lines were touched.\n\n**Verification:** `bash check.sh` now reports `check passed: tool surface complete` (exit 0).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-in/hp-01-add-row/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 60300,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 17265,
+              "completion_tokens": 2062,
+              "total_tokens": 19327,
+              "usage_observations": 7,
+              "elapsed_ms": 60919,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The task is complete. \n\n## Summary\n\n**Diagnosis:** The contract checker (`check.sh`/`check.js`) validates that `agent.cordis.yml` contains a `- id: tool-todo` entry, which represents the `todo_write` tool surface. This row was missing entirely.\n\nA telltale sign: the comment `# \\`todo_write\\` replaces the logged whole list.` was orphaned directly above the unrelated `fs-local` entry — it belonged to the missing `tool-todo` row.\n\n**Fix:** Restored the single missing row, attaching the existing comment to its proper entry. The entry follows the same two-field (`id` + `name`) pattern used by neighboring tool entries like `tool-fs` and `tool-ralph`. No other lines were touched.\n\n**Verification:** `bash check.sh` now reports `check passed: tool surface complete` (exit 0).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-in/hp-01-add-row/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-in/hp-01-add-row/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "hp-01-add-row",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 10,
+            "final_answer": "The implementation is complete:\n\n- **Diagnosis:** `bash check.sh` reported `tool surface incomplete: required row 'tool-todo' is missing`. The bundled contract checker (`check.js`) requires a top-level row matching `/^- id: tool-todo\\s*$/m`, but that block had been deleted from `agent.cordis.yml`, leaving its comment (`# `todo_write` replaces the logged whole list.`) orphaned above `fs-local`.\n- **Fix:** Restored the missing `tool-todo` row exactly as specified in the documented tool surface (the canonical composition from the loaded skill body), placing it back between `tool-ralph` and `fs-local` alongside its comment.\n- **Verification:** `bash check.sh` now reports `check passed: tool surface complete` (exit 0). The git diff shows a minimal, single-block addition with everything else unchanged.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-in/hp-01-add-row/trace.jsonl",
+            "metrics": {
+              "api_calls": 10,
+              "api_latency_ms": 214923,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 50398,
+              "completion_tokens": 14135,
+              "total_tokens": 64533,
+              "usage_observations": 10,
+              "elapsed_ms": 215472,
+              "steps": 10
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The implementation is complete:\n\n- **Diagnosis:** `bash check.sh` reported `tool surface incomplete: required row 'tool-todo' is missing`. The bundled contract checker (`check.js`) requires a top-level row matching `/^- id: tool-todo\\s*$/m`, but that block had been deleted from `agent.cordis.yml`, leaving its comment (`# `todo_write` replaces the logged whole list.`) orphaned above `fs-local`.\n- **Fix:** Restored the missing `tool-todo` row exactly as specified in the documented tool surface (the canonical composition from the loaded skill body), placing it back between `tool-ralph` and `fs-local` alongside its comment.\n- **Verification:** `bash check.sh` now reports `check passed: tool surface complete` (exit 0). The git diff shows a minimal, single-block addition with everything else unchanged.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-in/hp-01-add-row/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-in/hp-01-add-row/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "hp-01-add-row",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 8,
+            "final_answer": "The checker now passes. \n\n## Summary\n\n**Diagnosis:** The contract checker (`check.js`) verifies that `agent.cordis.yml` contains a top-level row with `id: tool-todo`. That row was missing — only its orphaned comment (`# \\`todo_write\\` replaces the logged whole list.`) remained above the `fs-local` entry, where the `tool-todo` block had been deleted.\n\n**Fix:** Restored the single missing row, matching the documented composition from the bundled skill (the Headless Agent skill body lists exactly this entry with `allowParallelInProgress: true`):\n\n```yaml\n- id: tool-todo\n  name: '@deepseek-ai/dsh-tool-todo'\n  config:\n    allowParallelInProgress: true\n```\n\nThe change is minimal — only the missing row is added back, and everything else is left unchanged. `bash check.sh` now reports `check passed: tool surface complete` (exit 0).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-in/hp-01-add-row/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 46968,
+              "tool_calls": 13,
+              "tool_call_retries": 0,
+              "prompt_tokens": 30980,
+              "completion_tokens": 1905,
+              "total_tokens": 32885,
+              "usage_observations": 8,
+              "elapsed_ms": 47631,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 13,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The checker now passes. \n\n## Summary\n\n**Diagnosis:** The contract checker (`check.js`) verifies that `agent.cordis.yml` contains a top-level row with `id: tool-todo`. That row was missing — only its orphaned comment (`# \\`todo_write\\` replaces the logged whole list.`) remained above the `fs-local` entry, where the `tool-todo` block had been deleted.\n\n**Fix:** Restored the single missing row, matching the documented composition from the bundled skill (the Headless Agent skill body lists exactly this entry with `allowParallelInProgress: true`):\n\n```yaml\n- id: tool-todo\n  name: '@deepseek-ai/dsh-tool-todo'\n  config:\n    allowParallelInProgress: true\n```\n\nThe change is minimal — only the missing row is added back, and everything else is left unchanged. `bash check.sh` now reports `check passed: tool surface complete` (exit 0).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-in/hp-01-add-row/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-in/hp-01-add-row/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "hp-02-corrupt-package",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "hp-02-corrupt-package",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "## Summary\n\n**Problem:** The `tool-todo` row in `agent.cordis.yml` referenced package `@deepseek-ai/dsh-todo-tool`, which does not resolve per the contract checker.\n\n**Diagnosis:** The contract in `check.js` requires that a tool row's package must match `^@deepseek-ai/dsh-[a-z0-9-]+$` **and** end with the row's id (`tool-todo`). The package `@deepseek-ai/dsh-todo-tool` satisfied the format regex but ended in `todo-tool` instead of `tool-todo`. The shipped package name (confirmed by the skill body) is `@deepseek-ai/dsh-tool-todo` — the words were transposed.\n\n**Fix:** A single-character-class correction to the `name:` of the `tool-todo` row:\n\n```diff\n - id: tool-todo\n-  name: '@deepseek-ai/dsh-todo-tool'\n+  name: '@deepseek-ai/dsh-tool-todo'\n   config:\n     allowParallelInProgress: true\n```\n\n**Verification:** `bash check.sh` now reports `check passed: package references resolve` with exit code `0`. The diff contains only the one corrected line; everything else is unchanged.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-in/hp-02-corrupt-package/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 34072,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26994,
+              "completion_tokens": 1310,
+              "total_tokens": 28304,
+              "usage_observations": 7,
+              "elapsed_ms": 34877,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "## Summary\n\n**Problem:** The `tool-todo` row in `agent.cordis.yml` referenced package `@deepseek-ai/dsh-todo-tool`, which does not resolve per the contract checker.\n\n**Diagnosis:** The contract in `check.js` requires that a tool row's package must match `^@deepseek-ai/dsh-[a-z0-9-]+$` **and** end with the row's id (`tool-todo`). The package `@deepseek-ai/dsh-todo-tool` satisfied the format regex but ended in `todo-tool` instead of `tool-todo`. The shipped package name (confirmed by the skill body) is `@deepseek-ai/dsh-tool-todo` — the words were transposed.\n\n**Fix:** A single-character-class correction to the `name:` of the `tool-todo` row:\n\n```diff\n - id: tool-todo\n-  name: '@deepseek-ai/dsh-todo-tool'\n+  name: '@deepseek-ai/dsh-tool-todo'\n   config:\n     allowParallelInProgress: true\n```\n\n**Verification:** `bash check.sh` now reports `check passed: package references resolve` with exit code `0`. The diff contains only the one corrected line; everything else is unchanged.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-in/hp-02-corrupt-package/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-in/hp-02-corrupt-package/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "hp-02-corrupt-package",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 8,
+            "final_answer": "Done. \n\n## Summary\n\n**Diagnosis:** `bash check.sh` reported `row 'tool-todo' references unknown package '@deepseek-ai/dsh-todo-tool'`. The contract checker (`check.js`) enforces that a tool row's package must match `@deepseek-ai/dsh-[a-z0-9-]+` and **end with the row's id**. The `tool-todo` row referenced `@deepseek-ai/dsh-todo-tool`, whose suffix (`todo-tool`) doesn't match the row id (`tool-todo`). Every other tool row in the file follows the `@deepseek-ai/dsh-tool-<id>` convention, and the bundled skill body confirms the correct package name.\n\n**Fix:** A single-line change — `@deepseek-ai/dsh-todo-tool` → `@deepseek-ai/dsh-tool-todo` — so the package resolves to the `tool-todo` row id. Everything else is left unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: package references resolve` (exit 0).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-in/hp-02-corrupt-package/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 28571,
+              "tool_calls": 11,
+              "tool_call_retries": 0,
+              "prompt_tokens": 38673,
+              "completion_tokens": 1283,
+              "total_tokens": 39956,
+              "usage_observations": 8,
+              "elapsed_ms": 29146,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Done. \n\n## Summary\n\n**Diagnosis:** `bash check.sh` reported `row 'tool-todo' references unknown package '@deepseek-ai/dsh-todo-tool'`. The contract checker (`check.js`) enforces that a tool row's package must match `@deepseek-ai/dsh-[a-z0-9-]+` and **end with the row's id**. The `tool-todo` row referenced `@deepseek-ai/dsh-todo-tool`, whose suffix (`todo-tool`) doesn't match the row id (`tool-todo`). Every other tool row in the file follows the `@deepseek-ai/dsh-tool-<id>` convention, and the bundled skill body confirms the correct package name.\n\n**Fix:** A single-line change — `@deepseek-ai/dsh-todo-tool` → `@deepseek-ai/dsh-tool-todo` — so the package resolves to the `tool-todo` row id. Everything else is left unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: package references resolve` (exit 0).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-in/hp-02-corrupt-package/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-in/hp-02-corrupt-package/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "hp-02-corrupt-package",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "## Summary\n\n**Diagnosis:** `bash check.sh` reported that the `tool-todo` row referenced an unknown package `@deepseek-ai/dsh-todo-tool`. The contract checker (`check.js`) requires each tool row's package name to live in the `@deepseek-ai/dsh-` namespace and **end with the row's id** (`tool-todo`). The corrupted name had the suffix order reversed (`dsh-todo-tool` instead of `dsh-tool-todo`).\n\n**Fix:** In `agent.cordis.yml`, changed the single package reference for the `tool-todo` row:\n- `@deepseek-ai/dsh-todo-tool` → `@deepseek-ai/dsh-tool-todo`\n\nThis matches the canonical name used in the bundled skill's reference composition. No other content was touched.\n\n**Verification:** `bash check.sh` now reports `check passed: package references resolve` (exit 0). The git diff confirms the one-line change is the only modification.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-in/hp-02-corrupt-package/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 87555,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 27044,
+              "completion_tokens": 1191,
+              "total_tokens": 28235,
+              "usage_observations": 7,
+              "elapsed_ms": 88088,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "## Summary\n\n**Diagnosis:** `bash check.sh` reported that the `tool-todo` row referenced an unknown package `@deepseek-ai/dsh-todo-tool`. The contract checker (`check.js`) requires each tool row's package name to live in the `@deepseek-ai/dsh-` namespace and **end with the row's id** (`tool-todo`). The corrupted name had the suffix order reversed (`dsh-todo-tool` instead of `dsh-tool-todo`).\n\n**Fix:** In `agent.cordis.yml`, changed the single package reference for the `tool-todo` row:\n- `@deepseek-ai/dsh-todo-tool` → `@deepseek-ai/dsh-tool-todo`\n\nThis matches the canonical name used in the bundled skill's reference composition. No other content was touched.\n\n**Verification:** `bash check.sh` now reports `check passed: package references resolve` (exit 0). The git diff confirms the one-line change is the only modification.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-in/hp-02-corrupt-package/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-in/hp-02-corrupt-package/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "hp-03-row-config",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "hp-03-row-config",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Problem:** The `compaction-basic` entry in `agent.cordis.yml` had `thresholdRatio: 1.9`, which violated the schema bound documented in the contract checker (`check.js`): `$.thresholdRatio` must be a number in `(0, 1]`.\n\n**Diagnosis:** The harness documentation (the skill body) shows the shipped/reference value for `thresholdRatio` is `0.8`. The value `1.9` was out of bounds.\n\n**Fix:** Restored `thresholdRatio` from `1.9` to `0.8` — the single smallest correct change, leaving everything else unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: config within schema bounds` (exit code 0).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-in/hp-03-row-config/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 28691,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26648,
+              "completion_tokens": 736,
+              "total_tokens": 27384,
+              "usage_observations": 7,
+              "elapsed_ms": 29288,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Problem:** The `compaction-basic` entry in `agent.cordis.yml` had `thresholdRatio: 1.9`, which violated the schema bound documented in the contract checker (`check.js`): `$.thresholdRatio` must be a number in `(0, 1]`.\n\n**Diagnosis:** The harness documentation (the skill body) shows the shipped/reference value for `thresholdRatio` is `0.8`. The value `1.9` was out of bounds.\n\n**Fix:** Restored `thresholdRatio` from `1.9` to `0.8` — the single smallest correct change, leaving everything else unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: config within schema bounds` (exit code 0).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-in/hp-03-row-config/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-in/hp-03-row-config/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "hp-03-row-config",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Done. \n\n**Diagnosis:** The `compaction-basic` entry had `thresholdRatio: 1.9`, which violated the schema bound `(0, 1]` enforced by `check.js`.\n\n**Fix:** Restored the reference value `0.8` documented in the harness skill's canonical composition (the smallest correct change — only that single value was touched, leaving everything else unchanged).\n\n**Verification:** `bash check.sh` now reports `check passed: config within schema bounds`.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-in/hp-03-row-config/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 31538,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 24933,
+              "completion_tokens": 726,
+              "total_tokens": 25659,
+              "usage_observations": 7,
+              "elapsed_ms": 31730,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Done. \n\n**Diagnosis:** The `compaction-basic` entry had `thresholdRatio: 1.9`, which violated the schema bound `(0, 1]` enforced by `check.js`.\n\n**Fix:** Restored the reference value `0.8` documented in the harness skill's canonical composition (the smallest correct change — only that single value was touched, leaving everything else unchanged).\n\n**Verification:** `bash check.sh` now reports `check passed: config within schema bounds`.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-in/hp-03-row-config/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-in/hp-03-row-config/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "hp-03-row-config",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Diagnosis:** The contract checker (`check.js`) validates that the `compaction-basic` entry's `thresholdRatio` is a number in the range `(0,1]`. The workspace file had `thresholdRatio: 1.9`, which is out of bounds (a ratio of 1.9 makes no sense — it would trigger compaction before the context window was ever approached).\n\n**Fix:** The harness documentation (`Headless Agent` skill body) documents the reference value as `thresholdRatio: 0.8`. I restored that exact value, changing only the one offending line and leaving everything else unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: config within schema bounds` with exit code 0.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-in/hp-03-row-config/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 68291,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26649,
+              "completion_tokens": 559,
+              "total_tokens": 27208,
+              "usage_observations": 7,
+              "elapsed_ms": 68820,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Diagnosis:** The contract checker (`check.js`) validates that the `compaction-basic` entry's `thresholdRatio` is a number in the range `(0,1]`. The workspace file had `thresholdRatio: 1.9`, which is out of bounds (a ratio of 1.9 makes no sense — it would trigger compaction before the context window was ever approached).\n\n**Fix:** The harness documentation (`Headless Agent` skill body) documents the reference value as `thresholdRatio: 0.8`. I restored that exact value, changing only the one offending line and leaving everything else unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: config within schema bounds` with exit code 0.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-in/hp-03-row-config/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-in/hp-03-row-config/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "hp-04-model-pin",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "hp-04-model-pin",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The fix is complete and minimal. Here's a summary of what I did:\n\n## Diagnosis\n\n`bash check.sh` reported:\n```\nagent-spine references model 'deepseek-v4-flash' that is not registered in llm-deepseek.models\n```\n\nThe contract checker reads two blocks from `agent.cordis.yml`:\n- **`llm-deepseek.models`** — the model registry (the set of `id:` entries under `models:`).\n- **`agent-spine`** — the agents, each with a `model:` reference.\n\nEvery agent-referenced model must appear in the registry. The `main` agent referenced `deepseek-v4-flash`, but the registry only contained `deepseek-v4-pro`.\n\n## Fix\n\nThe comment in the `agent-spine` block made the intent explicit: the agent **stays on `flash`** because the goal/ralph replay corpora were recorded on it, and nested-include overlays cannot re-pin the model. So the pinned state is correct; the inconsistency was in the **model registry** (exactly as the task description stated — \"an inconsistent model registry\").\n\nI restored consistency by registering `deepseek-v4-flash` in `llm-deepseek.models`, mirroring the existing entry's `contextWindow: 128000`. Nothing else was changed.\n\n## Verification\n\n`bash check.sh` now reports:\n```\ncheck passed: model registry consistent\n```",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-out/hp-04-model-pin/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 63290,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 19545,
+              "completion_tokens": 2482,
+              "total_tokens": 22027,
+              "usage_observations": 7,
+              "elapsed_ms": 63667,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete and minimal. Here's a summary of what I did:\n\n## Diagnosis\n\n`bash check.sh` reported:\n```\nagent-spine references model 'deepseek-v4-flash' that is not registered in llm-deepseek.models\n```\n\nThe contract checker reads two blocks from `agent.cordis.yml`:\n- **`llm-deepseek.models`** — the model registry (the set of `id:` entries under `models:`).\n- **`agent-spine`** — the agents, each with a `model:` reference.\n\nEvery agent-referenced model must appear in the registry. The `main` agent referenced `deepseek-v4-flash`, but the registry only contained `deepseek-v4-pro`.\n\n## Fix\n\nThe comment in the `agent-spine` block made the intent explicit: the agent **stays on `flash`** because the goal/ralph replay corpora were recorded on it, and nested-include overlays cannot re-pin the model. So the pinned state is correct; the inconsistency was in the **model registry** (exactly as the task description stated — \"an inconsistent model registry\").\n\nI restored consistency by registering `deepseek-v4-flash` in `llm-deepseek.models`, mirroring the existing entry's `contextWindow: 128000`. Nothing else was changed.\n\n## Verification\n\n`bash check.sh` now reports:\n```\ncheck passed: model registry consistent\n```",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-out/hp-04-model-pin/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-out/hp-04-model-pin/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "hp-04-model-pin",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Done.\n\n## Summary\n\n**Diagnosis** — `bash check.sh` reported:\n> `agent-spine references model 'deepseek-v4-flash' that is not registered in llm-deepseek.models`\n\nThe `agent-spine` entry registers a `main` agent pinned to `model: deepseek-v4-flash` (its comment explicitly says it \"Stays on flash\" for the recorded replay corpora), but the `llm-deepseek` adapter's `models` registry only listed `deepseek-v4-pro`. The contract checker cross-references each agent's `model:` against the registered model ids, so this unregistered reference violated consistency.\n\n**Fix** — Restored the missing `deepseek-v4-flash` entry to the `llm-deepseek.models` registry (matching the documented composition in the bundled skill body), leaving everything else unchanged:\n\n```yaml\n    models:\n      - id: deepseek-v4-pro\n        contextWindow: 128000\n      - id: deepseek-v4-flash\n        contextWindow: 128000\n```\n\n**Verification** — `bash check.sh` now prints `check passed: model registry consistent` and exits 0.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-out/hp-04-model-pin/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 41119,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 27127,
+              "completion_tokens": 1748,
+              "total_tokens": 28875,
+              "usage_observations": 7,
+              "elapsed_ms": 41672,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Done.\n\n## Summary\n\n**Diagnosis** — `bash check.sh` reported:\n> `agent-spine references model 'deepseek-v4-flash' that is not registered in llm-deepseek.models`\n\nThe `agent-spine` entry registers a `main` agent pinned to `model: deepseek-v4-flash` (its comment explicitly says it \"Stays on flash\" for the recorded replay corpora), but the `llm-deepseek` adapter's `models` registry only listed `deepseek-v4-pro`. The contract checker cross-references each agent's `model:` against the registered model ids, so this unregistered reference violated consistency.\n\n**Fix** — Restored the missing `deepseek-v4-flash` entry to the `llm-deepseek.models` registry (matching the documented composition in the bundled skill body), leaving everything else unchanged:\n\n```yaml\n    models:\n      - id: deepseek-v4-pro\n        contextWindow: 128000\n      - id: deepseek-v4-flash\n        contextWindow: 128000\n```\n\n**Verification** — `bash check.sh` now prints `check passed: model registry consistent` and exits 0.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-out/hp-04-model-pin/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-out/hp-04-model-pin/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "hp-04-model-pin",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "## Summary\n\n**Diagnosis:** The `agent-spine` entry pins its `main` agent to model `deepseek-v4-flash` (and a comment explicitly notes it must stay on flash for the replay corpora). However, the `llm-deepseek.models` registry only registered `deepseek-v4-pro`, leaving the agent referencing an unregistered model.\n\n**Fix:** Registered the missing `deepseek-v4-flash` model in the `llm-deepseek.models` block, matching the existing entry's format (`id` + `contextWindow`). This restores registry consistency while leaving the agent's model pin and all other entries untouched.\n\n**Verification:** `bash check.sh` now reports `check passed: model registry consistent` with exit code 0.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-out/hp-04-model-pin/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 34200,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 20345,
+              "completion_tokens": 1494,
+              "total_tokens": 21839,
+              "usage_observations": 7,
+              "elapsed_ms": 34610,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": false,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "## Summary\n\n**Diagnosis:** The `agent-spine` entry pins its `main` agent to model `deepseek-v4-flash` (and a comment explicitly notes it must stay on flash for the replay corpora). However, the `llm-deepseek.models` registry only registered `deepseek-v4-pro`, leaving the agent referencing an unregistered model.\n\n**Fix:** Registered the missing `deepseek-v4-flash` model in the `llm-deepseek.models` block, matching the existing entry's format (`id` + `contextWindow`). This restores registry consistency while leaving the agent's model pin and all other entries untouched.\n\n**Verification:** `bash check.sh` now reports `check passed: model registry consistent` with exit code 0.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-out/hp-04-model-pin/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-out/hp-04-model-pin/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "hp-05-maxdepth-bound",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "hp-05-maxdepth-bound",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Diagnosis:** The bundled contract checker (`check.js`) validates that every top-level delegation row whose `id` contains `subagent` must have `maxDepth` set to a positive integer (`>= 1`). The `tool-subagent-fork` row had `maxDepth: 0`, which violates the schema bound.\n\n**Fix:** Changed `maxDepth: 0` → `maxDepth: 1` on the `tool-subagent-fork` row (the same value used by the sibling `tool-subagent` row, and matching the canonical composition in the skill documentation).\n\n**Verification:** `bash check.sh` now reports `check passed: delegation bounds valid` with exit code 0. The diff is the minimal single-line change; everything else is left unchanged.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-out/hp-05-maxdepth-bound/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 56532,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26845,
+              "completion_tokens": 1076,
+              "total_tokens": 27921,
+              "usage_observations": 7,
+              "elapsed_ms": 57298,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Diagnosis:** The bundled contract checker (`check.js`) validates that every top-level delegation row whose `id` contains `subagent` must have `maxDepth` set to a positive integer (`>= 1`). The `tool-subagent-fork` row had `maxDepth: 0`, which violates the schema bound.\n\n**Fix:** Changed `maxDepth: 0` → `maxDepth: 1` on the `tool-subagent-fork` row (the same value used by the sibling `tool-subagent` row, and matching the canonical composition in the skill documentation).\n\n**Verification:** `bash check.sh` now reports `check passed: delegation bounds valid` with exit code 0. The diff is the minimal single-line change; everything else is left unchanged.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-out/hp-05-maxdepth-bound/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-1/held-out/hp-05-maxdepth-bound/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "hp-05-maxdepth-bound",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Done. The fix is minimal and correct.\n\n## Summary\n\n**Diagnosis:** `bash check.sh` reported a contract violation on the `tool-subagent-fork` delegation row: its `maxDepth` was set to `0`, but the bundled contract checker requires `$.maxDepth` to be a positive integer (`Number.isInteger(...)` and `>= 1`).\n\n**Fix:** Changed `maxDepth: 0` → `maxDepth: 1` in the `tool-subagent-fork` row of `agent.cordis.yml`. This matches the shipped reference (the skill's base composition documents the fork delegation row with `maxDepth: 1`) and is the smallest change that satisfies the schema bound.\n\n**Verification:** `bash check.sh` now reports `check passed: delegation bounds valid` (exit 0), and the git diff shows only the single-value change, leaving everything else unchanged.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-out/hp-05-maxdepth-bound/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 33316,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26826,
+              "completion_tokens": 1019,
+              "total_tokens": 27845,
+              "usage_observations": 7,
+              "elapsed_ms": 33742,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Done. The fix is minimal and correct.\n\n## Summary\n\n**Diagnosis:** `bash check.sh` reported a contract violation on the `tool-subagent-fork` delegation row: its `maxDepth` was set to `0`, but the bundled contract checker requires `$.maxDepth` to be a positive integer (`Number.isInteger(...)` and `>= 1`).\n\n**Fix:** Changed `maxDepth: 0` → `maxDepth: 1` in the `tool-subagent-fork` row of `agent.cordis.yml`. This matches the shipped reference (the skill's base composition documents the fork delegation row with `maxDepth: 1`) and is the smallest change that satisfies the schema bound.\n\n**Verification:** `bash check.sh` now reports `check passed: delegation bounds valid` (exit 0), and the git diff shows only the single-value change, leaving everything else unchanged.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-out/hp-05-maxdepth-bound/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-0/held-out/hp-05-maxdepth-bound/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "hp-05-maxdepth-bound",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Diagnosis:** The contract checker (`check.js`) enforces that every delegation row with `id` containing `subagent` must have `maxDepth` as a positive integer (≥ 1). The `tool-subagent-fork` row had `maxDepth: 0`, which violated the schema bound.\n\n**Fix:** Changed `maxDepth: 0` → `maxDepth: 1` in the `tool-subagent-fork` row of `agent.cordis.yml` (the value documented in the bundled skill reference for this composition). Everything else was left unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: delegation bounds valid` (exit 0).",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-out/hp-05-maxdepth-bound/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 74361,
+              "tool_calls": 11,
+              "tool_call_retries": 0,
+              "prompt_tokens": 27130,
+              "completion_tokens": 3433,
+              "total_tokens": 30563,
+              "usage_observations": 7,
+              "elapsed_ms": 74936,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete.\n\n## Summary\n\n**Diagnosis:** The contract checker (`check.js`) enforces that every delegation row with `id` containing `subagent` must have `maxDepth` as a positive integer (≥ 1). The `tool-subagent-fork` row had `maxDepth: 0`, which violated the schema bound.\n\n**Fix:** Changed `maxDepth: 0` → `maxDepth: 1` in the `tool-subagent-fork` row of `agent.cordis.yml` (the value documented in the bundled skill reference for this composition). Everything else was left unchanged.\n\n**Verification:** `bash check.sh` now reports `check passed: delegation bounds valid` (exit 0).",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-out/hp-05-maxdepth-bound/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-pilot-headless-v2b/official-full/rep-2/held-out/hp-05-maxdepth-bound/trace.jsonl"
+        }
+      ]
+    }
+  ],
+  "generated_at": "2026-08-14T07:56:23.112Z"
+}
