@@ -80,7 +80,7 @@ function loadModelConfig(configPath) {
   if (!provider || !provider.options || !provider.options.apiKey) throw new Error('provider credentials unavailable: ' + m.provider_id);
   return {
     base_url: (m.base_url || provider.options.baseURL || '').replace(/\/$/, ''),
-    api_key: provider.options.apiKey,
+    api_key: m.api_key || provider.options.apiKey,
     model: m.model || Object.keys(provider.models || {})[0],
     temperature: Number(m.temperature || 0),
     max_tokens: Number(m.max_tokens || 8192)
