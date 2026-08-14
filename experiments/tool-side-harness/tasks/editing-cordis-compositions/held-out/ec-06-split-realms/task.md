@@ -2,10 +2,10 @@
 
 ## Goal
 
-The preset composition in your workspace (`agent.cordis.yml`) does not mount
-cleanly: one of its rows never activates because the realm it needs is split
-across two groups. Diagnose the failure with the bundled contract checker,
-repair the composition, and leave everything else unchanged.
+The preset composition in your workspace (`agent.cordis.yml`) fails the mount
+audit: a service is published into the root realm. Diagnose the failure with
+the bundled contract checker, repair the composition, and leave everything
+else unchanged.
 
 ## What you have
 

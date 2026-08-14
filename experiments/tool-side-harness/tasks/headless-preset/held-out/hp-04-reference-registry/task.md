@@ -3,7 +3,7 @@
 ## Goal
 
 The headless-agent composition in your workspace (`agent.cordis.yml`) deviates
-from its documented reference state: the model registry has been altered.
+from its documented reference state: the evaluation pin has been altered.
 Restore the composition to match the harness reference exactly, and leave
 everything else unchanged.
 

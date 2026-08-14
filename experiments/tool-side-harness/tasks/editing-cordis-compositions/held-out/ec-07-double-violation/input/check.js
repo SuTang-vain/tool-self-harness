@@ -30,24 +30,13 @@ const src = fs.readFileSync(path.join(ws, 'agent.cordis.yml'), 'utf8');
 const rows = topLevelRows(src);
 const violations = [];
 
-const loose = rows.filter(r => !r.id.startsWith('cordis') && r.id !== 'compaction' && r.id !== 'command-compact');
-for (const r of loose) {
-  if (r.id === 'tool-result-pruner') violations.push("row(s) published process-global service(s) [toolResultPruner]; a preset service must sit behind an isolate realm or move to the host composition");
-}
-const compGroup = rows.map(r => ({ row: r, nested: nestedRowIds(blockOf(src, rows, r.id)) }))
-  .find(g => g.row.id === 'compaction');
-if (!compGroup) violations.push("group 'compaction' is missing");
-else {
-  if (!compGroup.nested.includes('compaction-basic')) {
-    violations.push("row 'compaction-basic' did not activate: waiting for service 'toolResultPruner'");
-  }
-  if (!compGroup.nested.includes('tool-result-pruner')) {
-    violations.push("row 'tool-result-pruner' did not activate: waiting for service 'toolResultPruner'");
-  }
-}
+const providers = rows.map(r => ({ row: r, nested: nestedRowIds(blockOf(src, rows, r.id)) }))
+  .filter(g => g.nested.includes('workflow-worker-thread'));
+if (providers.length < 1) violations.push("provider row 'workflow-worker-thread' is missing");
+else if (providers.length > 1) violations.push("service 'workflows' has been registered more than once");
 
 if (violations.length) {
   console.error(violations.join('\n'));
   process.exit(1);
 }
-console.log('check passed: no root-realm publications, no waiting rows');
+console.log('check passed: service registered exactly once');

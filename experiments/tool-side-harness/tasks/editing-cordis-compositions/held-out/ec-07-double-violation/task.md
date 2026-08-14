@@ -2,11 +2,10 @@
 
 ## Goal
 
-The preset composition in your workspace (`agent.cordis.yml`) violates the
-mount contract twice: a provider publishes its service into the root realm,
-and a consumer is left outside the group that owns its service. Diagnose both
-failures with the bundled contract checker, repair the composition, and leave
-everything else unchanged.
+The preset composition in your workspace (`agent.cordis.yml`) fails the mount
+audit: a service is registered more than once. Diagnose the failure with the
+bundled contract checker, repair the composition, and leave everything else
+unchanged.
 
 ## What you have
 

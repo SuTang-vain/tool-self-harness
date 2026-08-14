@@ -30,11 +30,11 @@ const src = fs.readFileSync(path.join(ws, 'agent.cordis.yml'), 'utf8');
 const rows = topLevelRows(src);
 const violations = [];
 
-const providerGroup = rows.map(r => ({ row: r, nested: nestedRowIds(blockOf(src, rows, r.id)) }))
+const group = rows.map(r => ({ row: r, nested: nestedRowIds(blockOf(src, rows, r.id)) }))
   .find(g => g.nested.includes('workflow-worker-thread'));
-if (!providerGroup) violations.push("provider row 'workflow-worker-thread' is missing");
+if (!group) violations.push("row(s) published process-global service(s) [workflows]");
 else {
-  if (!providerGroup.nested.includes('tool-workflow')) {
+  if (!group.nested.includes('tool-workflow')) {
     violations.push("row 'tool-workflow' did not activate: waiting for service 'workflows'");
   }
 }
@@ -43,4 +43,4 @@ if (violations.length) {
   console.error(violations.join('\n'));
   process.exit(1);
 }
-console.log('check passed: no waiting rows');
+console.log('check passed: no root-realm publications, no waiting rows');

@@ -1,24 +1,21 @@
 #!/usr/bin/env bash
-# reference.sh — apply the correct ec-07 fix (both rows join the group).
+# reference.sh — apply the correct ec-07 fix (drop the duplicate group).
 set -euo pipefail
 workspace="$1"
 here="$(cd "$(dirname "$0")" && pwd)"
 cp "$here"/input/agent.cordis.yml "$workspace"/agent.cordis.yml
-cat > "$workspace"/agent.cordis.yml <<'EOF'
-# Fixed: pruner and compaction consumer live inside the compaction group.
-- id: compaction
+cat > "$workspace"/agent.cordis.yml <<'YEOF'
+# Fixed: one delegation group registers workflows exactly once.
+- id: delegation
   name: cordis:group
   group: true
   isolate:
-    compaction: true
-    toolResultPruner: true
+    workflows: true
   config:
-    - id: tool-result-pruner
-      name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+    - id: workflow-worker-thread
+      name: '@deepseek-ai/dsh-workflow-worker-thread'
       config:
-        thresholdChars: 8192
-    - id: command-compact
-      name: '@deepseek-ai/dsh-command-compact'
-    - id: compaction-basic
-      name: '@deepseek-ai/dsh-compaction-basic'
-EOF
+        provider: spawn
+    - id: tool-workflow
+      name: '@deepseek-ai/dsh-tool-workflow'
+YEOF

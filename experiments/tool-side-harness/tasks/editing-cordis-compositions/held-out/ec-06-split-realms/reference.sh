@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# reference.sh — apply the correct ec-06 fix (merge the split realms).
+# reference.sh — apply the correct ec-06 fix (create the isolate group).
 set -euo pipefail
 workspace="$1"
 here="$(cd "$(dirname "$0")" && pwd)"
 cp "$here"/input/agent.cordis.yml "$workspace"/agent.cordis.yml
-cat > "$workspace"/agent.cordis.yml <<'EOF'
-# Fixed: one delegation group carries the provider AND the consumer.
+cat > "$workspace"/agent.cordis.yml <<'YEOF'
+# Fixed: provider and consumer wrapped in one isolate group.
 - id: delegation
   name: cordis:group
   group: true
@@ -18,4 +18,4 @@ cat > "$workspace"/agent.cordis.yml <<'EOF'
         provider: spawn
     - id: tool-workflow
       name: '@deepseek-ai/dsh-tool-workflow'
-EOF
+YEOF
