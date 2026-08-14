@@ -22,7 +22,7 @@ else {
   const t = /^    thresholdRatio:\s*(\S+)/m.exec(block);
   const v = t ? Number(t[1]) : NaN;
   if (!(Number.isFinite(v) && v > 0 && v <= 1)) {
-    violations.push('invalid config: $.thresholdRatio must be a number in (0,1]');
+    violations.push('invalid config: $.thresholdRatio must be a number in (0,1] — restore the reference value documented in the harness');
   }
 }
 if (violations.length) { console.error(violations.join('\n')); process.exit(1); }

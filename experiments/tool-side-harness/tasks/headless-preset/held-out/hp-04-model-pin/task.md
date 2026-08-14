@@ -9,6 +9,11 @@ leave everything else unchanged.
 
 ## What you have
 
+Consult the harness documentation available to you (`list_skills` /
+`load_skill`) before editing — the checker reports violations, not fixes.
+
+`bash check.sh` reports contract violations.
+
 `bash check.sh` reports contract violations.
 
 ## What to produce
