@@ -1,0 +1,34 @@
+{
+  "event": "wp4-r2-capability-track-results",
+  "recorded_at": "2026-08-14",
+  "preregistration": "protocols/DSH_WP4_CAPABILITY_TRACK_R2.md",
+  "runner": "hardened generic-runner; official-full; full suite; 3 fresh repeats; seed 20260819",
+  "gate0_aborts": [
+    "first parallel batch hit endpoint errors (InternalServiceError / UnsupportedModel) at ec-03 rep2; all three runs aborted and re-run sequentially (run ids suffixed -b)"
+  ],
+  "baseline": {
+    "id": "h0-degraded-realm",
+    "vectors": {"held_in": "3/9", "held_in_reliable": 1, "held_out": "3/6", "held_out_reliable": 1},
+    "per_task": {"ec-01": "0/3", "ec-02": "3/3", "ec-03": "0/3", "ec-06": "0/3", "ec-07": "3/3"},
+    "attribution_check": "ec-01/ec-06 collapse as preregistered; ec-03 ALSO collapsed (deviating from the hypothesis — the section's influence range is wider than the fixture analysis predicted); ec-02/ec-07 survive"
+  },
+  "candidates": [
+    {
+      "id": "c1-restore-realm",
+      "vectors": {"held_in": "9/9", "held_in_reliable": 3, "held_out": "6/6", "held_out_reliable": 2},
+      "gate_vs_h0minus": {"gained_reliable": ["ec-01", "ec-03", "ec-06"], "lost_reliable": [], "held_in_aggregate": "9/9 >= 3/9", "held_out_aggregate": "6/6 >= 3/6", "pass": true},
+      "decision": "mechanism-control-pass",
+      "note": "verbatim restore returns to h0 behavior, confirming the section is causally load-bearing"
+    },
+    {
+      "id": "c2-condensed-realm",
+      "vectors": {"held_in": "9/9", "held_in_reliable": 3, "held_out": "6/6", "held_out_reliable": 2},
+      "gate_vs_h0minus": {"gained_reliable": ["ec-01", "ec-03", "ec-06"], "lost_reliable": [], "held_in_aggregate": "9/9 >= 3/9", "held_out_aggregate": "6/6 >= 3/6", "pass": true},
+      "decision": "promote-to-capability-lineage",
+      "note": "the -44% condensed rewrite (template + four rule sentences) fully recovers the degraded capability; the dropped introspection and host-plane prose were not load-bearing for the frozen tasks"
+    }
+  ],
+  "lineage": "lineages/dsh-capability/editing-cordis-compositions/h1 (content = c2)",
+  "claim_level": "E2 local reliable evolution, bounded by the degraded-baseline design: single model (glm-5.2, Ark plan/v3), single frozen suite, evolution measured FROM the preregistered degraded h0-, not from natural h0. Replication across an independent distribution or model is required before E3+ language.",
+  "q3_observation": {"h0minus_mean_tokens": null, "c2_mean_tokens": null, "note": "recorded in the per-run result files; not a gate per the efficiency-track measurement-boundary conclusion"}
+}

@@ -1,0 +1,673 @@
+{
+  "run_id": "dsh-wp4-r2-c2-b",
+  "variant": "official-full",
+  "model_config": "/Users/tangyaoyue/DEV/tool-self-harness/.tmp-config-dsh-pilot.yaml",
+  "skill_repo": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/targets/editing-cordis-compositions/candidates/c2-condensed-realm",
+  "suite": "/Users/tangyaoyue/DEV/tool-self-harness/experiments/tool-side-harness/tasks/editing-cordis-compositions",
+  "repeats": 3,
+  "task_order_seed": 20260819,
+  "task_filter": null,
+  "held_in": {
+    "passes": 9,
+    "attempts": 9,
+    "pass_rate": 1,
+    "stable_tasks": [
+      "ec-01-realm-missing",
+      "ec-02-never-activated",
+      "ec-03-invalid-config"
+    ],
+    "stable_task_count": 3,
+    "task_count": 3
+  },
+  "held_out": {
+    "passes": 6,
+    "attempts": 6,
+    "pass_rate": 1,
+    "stable_tasks": [
+      "ec-06-split-realms",
+      "ec-07-double-violation"
+    ],
+    "stable_task_count": 2,
+    "task_count": 2
+  },
+  "metrics": {
+    "attempts": 15,
+    "usage_coverage": 1,
+    "api_calls": 111,
+    "api_latency_ms": 368837,
+    "tool_calls": 148,
+    "tool_call_retries": 0,
+    "prompt_tokens": 421239,
+    "completion_tokens": 13799,
+    "total_tokens": 435038,
+    "elapsed_ms": 375397,
+    "mean_tokens_per_attempt": 29002.533333333333,
+    "mean_tool_calls_per_attempt": 9.866666666666667,
+    "mean_elapsed_ms_per_attempt": 25026.466666666667,
+    "tokens_per_successful_attempt": 29002.533333333333,
+    "tokens_per_reliable_task": 87007.6
+  },
+  "behavior": {
+    "loaded_skill_rate": 1,
+    "test_before_edit_rate": 0,
+    "test_after_edit_rate": 0
+  },
+  "per_task": [
+    {
+      "split": "held-in",
+      "task_id": "ec-01-realm-missing",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "ec-01-realm-missing",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 6,
+            "final_answer": "Fixed `agent.cordis.yml`.\n\n**Before:** two loose top-level rows - `workflow-worker-thread` published `workflows` into the process-global (root) realm, so a second session mounting this preset would collide on the provider name; the mount audit rejects it. Its consumer `tool-workflow` also sat loose, so it would have resolved the host's registry and never activated even without the collision.\n\n**After:** one `cordis:group` row with `group: true`, carrying both the provider and its consumer, with the isolate realm `workflows: true` - a realm private to each mounting session. Both rows nest inside the group's `config`, so neither is loose. Row ids, package names, the `provider: spawn` config, and the file's comment are all unchanged; the group is the only addition. This mirrors the shipped `standard` composition's `delegation` group.\n\n**Verification:** the structure assertion confirms exactly one top-level row, `name: cordis:group`, `group: true`, `isolate == {workflows: true}`, both expected child rows nested with their original ids/names/config, and no loose `workflow-worker-thread` or `tool-workflow` row. The workspace contains only `agent.cordis.yml`, and the diff is confined to that file.\n\nOne caveat worth naming: the skill's authoritative check is `ctx.agentPresets.standingKeyFor(id)` via a mounted probe plugin, which composes the subtree for real. That runtime service isn't reachable from this workspace, so I verified the shape structurally rather than by mounting - the composition is the standard `delegation` pattern verbatim, so a real mount should pass, but you may want to run `standingKeyFor` in a live session before handing the preset to anyone.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-in/ec-01-realm-missing/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 24254,
+              "tool_calls": 8,
+              "tool_call_retries": 0,
+              "prompt_tokens": 22149,
+              "completion_tokens": 1395,
+              "total_tokens": 23544,
+              "usage_observations": 6,
+              "elapsed_ms": 24684,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 8,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Fixed `agent.cordis.yml`.\n\n**Before:** two loose top-level rows - `workflow-worker-thread` published `workflows` into the process-global (root) realm, so a second session mounting this preset would collide on the provider name; the mount audit rejects it. Its consumer `tool-workflow` also sat loose, so it would have resolved the host's registry and never activated even without the collision.\n\n**After:** one `cordis:group` row with `group: true`, carrying both the provider and its consumer, with the isolate realm `workflows: true` - a realm private to each mounting session. Both rows nest inside the group's `config`, so neither is loose. Row ids, package names, the `provider: spawn` config, and the file's comment are all unchanged; the group is the only addition. This mirrors the shipped `standard` composition's `delegation` group.\n\n**Verification:** the structure assertion confirms exactly one top-level row, `name: cordis:group`, `group: true`, `isolate == {workflows: true}`, both expected child rows nested with their original ids/names/config, and no loose `workflow-worker-thread` or `tool-workflow` row. The workspace contains only `agent.cordis.yml`, and the diff is confined to that file.\n\nOne caveat worth naming: the skill's authoritative check is `ctx.agentPresets.standingKeyFor(id)` via a mounted probe plugin, which composes the subtree for real. That runtime service isn't reachable from this workspace, so I verified the shape structurally rather than by mounting - the composition is the standard `delegation` pattern verbatim, so a real mount should pass, but you may want to run `standingKeyFor` in a live session before handing the preset to anyone.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-in/ec-01-realm-missing/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-in/ec-01-realm-missing/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-01-realm-missing",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Fixed `agent.cordis.yml`.\n\n**The problem:** `workflow-worker-thread` publishes the `workflows` service but sat loose in the preset. A loose row registers its service into the process-global realm, so the second session mounting this preset would collide with the first. The mount rejects it rather than surfacing the collision later.\n\n**The change:** wrapped the provider *and* its consumer `tool-workflow` in a single `cordis:group` row (`id: delegation`, `group: true`) carrying an isolate realm `workflows: true` — a realm private to each mounting session, which is what a preset needs (a string label would join subtrees into a shared realm and still throw on the second registration).\n\nThe consumer stayed inside the group deliberately: left outside, it would resolve the host's registry and never activate, and giving it its own realm is the same error.\n\nNothing else changed — both rows keep their original ids, package names, and the `provider: spawn` config.\n\n**Verification:** the composition parses as a single-row list whose only top-level row is the group (`group: true`), with `isolate: {workflows: true}`, exactly two nested rows (`workflow-worker-thread`, `tool-workflow`) carrying unchanged config, and no loose rows at top level.\n\nOne caveat worth flagging: this was a static/structural check, not a live mount. The skill's `standingKeyFor(id)` mount-validation is the real check for the four ways a composition fails, but reaching it requires mounting a plugin that injects `ctx.agentPresets` via `cordis_mount`, which isn't available in this environment — only file and shell tools. Also note this file is the workspace fixture, not a preset directory under a preset root with `preset.yml` metadata, so there's no preset id to validate by in the first place. The structure now matches the shipped `standard` composition's `delegation` group exactly, so I'd expect it to mount cleanly if loaded as a preset.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-in/ec-01-realm-missing/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 26144,
+              "tool_calls": 7,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26888,
+              "completion_tokens": 1281,
+              "total_tokens": 28169,
+              "usage_observations": 7,
+              "elapsed_ms": 26363,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 7,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Fixed `agent.cordis.yml`.\n\n**The problem:** `workflow-worker-thread` publishes the `workflows` service but sat loose in the preset. A loose row registers its service into the process-global realm, so the second session mounting this preset would collide with the first. The mount rejects it rather than surfacing the collision later.\n\n**The change:** wrapped the provider *and* its consumer `tool-workflow` in a single `cordis:group` row (`id: delegation`, `group: true`) carrying an isolate realm `workflows: true` — a realm private to each mounting session, which is what a preset needs (a string label would join subtrees into a shared realm and still throw on the second registration).\n\nThe consumer stayed inside the group deliberately: left outside, it would resolve the host's registry and never activate, and giving it its own realm is the same error.\n\nNothing else changed — both rows keep their original ids, package names, and the `provider: spawn` config.\n\n**Verification:** the composition parses as a single-row list whose only top-level row is the group (`group: true`), with `isolate: {workflows: true}`, exactly two nested rows (`workflow-worker-thread`, `tool-workflow`) carrying unchanged config, and no loose rows at top level.\n\nOne caveat worth flagging: this was a static/structural check, not a live mount. The skill's `standingKeyFor(id)` mount-validation is the real check for the four ways a composition fails, but reaching it requires mounting a plugin that injects `ctx.agentPresets` via `cordis_mount`, which isn't available in this environment — only file and shell tools. Also note this file is the workspace fixture, not a preset directory under a preset root with `preset.yml` metadata, so there's no preset id to validate by in the first place. The structure now matches the shipped `standard` composition's `delegation` group exactly, so I'd expect it to mount cleanly if loaded as a preset.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-in/ec-01-realm-missing/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-in/ec-01-realm-missing/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-01-realm-missing",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 6,
+            "final_answer": "The fix is complete. `agent.cordis.yml` now reads:\n\n```yaml\n# Preset fixture ec-01: `workflows` is private to each mounting session.\n- id: delegation\n  name: cordis:group\n  group: true\n  isolate:\n    workflows: true\n  config:\n    - id: workflow-worker-thread\n      name: '@deepseek-ai/dsh-workflow-worker-thread'\n      config:\n        provider: spawn\n\n    - id: tool-workflow\n      name: '@deepseek-ai/dsh-tool-workflow'\n```\n\n**What changed and why**\n\n- The loose `workflow-worker-thread` row was registering `workflows` into the process-global (root) realm, so a second session mounting this preset would collide with the first. The mount rejects that rather than deferring the failure.\n- Both the provider and its consumer `tool-workflow` are now inside a single `cordis:group` row (`group: true`) carrying `isolate: { workflows: true }`. `true` gives each mounting session a realm private to it, which is what a preset needs — a string label would join subtrees into one shared realm and still throw on the second registration.\n- The consumer had to move into the same group: leaving `tool-workflow` outside would resolve the host's registry and never activate, and wrapping it in a realm of its own would be the same error.\n- Nothing else changed — no rows added, removed, or reconfigured, and no drift from the shipped `standard` `delegation` group shape.\n\n**Verification**\n\n- Structurally asserted the parsed document: exactly one top-level row; it is the group with `name: cordis:group`, `group: true` (boolean, not the string `\"true\"`), and `isolate` exactly `{workflows: true}`; its `config` holds the two rows in order with their original ids/names/`provider: spawn`; and no top-level row is the `workflow-worker-thread` publisher. All passed.\n- `git diff` confirms the edit is limited to the grouping and a comment update.\n\nOne caveat worth stating plainly: there is no test suite in this workspace — only the fixture file — and the live mount-validation path (`standingKeyFor`) isn't reachable from here since this composition isn't installed in a preset root. My checks are therefore structural, matching the pattern the skill documents, not an actual mount. If you install this preset into your user root, running `standingKeyFor` on it would be the real confirmation, followed by starting a session and checking the tool list.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-in/ec-01-realm-missing/trace.jsonl",
+            "metrics": {
+              "api_calls": 6,
+              "api_latency_ms": 28895,
+              "tool_calls": 8,
+              "tool_call_retries": 0,
+              "prompt_tokens": 22113,
+              "completion_tokens": 1698,
+              "total_tokens": 23811,
+              "usage_observations": 6,
+              "elapsed_ms": 29201,
+              "steps": 6
+            }
+          },
+          "behavior": {
+            "steps": 8,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The fix is complete. `agent.cordis.yml` now reads:\n\n```yaml\n# Preset fixture ec-01: `workflows` is private to each mounting session.\n- id: delegation\n  name: cordis:group\n  group: true\n  isolate:\n    workflows: true\n  config:\n    - id: workflow-worker-thread\n      name: '@deepseek-ai/dsh-workflow-worker-thread'\n      config:\n        provider: spawn\n\n    - id: tool-workflow\n      name: '@deepseek-ai/dsh-tool-workflow'\n```\n\n**What changed and why**\n\n- The loose `workflow-worker-thread` row was registering `workflows` into the process-global (root) realm, so a second session mounting this preset would collide with the first. The mount rejects that rather than deferring the failure.\n- Both the provider and its consumer `tool-workflow` are now inside a single `cordis:group` row (`group: true`) carrying `isolate: { workflows: true }`. `true` gives each mounting session a realm private to it, which is what a preset needs — a string label would join subtrees into one shared realm and still throw on the second registration.\n- The consumer had to move into the same group: leaving `tool-workflow` outside would resolve the host's registry and never activate, and wrapping it in a realm of its own would be the same error.\n- Nothing else changed — no rows added, removed, or reconfigured, and no drift from the shipped `standard` `delegation` group shape.\n\n**Verification**\n\n- Structurally asserted the parsed document: exactly one top-level row; it is the group with `name: cordis:group`, `group: true` (boolean, not the string `\"true\"`), and `isolate` exactly `{workflows: true}`; its `config` holds the two rows in order with their original ids/names/`provider: spawn`; and no top-level row is the `workflow-worker-thread` publisher. All passed.\n- `git diff` confirms the edit is limited to the grouping and a comment update.\n\nOne caveat worth stating plainly: there is no test suite in this workspace — only the fixture file — and the live mount-validation path (`standingKeyFor`) isn't reachable from here since this composition isn't installed in a preset root. My checks are therefore structural, matching the pattern the skill documents, not an actual mount. If you install this preset into your user root, running `standingKeyFor` on it would be the real confirmation, followed by starting a session and checking the tool list.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-in/ec-01-realm-missing/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-in/ec-01-realm-missing/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "ec-02-never-activated",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "ec-02-never-activated",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 10,
+            "final_answer": "The contract checker passes. Only `agent.cordis.yml` changed.\n\n## What was wrong\n\nThe `compaction` group publishes `toolResultPruner` behind an `isolate` realm, but its consumer `compaction-basic` was declared as a *top-level* row, outside that group. Per the composition rule, a consumer left outside the group resolves the host's registry instead of the group's realm, so it sat forever waiting for `toolResultPruner` and never activated — exactly what `check.sh` reported:\n\n```\nrow 'compaction-basic' did not activate: waiting for service 'toolResultPruner'\n```\n\n## The fix\n\nMoved `compaction-basic` inside the `compaction` group's `config`, so the provider and every consumer that reaches it now share one isolate realm:\n\n```yaml\n- id: compaction\n  name: cordis:group\n  group: true\n  isolate:\n    compaction: true\n    toolResultPruner: true\n  config:\n    - id: tool-result-pruner\n      name: '@deepseek-ai/dsh-compaction-tool-result-pruner'\n      config:\n        thresholdChars: 8192\n    - id: compaction-basic\n      name: '@deepseek-ai/dsh-compaction-basic'\n```\n\nThis is the smallest correct change — no realm of its own was added (wrapping a consumer in a separate realm is the same error), and no service was moved to the host composition since `toolResultPruner` is genuinely per-session.\n\n## Verification\n\n- `bash check.sh` → `check passed: no waiting rows` (exit 0)\n- `git diff` confirms the change is confined to re-indenting that one row into the group; `check.sh` and `check.js` are untouched.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-in/ec-02-never-activated/trace.jsonl",
+            "metrics": {
+              "api_calls": 10,
+              "api_latency_ms": 30408,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 39846,
+              "completion_tokens": 907,
+              "total_tokens": 40753,
+              "usage_observations": 10,
+              "elapsed_ms": 31010,
+              "steps": 10
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The contract checker passes. Only `agent.cordis.yml` changed.\n\n## What was wrong\n\nThe `compaction` group publishes `toolResultPruner` behind an `isolate` realm, but its consumer `compaction-basic` was declared as a *top-level* row, outside that group. Per the composition rule, a consumer left outside the group resolves the host's registry instead of the group's realm, so it sat forever waiting for `toolResultPruner` and never activated — exactly what `check.sh` reported:\n\n```\nrow 'compaction-basic' did not activate: waiting for service 'toolResultPruner'\n```\n\n## The fix\n\nMoved `compaction-basic` inside the `compaction` group's `config`, so the provider and every consumer that reaches it now share one isolate realm:\n\n```yaml\n- id: compaction\n  name: cordis:group\n  group: true\n  isolate:\n    compaction: true\n    toolResultPruner: true\n  config:\n    - id: tool-result-pruner\n      name: '@deepseek-ai/dsh-compaction-tool-result-pruner'\n      config:\n        thresholdChars: 8192\n    - id: compaction-basic\n      name: '@deepseek-ai/dsh-compaction-basic'\n```\n\nThis is the smallest correct change — no realm of its own was added (wrapping a consumer in a separate realm is the same error), and no service was moved to the host composition since `toolResultPruner` is genuinely per-session.\n\n## Verification\n\n- `bash check.sh` → `check passed: no waiting rows` (exit 0)\n- `git diff` confirms the change is confined to re-indenting that one row into the group; `check.sh` and `check.js` are untouched.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-in/ec-02-never-activated/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-in/ec-02-never-activated/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-02-never-activated",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Fixed and verified.\n\n## Diagnosis\n\nThe `compaction` group publishes the `toolResultPruner` service behind a private `isolate` realm, but its consumer row `compaction-basic` sat at the top level, *outside* that realm. A consumer left outside the group resolves the host's registry, which supplies nothing for `toolResultPruner`, so the row waited forever and never activated:\n\n```\nrow 'compaction-basic' did not activate: waiting for service 'toolResultPruner'\n```\n\n## Change\n\nMoved `compaction-basic` inside the `compaction` group's `config`, so the provider and every consumer that reaches it share one group realm. Exactly two lines changed (indentation):\n\n```diff\n-- id: compaction-basic\n-  name: '@deepseek-ai/dsh-compaction-basic'\n+    - id: compaction-basic\n+      name: '@deepseek-ai/dsh-compaction-basic'\n```\n\nNo service was published into the root realm, no row moved to the host composition, and nothing else in the file was touched. Note the leading `# Broken preset fixture ec-02…` comment is now stale; I left it in place per the \"leave everything else unchanged\" instruction — say the word if you want it reworded.\n\n## Verification\n\n```\n$ bash check.sh\ncheck passed: no waiting rows        (exit 0)\n```\n\n`check.sh`/`check.js` is the only test present in the workspace, and it now passes cleanly.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-in/ec-02-never-activated/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 22907,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 27645,
+              "completion_tokens": 824,
+              "total_tokens": 28469,
+              "usage_observations": 7,
+              "elapsed_ms": 23293,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Fixed and verified.\n\n## Diagnosis\n\nThe `compaction` group publishes the `toolResultPruner` service behind a private `isolate` realm, but its consumer row `compaction-basic` sat at the top level, *outside* that realm. A consumer left outside the group resolves the host's registry, which supplies nothing for `toolResultPruner`, so the row waited forever and never activated:\n\n```\nrow 'compaction-basic' did not activate: waiting for service 'toolResultPruner'\n```\n\n## Change\n\nMoved `compaction-basic` inside the `compaction` group's `config`, so the provider and every consumer that reaches it share one group realm. Exactly two lines changed (indentation):\n\n```diff\n-- id: compaction-basic\n-  name: '@deepseek-ai/dsh-compaction-basic'\n+    - id: compaction-basic\n+      name: '@deepseek-ai/dsh-compaction-basic'\n```\n\nNo service was published into the root realm, no row moved to the host composition, and nothing else in the file was touched. Note the leading `# Broken preset fixture ec-02…` comment is now stale; I left it in place per the \"leave everything else unchanged\" instruction — say the word if you want it reworded.\n\n## Verification\n\n```\n$ bash check.sh\ncheck passed: no waiting rows        (exit 0)\n```\n\n`check.sh`/`check.js` is the only test present in the workspace, and it now passes cleanly.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-in/ec-02-never-activated/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-in/ec-02-never-activated/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-02-never-activated",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Fixed. `bash check.sh` now passes (`check passed: no waiting rows`, exit 0).\n\n**Diagnosis:** `compaction-basic` consumes the `toolResultPruner` service, but it was a top-level row sitting outside the `compaction` group realm that publishes it. A consumer outside the group resolves the host's registry — where nothing provides `toolResultPruner` — so the row waited forever and never activated.\n\n**Change:** indented the `compaction-basic` row into the `compaction` group's `config` (nesting it under the `isolate` realm with `toolResultPruner: true`), leaving everything else — the group, its realm flags, and the pruner row's config — untouched.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-in/ec-02-never-activated/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 22771,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 27667,
+              "completion_tokens": 893,
+              "total_tokens": 28560,
+              "usage_observations": 7,
+              "elapsed_ms": 23169,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Fixed. `bash check.sh` now passes (`check passed: no waiting rows`, exit 0).\n\n**Diagnosis:** `compaction-basic` consumes the `toolResultPruner` service, but it was a top-level row sitting outside the `compaction` group realm that publishes it. A consumer outside the group resolves the host's registry — where nothing provides `toolResultPruner` — so the row waited forever and never activated.\n\n**Change:** indented the `compaction-basic` row into the `compaction` group's `config` (nesting it under the `isolate` realm with `toolResultPruner: true`), leaving everything else — the group, its realm flags, and the pruner row's config — untouched.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-in/ec-02-never-activated/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-in/ec-02-never-activated/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-in",
+      "task_id": "ec-03-invalid-config",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-in",
+          "task_id": "ec-03-invalid-config",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Fixed.\n\n**Diagnosis:** `bash check.sh` reported `invalid config: row 'tool-subagent' is missing required value $.provider`. The `@deepseek-ai/dsh-tool-subagent` row's `config` block had `toolName` and `backgroundMode` but omitted the required `provider` field, which the subagent tool needs to select a delegation backend.\n\n**Change:** added `provider: spawn` to that row's `config` — the backend shipped preset subagent rows use (and a host-side spawn/fork backend, consistent with the rule that preset rows contribute delegation *tools*, not the subagent registry).\n\n**Verification:** `bash check.sh` now exits 0 with `check passed: no invalid config`. The diff is that single line; nothing else changed.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-in/ec-03-invalid-config/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 21477,
+              "tool_calls": 9,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26458,
+              "completion_tokens": 464,
+              "total_tokens": 26922,
+              "usage_observations": 7,
+              "elapsed_ms": 21875,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 9,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Fixed.\n\n**Diagnosis:** `bash check.sh` reported `invalid config: row 'tool-subagent' is missing required value $.provider`. The `@deepseek-ai/dsh-tool-subagent` row's `config` block had `toolName` and `backgroundMode` but omitted the required `provider` field, which the subagent tool needs to select a delegation backend.\n\n**Change:** added `provider: spawn` to that row's `config` — the backend shipped preset subagent rows use (and a host-side spawn/fork backend, consistent with the rule that preset rows contribute delegation *tools*, not the subagent registry).\n\n**Verification:** `bash check.sh` now exits 0 with `check passed: no invalid config`. The diff is that single line; nothing else changed.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-in/ec-03-invalid-config/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-in/ec-03-invalid-config/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-03-invalid-config",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Fixed and verified.\n\n**Diagnosis:** `bash check.sh` reported `invalid config: row 'tool-subagent' is missing required value $.provider` — the `@deepseek-ai/dsh-tool-subagent` row had `toolName` and `backgroundMode` but was missing the required `provider` config field.\n\n**Change:** one line added to `agent.cordis.yml`:\n\n```diff\n   config:\n+    provider: spawn\n     toolName: subagent\n     backgroundMode: continuable\n```\n\n`spawn` is a valid delegation provider for this plugin (and the host-side registry owns the actual spawn/fork backends, which stays host-side — this row only contributes the delegation tool, matching the plane rule in the skill).\n\n**Verification:** `bash check.sh` → `check passed: no invalid config` (exit 0). Everything else — `check.js`, `check.sh` — is untouched.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-in/ec-03-invalid-config/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 24498,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26716,
+              "completion_tokens": 819,
+              "total_tokens": 27535,
+              "usage_observations": 7,
+              "elapsed_ms": 24907,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Fixed and verified.\n\n**Diagnosis:** `bash check.sh` reported `invalid config: row 'tool-subagent' is missing required value $.provider` — the `@deepseek-ai/dsh-tool-subagent` row had `toolName` and `backgroundMode` but was missing the required `provider` config field.\n\n**Change:** one line added to `agent.cordis.yml`:\n\n```diff\n   config:\n+    provider: spawn\n     toolName: subagent\n     backgroundMode: continuable\n```\n\n`spawn` is a valid delegation provider for this plugin (and the host-side registry owns the actual spawn/fork backends, which stays host-side — this row only contributes the delegation tool, matching the plane rule in the skill).\n\n**Verification:** `bash check.sh` → `check passed: no invalid config` (exit 0). Everything else — `check.js`, `check.sh` — is untouched.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-in/ec-03-invalid-config/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-in/ec-03-invalid-config/trace.jsonl"
+        },
+        {
+          "split": "held-in",
+          "task_id": "ec-03-invalid-config",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Done.\n\n## Diagnosis\n\n`bash check.sh` reported:\n\n```\ninvalid config: row 'tool-subagent' is missing required value $.provider\n```\n\nThe `tool-subagent` row declares `@deepseek-ai/dsh-tool-subagent` but its `config:` block had `toolName` and `backgroundMode` only — no `provider`, a required field for that plugin.\n\n## Change\n\nSmallest correct fix: added `provider: spawn` to that row's `config`. `spawn` is the ordinary delegation-tool backend for `dsh-tool-subagent` (the row stays a per-session tool plugin; nothing needed to move to the host plane, and no service is published, so no isolate realm is required).\n\n```diff\n   name: '@deepseek-ai/dsh-tool-subagent'\n   config:\n+    provider: spawn\n     toolName: subagent\n     backgroundMode: continuable\n```\n\n## Verification\n\n- `bash check.sh` → `check passed: no invalid config` (exit 0)\n- `git diff` confirms the only change is the one added line; `check.js`, `check.sh`, and everything else are untouched.\n\nOne note: the leading comment still says *\"required config field `provider` missing\"*, which now describes the file's pre-fix state. I left it alone since the task asked to change nothing else, but you may want to update or drop that line.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-in/ec-03-invalid-config/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 20576,
+              "tool_calls": 11,
+              "tool_call_retries": 0,
+              "prompt_tokens": 26821,
+              "completion_tokens": 693,
+              "total_tokens": 27514,
+              "usage_observations": 7,
+              "elapsed_ms": 21096,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Done.\n\n## Diagnosis\n\n`bash check.sh` reported:\n\n```\ninvalid config: row 'tool-subagent' is missing required value $.provider\n```\n\nThe `tool-subagent` row declares `@deepseek-ai/dsh-tool-subagent` but its `config:` block had `toolName` and `backgroundMode` only — no `provider`, a required field for that plugin.\n\n## Change\n\nSmallest correct fix: added `provider: spawn` to that row's `config`. `spawn` is the ordinary delegation-tool backend for `dsh-tool-subagent` (the row stays a per-session tool plugin; nothing needed to move to the host plane, and no service is published, so no isolate realm is required).\n\n```diff\n   name: '@deepseek-ai/dsh-tool-subagent'\n   config:\n+    provider: spawn\n     toolName: subagent\n     backgroundMode: continuable\n```\n\n## Verification\n\n- `bash check.sh` → `check passed: no invalid config` (exit 0)\n- `git diff` confirms the only change is the one added line; `check.js`, `check.sh`, and everything else are untouched.\n\nOne note: the leading comment still says *\"required config field `provider` missing\"*, which now describes the file's pre-fix state. I left it alone since the task asked to change nothing else, but you may want to update or drop that line.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-in/ec-03-invalid-config/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-in/ec-03-invalid-config/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "ec-06-split-realms",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 7,
+            "final_answer": "Fixed. Summary:\n\n**Diagnosis.** `workflow-worker-thread` publishes the `workflows` service as a loose top-level row. Registering a service without an isolate realm puts it in the process-global (root) realm, so a second session mounting this preset would collide — the mount audit rejects it up front. The consumer `tool-workflow` also sits outside any realm, so it would resolve the host's registry and never activate.\n\n**Change** (`agent.cordis.yml` only, nothing else touched): wrapped the provider *and* its consumer together in one `cordis:group` carrying `isolate: { workflows: true }` — the same shape the shipped `standard` composition uses for its `delegation` group. `true` (not a shared string label) gives each mounting session a private realm, and the consumer inside the same group resolves its sibling provider.\n\n**Verification.** `bash check.sh` now passes:\n\n```\ncheck passed: no root-realm publications, no waiting rows\n```\n\nNote this fixture holds only the composition file (`agent.cordis.yml`); a real preset directory would also want a `preset.yml` with `name`/`description`, and the final confirmation for an authored preset is `standingKeyFor(id)` plus a real session tool-list check.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 7,
+              "api_latency_ms": 22870,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 25113,
+              "completion_tokens": 753,
+              "total_tokens": 25866,
+              "usage_observations": 7,
+              "elapsed_ms": 23235,
+              "steps": 7
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Fixed. Summary:\n\n**Diagnosis.** `workflow-worker-thread` publishes the `workflows` service as a loose top-level row. Registering a service without an isolate realm puts it in the process-global (root) realm, so a second session mounting this preset would collide — the mount audit rejects it up front. The consumer `tool-workflow` also sits outside any realm, so it would resolve the host's registry and never activate.\n\n**Change** (`agent.cordis.yml` only, nothing else touched): wrapped the provider *and* its consumer together in one `cordis:group` carrying `isolate: { workflows: true }` — the same shape the shipped `standard` composition uses for its `delegation` group. `true` (not a shared string label) gives each mounting session a private realm, and the consumer inside the same group resolves its sibling provider.\n\n**Verification.** `bash check.sh` now passes:\n\n```\ncheck passed: no root-realm publications, no waiting rows\n```\n\nNote this fixture holds only the composition file (`agent.cordis.yml`); a real preset directory would also want a `preset.yml` with `name`/`description`, and the final confirmation for an authored preset is `standingKeyFor(id)` plus a real session tool-list check.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-out/ec-06-split-realms/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 8,
+            "final_answer": "Done.\n\n**Diagnosis** (`bash check.sh` before the fix):\n```\nrow(s) published process-global service(s) [workflows]\n```\n\n`workflow-worker-thread` registers the `workflows` service but sat loose at the top level of the preset. Registering a service outside an isolate realm puts it in the process-global root realm, so the second session mounting the preset would collide on the provider name — the mount audit rejects that up front.\n\n**Repair** (smallest correct change, only `agent.cordis.yml` touched):\n- Wrapped the provider **and** its consumer (`tool-workflow`) in one `cordis:group` group row carrying `isolate: { workflows: true }`. `true` means a realm private to each mounting session, which is what a preset needs — a string label would still share one realm and `provide()` would still throw on the second registration.\n- Kept the consumer inside the same group; leaving it outside would have it resolve the host's registry and never activate, and giving it a realm of its own would be the same error.\n\n**Verification:** `bash check.sh` now reports\n```\ncheck passed: no root-realm publications, no waiting rows\n```\n(`check.js`, `check.sh`, and everything else in the workspace are unchanged — the diff above is the whole change.)",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 27359,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 29632,
+              "completion_tokens": 758,
+              "total_tokens": 30390,
+              "usage_observations": 8,
+              "elapsed_ms": 27787,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Done.\n\n**Diagnosis** (`bash check.sh` before the fix):\n```\nrow(s) published process-global service(s) [workflows]\n```\n\n`workflow-worker-thread` registers the `workflows` service but sat loose at the top level of the preset. Registering a service outside an isolate realm puts it in the process-global root realm, so the second session mounting the preset would collide on the provider name — the mount audit rejects that up front.\n\n**Repair** (smallest correct change, only `agent.cordis.yml` touched):\n- Wrapped the provider **and** its consumer (`tool-workflow`) in one `cordis:group` group row carrying `isolate: { workflows: true }`. `true` means a realm private to each mounting session, which is what a preset needs — a string label would still share one realm and `provide()` would still throw on the second registration.\n- Kept the consumer inside the same group; leaving it outside would have it resolve the host's registry and never activate, and giving it a realm of its own would be the same error.\n\n**Verification:** `bash check.sh` now reports\n```\ncheck passed: no root-realm publications, no waiting rows\n```\n(`check.js`, `check.sh`, and everything else in the workspace are unchanged — the diff above is the whole change.)",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-out/ec-06-split-realms/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-06-split-realms",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 8,
+            "final_answer": "Fixed. `bash check.sh` now reports no violations.\n\n**Diagnosis** — the two rows sat loose at the top level of the preset. `workflow-worker-thread` publishes the `workflows` service, and a row that publishes a service with no `isolate` realm registers into the process-global realm, so the second session mounting the preset would collide. `tool-workflow`, its consumer, was also outside any group with it.\n\n**Change** (`agent.cordis.yml` only) — wrapped the provider *and* its consumer in one `cordis:group` carrying `isolate: workflows: true`, matching the shipped `standard` composition's `delegation` group. `true` gives each mounting session a private realm, rather than a shared label where the second registration still throws. The service stays preset-side because both its provider and its consumer are session-scoped; nothing about it crosses sessions.\n\nEverything else (the two row bodies, `check.sh`, `check.js`) is untouched.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-out/ec-06-split-realms/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 22961,
+              "tool_calls": 10,
+              "tool_call_retries": 0,
+              "prompt_tokens": 29364,
+              "completion_tokens": 648,
+              "total_tokens": 30012,
+              "usage_observations": 8,
+              "elapsed_ms": 23363,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 10,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Fixed. `bash check.sh` now reports no violations.\n\n**Diagnosis** — the two rows sat loose at the top level of the preset. `workflow-worker-thread` publishes the `workflows` service, and a row that publishes a service with no `isolate` realm registers into the process-global realm, so the second session mounting the preset would collide. `tool-workflow`, its consumer, was also outside any group with it.\n\n**Change** (`agent.cordis.yml` only) — wrapped the provider *and* its consumer in one `cordis:group` carrying `isolate: workflows: true`, matching the shipped `standard` composition's `delegation` group. `true` gives each mounting session a private realm, rather than a shared label where the second registration still throws. The service stays preset-side because both its provider and its consumer are session-scoped; nothing about it crosses sessions.\n\nEverything else (the two row bodies, `check.sh`, `check.js`) is untouched.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-out/ec-06-split-realms/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-out/ec-06-split-realms/trace.jsonl"
+        }
+      ]
+    },
+    {
+      "split": "held-out",
+      "task_id": "ec-07-double-violation",
+      "passes": 3,
+      "attempts": 3,
+      "stable_pass": true,
+      "rows": [
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 1,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 8,
+            "final_answer": "The check passes. Summary of the fix:\n\n**Diagnosis:** `agent.cordis.yml` contained two groups, `delegation` and `delegation-copy`, each carrying a `workflow-worker-thread` row. That row publishes the `workflows` service, and a service name registers once — so the second registration collided, which is exactly what the contract checker reported: `service 'workflows' has been registered more than once`.\n\n**Change:** I removed the entire redundant `delegation-copy` group. The correct fix was dropping the duplicate, not merging groups or moving the provider host-side — `workflows` here is a preset-owned service (per-session, alongside its consumer), so it belongs behind an `isolate` realm in the preset, which the surviving `delegation` group already provides. The remaining group keeps both the provider (`workflow-worker-thread`, `provider: spawn`) and its consumer (`tool-workflow`) wrapped in the single `isolate: workflows: true` realm, so no consumer is left resolving the host registry and nothing leaks into the process-global realm.\n\n**Verification:** `bash check.sh` now exits 0 with `check passed: service registered exactly once`. The diff shows only the deletion of the duplicate group — the `delegation` group and everything else is untouched.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 24268,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 30333,
+              "completion_tokens": 837,
+              "total_tokens": 31170,
+              "usage_observations": 8,
+              "elapsed_ms": 24934,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "The check passes. Summary of the fix:\n\n**Diagnosis:** `agent.cordis.yml` contained two groups, `delegation` and `delegation-copy`, each carrying a `workflow-worker-thread` row. That row publishes the `workflows` service, and a service name registers once — so the second registration collided, which is exactly what the contract checker reported: `service 'workflows' has been registered more than once`.\n\n**Change:** I removed the entire redundant `delegation-copy` group. The correct fix was dropping the duplicate, not merging groups or moving the provider host-side — `workflows` here is a preset-owned service (per-session, alongside its consumer), so it belongs behind an `isolate` realm in the preset, which the surviving `delegation` group already provides. The remaining group keeps both the provider (`workflow-worker-thread`, `provider: spawn`) and its consumer (`tool-workflow`) wrapped in the single `isolate: workflows: true` realm, so no consumer is left resolving the host registry and nothing leaks into the process-global realm.\n\n**Verification:** `bash check.sh` now exits 0 with `check passed: service registered exactly once`. The diff shows only the deletion of the duplicate group — the `delegation` group and everything else is untouched.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-1/held-out/ec-07-double-violation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 0,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 8,
+            "final_answer": "Done. Summary:\n\n**Diagnosis:** `agent.cordis.yml` contained two top-level groups, `delegation` and `delegation-copy`, each wrapping a `workflow-worker-thread` row (`@deepseek-ai/dsh-workflow-worker-thread`) behind an `isolate: workflows` realm. `provide()` registers a service name once, so the second registration of `workflows` collides - exactly the failure `bash check.sh` reported (`service 'workflows' has been registered more than once`). Even in separate realms, a preset must publish the service once.\n\n**Change:** Deleted the redundant `delegation-copy` group, keeping the original `delegation` group intact - its provider (`workflow-worker-thread`) and its consumer (`tool-workflow`) both stay inside the single shared `isolate: workflows` realm, so the plane/realm rules still hold. Nothing else in the workspace was touched.\n\n**Verification:** `bash check.sh` now prints `check passed: service registered exactly once` and exits 0; the diff shows only the duplicate block (and the stale header comment) removed.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 26806,
+              "tool_calls": 11,
+              "tool_call_retries": 0,
+              "prompt_tokens": 30110,
+              "completion_tokens": 1044,
+              "total_tokens": 31154,
+              "usage_observations": 8,
+              "elapsed_ms": 27312,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 11,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Done. Summary:\n\n**Diagnosis:** `agent.cordis.yml` contained two top-level groups, `delegation` and `delegation-copy`, each wrapping a `workflow-worker-thread` row (`@deepseek-ai/dsh-workflow-worker-thread`) behind an `isolate: workflows` realm. `provide()` registers a service name once, so the second registration of `workflows` collides - exactly the failure `bash check.sh` reported (`service 'workflows' has been registered more than once`). Even in separate realms, a preset must publish the service once.\n\n**Change:** Deleted the redundant `delegation-copy` group, keeping the original `delegation` group intact - its provider (`workflow-worker-thread`) and its consumer (`tool-workflow`) both stay inside the single shared `isolate: workflows` realm, so the plane/realm rules still hold. Nothing else in the workspace was touched.\n\n**Verification:** `bash check.sh` now prints `check passed: service registered exactly once` and exits 0; the diff shows only the duplicate block (and the stale header comment) removed.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-0/held-out/ec-07-double-violation/trace.jsonl"
+        },
+        {
+          "split": "held-out",
+          "task_id": "ec-07-double-violation",
+          "repeat": 2,
+          "pass": true,
+          "verify_exit": 0,
+          "verify_msg": "dsh preset verifier passed",
+          "runner": {
+            "steps": 8,
+            "final_answer": "Fixed and verified.\n\n**Diagnosis.** The composition had two top-level groups each with `isolate: { workflows: true }`, and each containing a `workflow-worker-thread` row. A service name registers once per realm, so the second group re-published `workflows` — the audit's `service 'workflows' has been registered more than once` (equivalently, `provide()` throwing `service \"workflows\" has been registered at …`). Two separate isolate labels do not merge into a shared realm; a provider belongs in exactly one group alongside its consumers.\n\n**Change.** Deleted the redundant `delegation-copy` group (8 lines) so `workflow-worker-thread` — the provider — sits once inside the `delegation` realm with its consumer `tool-workflow`, matching the shipped `standard` composition's shape. Nothing else was touched; no shipped/host composition was edited.\n\n**Verification.**\n- Before: `service 'workflows' has been registered more than once` (exit 1).\n- After: `bash check.sh` → `check passed: service registered exactly once` (exit 0).\n\nThe diff is the single deletion shown above. One note: the remaining leading comment line still reads *\"Broken preset fixture ec-07: the workflows provider is registered twice.\"* — it's now stale, but it's a fixture label rather than composition content, so I left it as \"everything else unchanged\" requires. Say the word if you'd like it reworded.",
+            "error": null,
+            "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-out/ec-07-double-violation/trace.jsonl",
+            "metrics": {
+              "api_calls": 8,
+              "api_latency_ms": 22643,
+              "tool_calls": 12,
+              "tool_call_retries": 0,
+              "prompt_tokens": 30384,
+              "completion_tokens": 785,
+              "total_tokens": 31169,
+              "usage_observations": 8,
+              "elapsed_ms": 23168,
+              "steps": 8
+            }
+          },
+          "behavior": {
+            "steps": 12,
+            "loaded_skill": true,
+            "read_skill_reference": false,
+            "ran_tests": false,
+            "test_before_first_edit": false,
+            "test_after_last_edit": false,
+            "final_answer": "Fixed and verified.\n\n**Diagnosis.** The composition had two top-level groups each with `isolate: { workflows: true }`, and each containing a `workflow-worker-thread` row. A service name registers once per realm, so the second group re-published `workflows` — the audit's `service 'workflows' has been registered more than once` (equivalently, `provide()` throwing `service \"workflows\" has been registered at …`). Two separate isolate labels do not merge into a shared realm; a provider belongs in exactly one group alongside its consumers.\n\n**Change.** Deleted the redundant `delegation-copy` group (8 lines) so `workflow-worker-thread` — the provider — sits once inside the `delegation` realm with its consumer `tool-workflow`, matching the shipped `standard` composition's shape. Nothing else was touched; no shipped/host composition was edited.\n\n**Verification.**\n- Before: `service 'workflows' has been registered more than once` (exit 1).\n- After: `bash check.sh` → `check passed: service registered exactly once` (exit 0).\n\nThe diff is the single deletion shown above. One note: the remaining leading comment line still reads *\"Broken preset fixture ec-07: the workflows provider is registered twice.\"* — it's now stale, but it's a fixture label rather than composition content, so I left it as \"everything else unchanged\" requires. Say the word if you'd like it reworded.",
+            "task_error": null
+          },
+          "workspace": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-out/ec-07-double-violation/workspace",
+          "trace_path": "/Users/tangyaoyue/DEV/tool-self-harness/runs/general-skills/dsh-wp4-r2-c2-b/official-full/rep-2/held-out/ec-07-double-violation/trace.jsonl"
+        }
+      ]
+    }
+  ],
+  "generated_at": "2026-08-14T15:21:35.447Z"
+}
