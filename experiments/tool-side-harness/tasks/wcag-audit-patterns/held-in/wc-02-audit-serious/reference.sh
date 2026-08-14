@@ -10,8 +10,8 @@ cat > "$workspace"/audit.md <<'YEOF'
 
 ## Serious
 
-- missing-title: the page has no title element
-- div-onclick: a clickable div has no keyboard-accessible role
+- Missing page title: the page has no title element
+- Non-keyboard-operable interactive element: a clickable div lacks keyboard access
 
 ## Moderate
 YEOF

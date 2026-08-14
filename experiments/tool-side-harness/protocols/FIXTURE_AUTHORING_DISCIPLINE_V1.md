@@ -66,3 +66,12 @@ generalization probes only after they demonstrably discriminate, or drop them.
 - `registries/evidence-map-v2.json` — entries `dsh-pilot-v1-fixture-overspecification`,
   `dsh-pilot-v2-harness-consultation-gating`, `dsh-pilot-v2-held-in-discrimination`,
   `dsh-pilot-v2-checker-feedback-trap`.
+
+## D5 — Grader assertions may only demand what the harness teaches (added 2026-08-14)
+
+The hidden grader must never require synthetic vocabulary the harness content does not
+define. R3 pilot v1 demonstrated the failure: the wcag audit grader demanded literal
+keys (`img-missing-alt`) the skill never teaches, so official-full went 0/3 on every
+audit task while fix tasks passed 3/3. Graders for report-style tasks must match
+content semantically (regex per finding + tier-exclusive placement) so that the
+knowledge being tested is exactly what L1/L2 provide.
