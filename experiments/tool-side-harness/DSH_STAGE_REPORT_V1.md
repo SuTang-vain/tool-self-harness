@@ -98,3 +98,12 @@ headless c1 收紧 L0 描述 27.3%）经 3 fresh repeat 验证：Q2 完整保持
 路由入冲突矩阵，无 lineage 晋升。E1 局部零结果：<2% 内容的单面编辑在 15 次尝试
 粒度下不可测效率增量；下一轮需更大编辑或方差控制设计。详见
 `rounds/dsh-wp4-v1/`。
+
+
+## 附：WP4 第 2 轮（大编辑效率候选）
+
+editing-c2（整节删除 roster-service，-27.3%）：Q2 全保持 + tokens -16.1% + latency
+-30.4% → **首个 lineage 晋升**（`lineages/dsh-efficiency/editing-cordis-compositions/
+h1-efficiency`，方向一致、复制验证后升级主张）。headless-c2（剥注释横幅，-48.5%）：
+hp-05 丢 1 次（2/3）→ 硬门拒绝——**注释横幅是静默参考还原的定位路标**。核心发现：
+路径 C 密度裁剪并非一律免费，效果与任务结构交互（非承重散文可剪、路标性注释不可剪）。
