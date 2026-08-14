@@ -187,8 +187,20 @@ function makeExecutor(workDir, skill) {
         return { ok: true, path: args.path };
       }
       if (name === 'run_command') {
+        // Workspace isolation: refuse commands that reference paths outside the
+        // workspace. This is a research-integrity boundary (held-out hiding),
+        // not a security sandbox — the command is a real shell, and a
+        // deliberately adversarial agent can still find other channels.
+        const command = String(args.command || '');
+        const deny = (reason) => ({ error: 'run_command blocked by workspace isolation: ' + reason });
+        if (/~/.test(command)) return deny('home-directory expansion is not allowed');
+        if (/(^|[^A-Za-z0-9_.@-])\.\.(\/|[^A-Za-z0-9_.@-]|$)/.test(command)) return deny('parent-directory traversal is not allowed');
+        const absTokens = command.match(/(\/[A-Za-z0-9_.@-]+){2,}/g) || [];
+        for (const token of absTokens) {
+          if (!path.resolve(token).startsWith(workDir + path.sep)) return deny('absolute path outside the workspace: ' + token);
+        }
         const timeout = Math.max(1000, Math.min(Number(args.timeout_ms || 120000), 180000));
-        const r = spawnSync('/bin/zsh', ['-lc', args.command], { cwd: workDir, encoding: 'utf8', timeout, maxBuffer: 20 * 1024 * 1024 });
+        const r = spawnSync('/bin/zsh', ['-lc', command], { cwd: workDir, encoding: 'utf8', timeout, maxBuffer: 20 * 1024 * 1024 });
         return { exit_code: r.status == null ? -1 : r.status, stdout: (r.stdout || '').slice(0, 30000), stderr: (r.stderr || '').slice(0, 30000), timed_out: Boolean(r.error && r.error.code === 'ETIMEDOUT') };
       }
       if (name === 'git_diff') {
@@ -247,7 +259,7 @@ async function main() {
   const system = [
     'You are a coding agent working in an isolated task workspace.',
     'WORKSPACE: ' + workDir,
-    'All file tools are restricted to this workspace. Do not search for hidden tests, expected patches, or files outside it.',
+    'All file tools are restricted to this workspace. Do not search for hidden tests, expected patches, or files outside it. run_command additionally refuses absolute paths outside the workspace, home-directory expansion, and parent-directory traversal.',
     skillEnabled ? 'AVAILABLE SKILL: ' + skill.name + ': ' + skill.description : 'NO SKILLS ARE AVAILABLE. Solve the task using your normal reasoning.',
     skillEnabled ? 'Use list_skills and load_skill when the skill is relevant. Use read_skill_file only for references named by the skill.' : '',
     'TOOLS: ' + toolNames + '.',
