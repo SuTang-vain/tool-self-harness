@@ -46,3 +46,20 @@ Gate 1：「不新增可靠任务的结构/效率候选，只能在单独预注�
 - 接受 → `lineages/dsh-efficiency/<target>/h1`（效率 lineage，注明非能力轨）；
 - 拒绝 → `registries/attention-conflict-matrix-v2.json` 追加冲突记录；
 - 结果摘要入 `rounds/dsh-wp4-v1/`。
+
+## Round 2 addendum (2026-08-14, frozen before evaluation)
+
+Round-1 methodological note: at 15-attempt granularity, edits changing <2% of the
+harness are below the Q3 noise floor. Round 2 uses materially larger single-surface
+edits:
+
+- editing-c2-remove-roster: prune the `roster-service` section to empty
+  (27.3% of SKILL.md). Round-2 manifest: `rounds/dsh-wp4-v1/manifests/editing-c2.json`.
+- headless-c2-strip-comments: strip all comment lines from the composition body
+  (48.5% of agent.cordis.yml) via the newly registered `body-comments` surface.
+  Round-2 manifest: `rounds/dsh-wp4-v1/manifests/headless-c2.json`.
+
+Gate procedure unchanged: Q2 preservation (5/5 reliable, 9/9 + 6/6 aggregates) is
+the hard gate; Q3 delta is reported against the same h0 baseline with the same
+noise caveat; acceptance routes to `lineages/dsh-efficiency/<target>/h1`, rejection
+to the attention-conflict matrix.
