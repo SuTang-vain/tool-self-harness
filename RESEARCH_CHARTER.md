@@ -224,6 +224,17 @@ specified.
    task explicitly directs consultation (official-full `loaded_skill_rate` 0.0 → 0.8);
    bounds-only checkers trap models on any in-bounds value and must instead direct restoration
    to the harness reference.
+11. **Capability recovery under degraded h0 (E2, local, bounded).** Preregistered R2 removed the
+    realm-rule section from the editing target (h0-): held-in/held-out collapsed 9/9 + 6/6 to
+    3/9 + 3/6 with reliable tasks {ec-02, ec-07}; attribution included ec-03 beyond the
+    preregistered hypothesis. A verbatim restore (c1) recovered everything (mechanism control),
+    and a -44% condensed rewrite (c2: delegation template + four rule sentences) recovered
+    everything as well and was promoted to `lineages/dsh-capability/editing-cordis-compositions/h1`.
+    The load-bearing core of a rule section is smaller than the section; Path C has
+    capability-preserving pruning headroom inside load-bearing content. Bounded by the
+    degraded-baseline design (single model, single frozen suite); replication required before
+    E3+ language.
+
 10. **Workspace integrity is a runner property, not a prompt property (E0, methodological).**
     Agents escape honor-system workspace isolation through unrestricted `run_command` shells and
     read reference/grader files outside the workspace; held-out hiding must be enforced in the
