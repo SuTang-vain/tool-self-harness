@@ -236,6 +236,16 @@ specified.
     independent run, seed 20260820: 9/9 + 6/6, 5/5 reliable); cross-distribution or cross-model
     replication required before E3+ language.
 
+12. **Path C third data point qualified (E0, R3).** The independent knowledge-rule target
+    `wcag-audit-patterns` (wshobson/agents, MIT) passed its formal baseline: held-in 11/12 -> 8/12
+    -> 8/12 and held-out 4/6 -> 4/6 -> 3/6 across official-full/minimal/no-harness, with
+    non-saturated dose-response anchors wc-01 (2/3->1/3->0/3) and wc-05 (1/3->1/3->0/3). Audit
+    tasks grade severity-tier placement (harness-taught knowledge); fix tasks are generic-knowledge
+    ceiling and are retained as observations. With security-review (boundary) and
+    editing-cordis-compositions (qualified), Path C now has three target-level observations for
+    exploratory RQ2 association — still short of confirmatory category claims.
+    Fixture iteration yielded discipline rule D5 (graders may only demand harness-taught content).
+
 10. **Workspace integrity is a runner property, not a prompt property (E0, methodological).**
     Agents escape honor-system workspace isolation through unrestricted `run_command` shells and
     read reference/grader files outside the workspace; held-out hiding must be enforced in the

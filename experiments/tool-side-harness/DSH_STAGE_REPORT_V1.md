@@ -120,3 +120,11 @@ hp-05 丢 1 次（2/3）→ 硬门拒绝——**注释横幅是静默参考还�
 基线设计限定）**。结论：承重节的有效核心小于整节，路径 C 在承重内容内部仍有
 保行为的裁剪空间。h1 已本地复制（seed 20260820：9/9+6/6、5/5 可靠）；跨分布/跨模型
 复制后才有 E3+ 主张。详见 `rounds/dsh-wp4-r2/`。
+
+
+## 附：R3（样本池广度 — Path C 第三数据点）
+
+独立仓库目标 `wcag-audit-patterns`（wshobson/agents，MIT）完成资格化：正式基线
+held-in 11/8/8、held-out 4/4/3（full/minimal/none），锚点 wc-01（2/1/0）、
+wc-05（1/1/0）；修复任务为通用知识天花板。三轮 grader 迭代沉淀纪律 D5（grader
+只能要求 harness 教授的内容）。见 `rounds/wcag-audit-patterns/qualification-v1/`。

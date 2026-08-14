@@ -25,7 +25,7 @@ positive and negative results are retained as observations to be explained by th
 | WP | Objective | Current status | Exit criterion |
 |---|---|---|---|
 | WP0 | Lock prior evidence | complete | compact, expanded, replication, and ablation results mapped without overclaiming |
-| WP1 | Build category-balanced sample pool | v2 registry frozen; Wave-1 candidates shortlisted; DSH self-target wave registered (`registries/sample-pool-dsh-v1.json`) | at least 2 qualified independent targets per exploratory category |
+| WP1 | Build category-balanced sample pool | v2 registry frozen; DSH wave registered; wcag-audit-patterns qualified (Path C third data point, independent repository) | at least 2 qualified independent targets per exploratory category |
 | WP2 | Structural feature coding | rubric frozen; historical anchors coded provisionally | feature vectors frozen before new candidate outcomes |
 | WP3 | Calibrate 4D baselines | Path B qualified/evolved; Path C formal stopped at per-task safety; DSH pilots v1–v3 + formal 4D baseline complete — both targets formal-baseline-complete, WP4 evolution next | diagnostic + formal sensitivity and Q3 coverage |
 | WP4 | Run category-conditioned evolution | DSH efficiency rounds 1-2 + replication (Q3 unmeasurable at 15-attempt granularity); R2 degraded-h0 capability track: condensed realm rewrite promoted to h1 (E2 bounded) | one frozen bounded lineage per qualified target |
