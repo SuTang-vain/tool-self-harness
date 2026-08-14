@@ -232,8 +232,9 @@ specified.
     everything as well and was promoted to `lineages/dsh-capability/editing-cordis-compositions/h1`.
     The load-bearing core of a rule section is smaller than the section; Path C has
     capability-preserving pruning headroom inside load-bearing content. Bounded by the
-    degraded-baseline design (single model, single frozen suite); replication required before
-    E3+ language.
+    degraded-baseline design (single model, single frozen suite); locally replicated (second
+    independent run, seed 20260820: 9/9 + 6/6, 5/5 reliable); cross-distribution or cross-model
+    replication required before E3+ language.
 
 10. **Workspace integrity is a runner property, not a prompt property (E0, methodological).**
     Agents escape honor-system workspace isolation through unrestricted `run_command` shells and
