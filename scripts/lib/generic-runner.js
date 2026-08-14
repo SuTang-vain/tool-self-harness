@@ -61,6 +61,17 @@ function parseFrontmatter(md) {
   return { frontmatter: fm, body: md.slice(m[0].length).replace(/^\n/, '') };
 }
 
+// Minimal top-level `key: value` reader for preset.yml (DSH preset metadata).
+function parsePresetYaml(src) {
+  const out = {};
+  for (const raw of src.split('\n')) {
+    if (/^\s*(#|$)/.test(raw)) continue;
+    const m = /^([A-Za-z0-9_\-]+):\s*(.*)$/.exec(raw);
+    if (m) out[m[1]] = m[2].trim().replace(/^['"]|['"]$/g, '');
+  }
+  return out;
+}
+
 function loadModelConfig(configPath) {
   const cfg = readYAML(configPath);
   const m = cfg.model || {};
@@ -205,13 +216,30 @@ async function main() {
   let skill = { name: '', description: '', body: '', repo: '' };
   if (skillEnabled) {
     const repo = path.resolve(skillArg);
-    const parsed = parseFrontmatter(fs.readFileSync(path.join(repo, 'SKILL.md'), 'utf8'));
-    skill = {
-      name: parsed.frontmatter.name || path.basename(repo),
-      description: parsed.frontmatter.description || parsed.frontmatter.summary || '',
-      body: parsed.body,
-      repo
-    };
+    const skillMdPath = path.join(repo, 'SKILL.md');
+    const presetPath = path.join(repo, 'preset.yml');
+    if (fs.existsSync(skillMdPath)) {
+      const parsed = parseFrontmatter(fs.readFileSync(skillMdPath, 'utf8'));
+      skill = {
+        name: parsed.frontmatter.name || path.basename(repo),
+        description: parsed.frontmatter.description || parsed.frontmatter.summary || '',
+        body: parsed.body,
+        repo
+      };
+    } else if (fs.existsSync(presetPath)) {
+      // DSH preset target: L0 = preset.yml description; L1 = the composition
+      // body (agent.cordis.yml) exposed only through load_skill.
+      const preset = parsePresetYaml(fs.readFileSync(presetPath, 'utf8'));
+      const compPath = path.join(repo, 'agent.cordis.yml');
+      skill = {
+        name: preset.name || path.basename(repo),
+        description: preset.description || preset.summary || '',
+        body: fs.existsSync(compPath) ? fs.readFileSync(compPath, 'utf8') : '',
+        repo
+      };
+    } else {
+      throw new Error('skill repo has neither SKILL.md nor preset.yml: ' + repo);
+    }
   }
   const task = fs.readFileSync(taskMdPath, 'utf8');
   const tools = buildTools(skillEnabled);
