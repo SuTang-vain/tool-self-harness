@@ -28,7 +28,7 @@ positive and negative results are retained as observations to be explained by th
 | WP1 | Build category-balanced sample pool | v2 registry frozen; Wave-1 candidates shortlisted; DSH self-target wave registered (`registries/sample-pool-dsh-v1.json`) | at least 2 qualified independent targets per exploratory category |
 | WP2 | Structural feature coding | rubric frozen; historical anchors coded provisionally | feature vectors frozen before new candidate outcomes |
 | WP3 | Calibrate 4D baselines | Path B qualified/evolved; Path C formal stopped at per-task safety; DSH pilots v1–v3 + formal 4D baseline complete — both targets formal-baseline-complete, WP4 evolution next | diagnostic + formal sensitivity and Q3 coverage |
-| WP4 | Run category-conditioned evolution | DSH efficiency rounds 1-2: large-edit candidate promoted (editing h1-efficiency: -16% tokens, Q2 preserved); guidepost-strip rejected (headless, held-out regression) | one frozen bounded lineage per qualified target |
+| WP4 | Run category-conditioned evolution | DSH efficiency rounds 1-2 + replication: Q3 unmeasurable at 15-attempt granularity (promotion retracted after -16% failed to replicate); guidepost-strip rejected (headless held-out regression) | one frozen bounded lineage per qualified target |
 | WP5 | Mechanism and replication | RQ3/RQ4 deferred until independent targets qualify | preselected ablation and category replication |
 | WP6 | Evaluate utility | Q4 deferred | independent human/expert protocol |
 
