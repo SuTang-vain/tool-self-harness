@@ -43,3 +43,13 @@ protocols/dsh-pilot-v1.md                         # 本 pilot 计划
 - 结构特征向量先于结果冻结（已冻结于注册表，不得回改）；
 - claim 上限：单目标 = 局部观察（E0–E2）；类别级断言需全样本池 + 独立复现；
 - 仓库聚类必须报告：两个 DSH 目标共享源码仓库，彼此不是独立类别复本。
+
+## 进度（2026-08-14 更新）
+
+- 注册 ✅（本文件，特征向量冻结）
+- pilot v1 ✅（过度指定天花板 → 重设计）— `rounds/dsh-pilot-v1`
+- pilot v2 ✅（held-in 区分度 + 两项诊断发现）— `rounds/dsh-pilot-v2`
+- pilot v3 ✅（held-out 区分度 + 工作区完整性加固）— `rounds/dsh-pilot-v3`
+- 正式 4D 基线 ✅ — `rounds/dsh-formal-baseline-v1`
+- 阶段报告：`DSH_STAGE_REPORT_V1.md`
+- 状态：两目标 formal-baseline-complete；下一步 WP4 类别条件进化。

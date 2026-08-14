@@ -216,8 +216,8 @@ specified.
    (anchor ec-06); the `headless-preset` target (atomic-validation, the first composition-unit
    target) shows held-in 8/9 → 3/9 → 3/9 (anchors hp-01, hp-03) and held-out 6/6 → 0/6 → 1/6
    (silent reference-restoration with non-standard `eval-pin` values). Both targets are formal-baseline-complete
-   (`experiments/tool-side-harness/rounds/dsh-formal-baseline-v1`); WP4 category-conditioned evolution
-   is the next stage.
+   (`experiments/tool-side-harness/rounds/dsh-formal-baseline-v1`); the staged report is
+   `experiments/tool-side-harness/DSH_STAGE_REPORT_V1.md`; WP4 category-conditioned evolution is the next stage.
 9. **Fixture-authoring discipline derived (E0, methodological).** Three findings are codified in
    `experiments/tool-side-harness/protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md`: task text that
    states the fix erases all variant discrimination; harness content is consumed only when the
