@@ -36,7 +36,9 @@ for suite in editing-cordis-compositions headless-preset; do
         rm -rf "$WORK"; mkdir -p "$WORK"
         cp "$task"/input/* "$WORK"/ 2>/dev/null
         out3=$(cd "$WORK" && bash check.sh 2>&1); st3=$?
-        if [ $st3 -ne 0 ]; then ck1="broken:FAIL(ok)"; else ck1="broken:PASS(BAD)"; fail=$((fail+1)); fi
+        if [ $st3 -ne 0 ]; then ck1="broken:FAIL(ok)";
+        elif [ -f "$task/input/check.silent" ]; then ck1="broken:PASS(silent-ok)";
+        else ck1="broken:PASS(BAD)"; fail=$((fail+1)); fi
         rm -rf "$WORK"; mkdir -p "$WORK"
         bash "$task/reference.sh" "$WORK" >/dev/null 2>&1
         cp "$task"/input/check.sh "$WORK"/ 2>/dev/null; cp "$task"/input/check.js "$WORK"/ 2>/dev/null

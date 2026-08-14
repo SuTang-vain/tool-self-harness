@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# reference.sh — apply the correct ec-04 fix to a workspace (grader sanity check).
+# reference.sh — apply the correct ec-06 fix (merge the split realms).
 set -euo pipefail
 workspace="$1"
 here="$(cd "$(dirname "$0")" && pwd)"
 cp "$here"/input/agent.cordis.yml "$workspace"/agent.cordis.yml
 cat > "$workspace"/agent.cordis.yml <<'EOF'
-# Fixed: isolate realm uses `true` (per-session private realm).
+# Fixed: one delegation group carries the provider AND the consumer.
 - id: delegation
   name: cordis:group
   group: true
