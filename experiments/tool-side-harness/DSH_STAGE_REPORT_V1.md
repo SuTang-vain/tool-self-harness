@@ -128,3 +128,13 @@ hp-05 丢 1 次（2/3）→ 硬门拒绝——**注释横幅是静默参考还�
 held-in 11/8/8、held-out 4/4/3（full/minimal/none），锚点 wc-01（2/1/0）、
 wc-05（1/1/0）；修复任务为通用知识天花板。三轮 grader 迭代沉淀纪律 D5（grader
 只能要求 harness 教授的内容）。见 `rounds/wcag-audit-patterns/qualification-v1/`。
+
+
+## 附：R3b（R2 跨仓库复制 — 负结果与边界条件）
+
+wcag 上的降级能力轨未复制 R2 结论：降级效应真实但窄（wc-01 2/3→0/3、wc-05
+1/3→0/3；wc-02 靠模型先验幸存），机制对照 c1 未能恢复（8/12 < h0⁻ 9/12），c2 无
+可靠任务新增——两候选按预注册入冲突矩阵。**边界条件**：R2 的干净干预依赖
+harness 内容抵抗模型先验（DSH 组合规则不在训练知识中）；先验覆盖的内容
+（WCAG 严重度分层）效应量低于 3 重复分辨率。与 headless eval-pin 形成同一机制线：
+因果效应量 = 内容与模型先验的距离。见 `rounds/wcag-audit-patterns/qualification-v1/r3b/`。

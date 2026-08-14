@@ -233,8 +233,11 @@ specified.
     The load-bearing core of a rule section is smaller than the section; Path C has
     capability-preserving pruning headroom inside load-bearing content. Bounded by the
     degraded-baseline design (single model, single frozen suite); locally replicated (second
-    independent run, seed 20260820: 9/9 + 6/6, 5/5 reliable); cross-distribution or cross-model
-    replication required before E3+ language.
+    independent run, seed 20260820: 9/9 + 6/6, 5/5 reliable). Cross-repository replication on
+    wcag-audit-patterns (R3b) did NOT transfer: the intervention effect is real but narrow and the
+    mechanism control failed to recover at 3-repeat granularity — prior-resistant harness content
+    appears to be the distinguishing condition; cross-distribution or cross-model replication
+    remains required before E3+ language.
 
 12. **Path C third data point qualified (E0, R3).** The independent knowledge-rule target
     `wcag-audit-patterns` (wshobson/agents, MIT) passed its formal baseline: held-in 11/12 -> 8/12
