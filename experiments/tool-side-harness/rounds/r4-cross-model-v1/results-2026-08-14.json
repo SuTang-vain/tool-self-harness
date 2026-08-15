@@ -1,0 +1,37 @@
+{
+  "event": "r4-cross-model-results",
+  "recorded_at": "2026-08-14",
+  "preregistration": "rounds/r4-cross-model-v1/preregistration.md",
+  "model": "deepseek-v4-flash via api.deepseek.com (credentials from DSH credentials store, never committed)",
+  "runner": "hardened generic-runner; 3 variants x 3 fresh repeats; seed 20260825; 90 attempts; escape audit: 2 attempts, 2 blocked, 0 successful",
+  "vectors": {
+    "editing": {
+      "official-full": {"held_in": "9/9", "held_out": "6/6"},
+      "minimal": {"held_in": "3/9", "held_out": "3/6"},
+      "no-harness": {"held_in": "3/9", "held_out": "3/6"}
+    },
+    "headless": {
+      "official-full": {"held_in": "9/9", "held_out": "5/6"},
+      "minimal": {"held_in": "3/9", "held_out": "1/6"},
+      "no-harness": {"held_in": "5/9", "held_out": "1/6"}
+    }
+  },
+  "glm_reference": {
+    "editing": {"official-full": "9/9+6/6", "minimal": "3/9+3/6", "no-harness": "3/9+3/6"},
+    "headless": {"official-full": "9/9+6/6", "minimal": "3/9+0/6", "no-harness": "3/9+0/6"}
+  },
+  "h1_gradient_direction": {
+    "editing_held_in": "9 >= 3 = 3: replicated (exact match to GLM on all cells)",
+    "editing_held_out": "6 >= 3 = 3: replicated (exact match)",
+    "headless_held_in": "9 >= 3 and 9 >= 5: full >= none replicated, but minimal < none (monotonicity broken)",
+    "headless_held_out": "5 >= 1 = 1: replicated",
+    "verdict": "full >= no-harness on all four partitions — H1 direction replication PASSES"
+  },
+  "h2_prior_distance": {
+    "held_out_prediction": "supported: the eval-pin gradient retains its strength on DeepSeek (5/6 vs 1/6) — invented values resist the new model's priors",
+    "editing_narrowing_prediction": "not supported: the realm-rule gradient does NOT narrow (9/9 vs 3/9, exact GLM match) — DSH realm rules are prior-resistant for DeepSeek V4 too",
+    "new_observation": "DeepSeek no-harness held-in floor is HIGHER than GLM's (5/9 vs 3/9, driven by hp-03 row-config 2/3) — stronger general DSH-composition priors than GLM, consistent with same-organization training, expressed through general composition knowledge rather than realm rules"
+  },
+  "claim_level": "E3-directional cross-model evidence (first RQ4 observation): gradient directions replicate across GLM-5.2 and DeepSeek V4 on all four partitions; model-specific prior floors differ. 3-repeat granularity caveat stands — this is direction-level, not significance-level evidence.",
+  "next": "RQ4 remains open for additional models/distributions; the prior-distance mechanism gains a cross-model dimension (prior floors are model-specific)."
+}

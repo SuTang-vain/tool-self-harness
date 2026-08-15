@@ -207,8 +207,11 @@ specified.
 6. **The debugging diagnostic adds a process-sensitive boundary.** Official-full raises
    test-before-first-edit to 9/9 attempts versus 7/9 minimal and 6/9 no-skill, but all variants
    pass the same task vector; minimal reaches the held-in ceiling, so the suite stops at redesign.
-7. **RQ4 is not measured.** GLM-5.2 is the only active model; cross-model expansion remains
-   deferred until the category-balanced GLM sample is qualified.
+7. **RQ4 has its first observation (2026-08-14).** The DSH frozen suites were re-run on
+   DeepSeek V4 flash (`rounds/r4-cross-model-v1`): gradient directions replicate on all four
+   partitions (editing 9/3/3 + 6/3/3 exact match; headless 9/3/5 + 5/1/1 with a higher
+   no-harness floor), eval-pin remains prior-resistant, and prior floors are model-specific.
+   Direction-level evidence only; more models and distributions are required before RQ4 closes.
 8. **DSH self-targets show held-in and held-out benchmark sensitivity (E0, pilots v1–v3).** The
    `editing-cordis-compositions` target (knowledge-rule-policy, the second Path C data point in
    qualification) discriminates on every partition — held-in 9/9 → 3/9 → 3/9 across

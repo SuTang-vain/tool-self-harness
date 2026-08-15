@@ -154,3 +154,11 @@ gw-03 的 grader 状态设计与技能教义冲突。与 eval-pin、wcag 分层�
 git-workflow v2（技能特有知识）仍无剂量反应（held-in 9/7/8）；gw-01 显示模型即使
 加载技能也会把模板头「THINGS I DIDN'T TOUCH」改写为「THINGS NOT TOUCHED」。该目标
 资格化终止，成为先验距离机制第四数据点；Path B 锚点维持 using-git-worktrees。
+
+
+## 附：R4（跨模型复制 — RQ4 首批证据）
+
+DeepSeek V4 flash 重跑两套 DSH 冻结套件（90 次尝试，2 逃逸尝试全被拦截）：梯度
+方向四分区全部复制（editing 逐项一致；headless full≥none，no-harness 地板 5/9 高于
+GLM 的 3/9）；eval-pin 对 DeepSeek 同样抵抗先验。「先验距离」获得跨模型维度：
+先验地板是模型特定的。见 `rounds/r4-cross-model-v1/`。
