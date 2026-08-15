@@ -116,6 +116,8 @@ replication remains a first-class result.
   exchange metrics.
 - `protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md` — task text must not contain the fix; tasks must
   direct harness consultation; checkers must not create feedback traps (DSH pilot findings).
+- `protocols/PRIOR_DISTANCE_MEASUREMENT_V1.md` — direct guessability measurement: probe battery,
+  G-E calibration, and the pre-pilot gate for new targets.
 - `registries/sample-pool-v2.json` — category-balanced target registry; v1 remains historical.
 - `registries/sample-pool-dsh-v1.json` — DSH self-target wave (editing-cordis-compositions,
   headless-preset) with frozen feature vectors; historical pilot outcomes.

@@ -162,3 +162,11 @@ DeepSeek V4 flash 重跑两套 DSH 冻结套件（90 次尝试，2 逃逸尝试�
 方向四分区全部复制（editing 逐项一致；headless full≥none，no-harness 地板 5/9 高于
 GLM 的 3/9）；eval-pin 对 DeepSeek 同样抵抗先验。「先验距离」获得跨模型维度：
 先验地板是模型特定的。见 `rounds/r4-cross-model-v1/`。
+
+
+## 附：先验距离直接测量（校准 v1）
+
+PRIOR_DISTANCE_MEASUREMENT_V1 协议 + 8 探针电池 + 运行脚本已冻结；GLM 校准：
+6/8 对符合负单调方向，两个反例带已识别边界（多条目稀释、精确模板释义化）。
+实用价值验证：低 G 探针标记值得 pilot 的任务，高 G 标记天花板——新目标先探针
+后投入。见 `results/prior-guessability/`。

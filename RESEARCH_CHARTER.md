@@ -261,6 +261,14 @@ specified.
     point; exact-template paraphrasing also observed: taught header phrases get rewritten). Fixture design must therefore target prior-resistant
     content or accept that the effect is below the 3-repeat resolution.
 
+15. **Prior distance is now a direct measurement (E1-methodological).** The preregistered
+    PRIOR_DISTANCE_MEASUREMENT_V1 protocol quantifies guessability G via no-harness single-shot
+    probes scored with grader-equivalent regexes. GLM calibration (n=8 pairs): 6/8 pairs follow
+    the negative-monotone G-E direction; both counterexamples carry identified boundary
+    conditions (multi-item dilution, exact-phrase paraphrase). Low-G probes flag pilot-worthy
+    tasks and high-G probes flag ceiling risks — new targets run the probe battery before
+    pilot investment.
+
 10. **Workspace integrity is a runner property, not a prompt property (E0, methodological).**
     Agents escape honor-system workspace isolation through unrestricted `run_command` shells and
     read reference/grader files outside the workspace; held-out hiding must be enforced in the
