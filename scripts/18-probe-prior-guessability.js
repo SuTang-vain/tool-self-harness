@@ -53,7 +53,8 @@ async function main() {
         body: JSON.stringify({ model: model.model, temperature: 0, max_tokens: model.max_tokens, messages: [{ role: 'user', content: (probe.context ? probe.context + '\n\n' : '') + probe.prompt }] })
       });
       const json = await resp.json();
-      const text = (json.choices && json.choices[0] && json.choices[0].message && (json.choices[0].message.content || '')) || '';
+      const msg = (json.choices && json.choices[0] && json.choices[0].message) || {};
+      const text = ((msg.content || '') + '\n' + (msg.reasoning_content || ''));
       const pass = re.test(text) ? 1 : 0;
       passes += pass;
       samples.push(text.slice(0, 120));
