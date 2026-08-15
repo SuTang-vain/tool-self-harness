@@ -147,3 +147,10 @@ git-workflow-and-versioning（addyosmani/agent-skills，MIT）资格化 v1：54 
 gw-03 的 grader 状态设计与技能教义冲突。与 eval-pin、wcag 分层共同构成「先验距离」
 机制线的三个数据点：效应量 = 内容与模型先验的距离。见
 `rounds/git-workflow-and-versioning/qualification-v1/`。
+
+
+## 附：Path B 重设计终局 — qualification-terminated-prior-covered
+
+git-workflow v2（技能特有知识）仍无剂量反应（held-in 9/7/8）；gw-01 显示模型即使
+加载技能也会把模板头「THINGS I DIDN'T TOUCH」改写为「THINGS NOT TOUCHED」。该目标
+资格化终止，成为先验距离机制第四数据点；Path B 锚点维持 using-git-worktrees。

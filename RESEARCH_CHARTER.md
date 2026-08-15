@@ -254,7 +254,8 @@ specified.
     yield a clean degradation-recovery intervention (R2, h1, locally replicated); partially covered
     WCAG severity tiers yield a narrow, variance-limited effect (R3b negative replication);
     fully covered git workflow conventions yield ceiling fixtures with no harness dose-response
-    (WP1 breadth pilot, needs-redesign). Fixture design must therefore target prior-resistant
+    across two suite designs — the target's qualification is terminated (WP1 breadth, fourth data
+    point; exact-template paraphrasing also observed: taught header phrases get rewritten). Fixture design must therefore target prior-resistant
     content or accept that the effect is below the 3-repeat resolution.
 
 10. **Workspace integrity is a runner property, not a prompt property (E0, methodological).**
