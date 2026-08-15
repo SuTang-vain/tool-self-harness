@@ -23,3 +23,10 @@
 优势来自其他条目）；**H3 支持**（realm/provider/eval-pin/summary 两模型均 G=0）。
 DeepSeek 内 G-E 方向 4/4 一致——负单调方向跨模型保持，先验地板按条目类型
 （惯例类 vs 组合类 vs 发明值）分层。
+
+## 筛查：typescript-mcp-server-generator（Path A 第二数据点候选）
+
+双模型六探针：**pilot-worthy-targeted-design**。抵抗条目：NodeStreamableHTTPServerTransport
+命名（双模型 0/3）、v2 包拆分、SSE/WebSocket 移除（0–0.33）；覆盖条目：stdio 类名、
+registerTool、zod 版本（0.67–1.0，不得作区分器）。定向设计：套件围绕三个抵抗条目
+构建，效应量预测已冻结。若 pilot 实测与预测一致 → 事前门的预测有效性第三个验证点。

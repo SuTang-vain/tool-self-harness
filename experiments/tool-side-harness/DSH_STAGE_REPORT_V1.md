@@ -177,3 +177,11 @@ PRIOR_DISTANCE_MEASUREMENT_V1 协议 + 8 探针电池 + 运行脚本已冻结；
 同一电池在 DeepSeek V4 flash 重跑：先验地板可测量且模型特定（commit 格式 G
 0.33→1.0）；G-E 负单调方向跨模型保持（4/4）；发明值与 realm 规则两模型均 G=0。
 H2 方向预测（DSH 模型 id 更高 G）未获支持——R4 的 no-harness 优势来自其他条目。
+
+
+## 附：事前门筛查（typescript-mcp-server-generator）
+
+双模型六探针 → **pilot-worthy-targeted-design**：三个抵抗条目（HTTP 传输类命名、
+v2 包拆分、SSE/WebSocket 移除）锚定区分任务，三个覆盖条目（stdio 类名、registerTool、
+zod 版本）不得作区分器；效应量预测已冻结，待 pilot 实测对账。事前门完成首个
+实战应用。
