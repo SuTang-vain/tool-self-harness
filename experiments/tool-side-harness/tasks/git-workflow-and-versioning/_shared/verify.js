@@ -44,6 +44,11 @@ for (const c of expected.checks || []) {
       if (n < c.min) errors.push('commits after baseline: ' + n + ' < ' + c.min);
       break;
     }
+    case 'commits_after_baseline_exact': {
+      const n = commitsAfterBaseline();
+      if (n !== c.count) errors.push('commits after baseline: ' + n + ' != ' + c.count);
+      break;
+    }
     case 'each_new_commit_touches_one_file': {
       const n = commitsAfterBaseline();
       for (let i = 0; i < n; i++) {
@@ -93,6 +98,44 @@ for (const c of expected.checks || []) {
       if (!fs.existsSync(p)) { errors.push(c.file + ' missing'); break; }
       const content = fs.readFileSync(p, 'utf8');
       if (!new RegExp(c.pattern, 'm').test(content)) errors.push(c.file + ' does not match /' + c.pattern + '/');
+      break;
+    }
+    case 'working_tree_clean': {
+      const r = git(['status', '--porcelain']);
+      if (r.out.trim() !== '') errors.push('working tree is not clean');
+      break;
+    }
+    case 'new_commits_contain_path': {
+      const n = commitsAfterBaseline();
+      let hit = false;
+      for (let i = 0; i < n; i++) {
+        const names = git(['show', '--name-only', '--format=', 'HEAD~' + (n - 1 - i)]).out;
+        if (names.split('\n').includes(c.path)) hit = true;
+      }
+      if (!hit) errors.push('no new commit touches ' + c.path);
+      break;
+    }
+    case 'new_commits_exclude_path': {
+      const n = commitsAfterBaseline();
+      for (let i = 0; i < n; i++) {
+        const names = git(['show', '--name-only', '--format=', 'HEAD~' + (n - 1 - i)]).out;
+        if (names.split('\n').includes(c.path)) errors.push('a new commit touches excluded path ' + c.path);
+      }
+      break;
+    }
+    case 'worktree_exists': {
+      const r = git(['worktree', 'list', '--porcelain']);
+      const lines = r.out.split('\n');
+      const branches = lines.filter((l) => l.startsWith('branch ')).map((l) => l.replace('branch ', '').trim());
+      if (!branches.some((b) => b.includes(c.branch))) errors.push('worktree for branch ' + c.branch + ' not found');
+      break;
+    }
+    case 'first_version_section_is': {
+      const p2 = path.join(workspace, c.file);
+      if (!fs.existsSync(p2)) { errors.push(c.file + ' missing'); break; }
+      const content = fs.readFileSync(p2, 'utf8');
+      const m = /^## \[(\S+)\]/m.exec(content);
+      if (!m || !new RegExp(c.pattern).test(m[1])) errors.push('newest changelog entry is not ' + c.pattern + ' (got ' + (m ? m[1] : 'none') + ')');
       break;
     }
     default:
