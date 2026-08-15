@@ -174,6 +174,19 @@ decomposition, the weakest-ring prediction rule, and task-context-only
 probes. Negative forward validations are first-class results: each failure
 upgraded the measurement protocol rather than being hidden.
 
+The v2 suite (B3c-corrected anchors) qualified held-out cleanly (4/6 ->
+0/6 -> 0/6, combo anchor E=1.0) but held-in stayed noise-dominated; the
+prediction tally improved from 0/4 to 1/4. A direct test of the
+training-window hypothesis then exposed two probe-format artifacts (B4):
+reasoning models emit answers in reasoning_content (runner fixed), and
+single-shot abbreviated contexts cannot reproduce the multi-step
+reasoning plus checker iteration that sets task-level floors. The samples
+show partial SDK v2 priors in DeepSeek — the hypothesis is qualitatively
+supported, but G (single-shot recall) is a lower bound on task floors for
+reasoning models, not an unbiased estimate. The gate's predictive use is
+therefore bounded to recall-dominant content, with the B4 caveat for
+reasoning/iteration-heavy tasks.
+
 A screening of `typescript-mcp-server-generator` (six dual-model probes)
 produced a targeted design: anchor on three prior-resistant items
 (NodeStreamableHTTPServerTransport naming, v2 package split, SSE/WebSocket
@@ -191,7 +204,9 @@ else is E0. No significance claims are made at 3-repeat granularity.
 did not transfer cross-repository (R3b); the efficiency effect did not
 replicate (retraction); monotonic variant ordering broke once (headless
 held-in on DeepSeek); single-item probes under-predict multi-item tasks;
-exact-phrase tasks are paraphrase-confounded.
+exact-phrase tasks are paraphrase-confounded; task-level floors for
+reasoning models are set by reasoning plus iteration (B4), so the probe
+gate predicts floors, not ceilings.
 
 **Threats.** Single operator; small suites (3–6 tasks); two models; n = 8–12
 calibration pairs; Q4 not measured.

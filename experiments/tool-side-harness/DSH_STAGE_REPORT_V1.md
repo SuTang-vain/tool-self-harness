@@ -194,3 +194,13 @@ GLM 周配额阻塞后经授权改在 deepseek-v4-flash 上跑（54 次尝试，
 任务 fixture 把上下文回注（ts-02/03 天花板）、复合条目超出单探针预测（ts-04 全变体
 地板：模型迁移了错误类却漏了 `.status` 字段）。事前门的首次前瞻验证为负，沉淀
 边界 B3（上下文感知探针 + 子条目预测），套件状态 partial-discrimination-boundary。
+
+## 附：ts-mcp v2 与训练窗口假说直接验证（B4）
+
+v2 套件（B3c 修正锚定）在 DeepSeek 上：held-out 4/6→0/6→0/6 合格（ts-05 锚点
+E=1.0），held-in 仍噪声主导（11/9/10），预测对账 1/4（较 v1 的 0/4 进步）。训练
+窗口假说直接验证：v2 上下文探针全 0/3，但样本解剖显示模型有 v2 世代部分先验
+（StreamableHTTPServerTransport 躯干 + v1 风格路径），并暴露 B4a（reasoning_content
+评分伪影，运行器已修）与 B4b（单发简略上下文无法复现任务内多步推理）。结论：
+G 是 reasoning 模型任务地板的下界；任务地板由推理+迭代设定。见
+`rounds/typescript-mcp-server-generator/` 与 `results/prior-guessability/`。
