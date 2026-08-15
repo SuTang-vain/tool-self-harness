@@ -40,13 +40,24 @@ for (const t of Object.keys(F)) {
   });
 }
 
-// prediction mapping from the preregistration (frozen)
-const predMap = {
-  'ts-01-fix-transport': { source: 'tasks_on_http_class', check: (E) => E >= 0.5, text: 'E >= 0.5 (both models)' },
-  'ts-02-fix-package': { source: 'tasks_on_package_split', check: (E) => E >= 0.33 - 1e-9 && E <= 0.67 + 1e-9, text: 'E ~ 0.33-0.67 (GLM)' },
-  'ts-03-fix-removed': { source: 'tasks_on_removed_transports', check: (E) => E >= 0.5, text: 'E >= 0.5 (GLM)' },
-  'ts-04-fix-errors': { source: 'preregistered_hypothesis', check: (E) => E >= 0.5, text: 'E >= 0.5 (resistance hypothesis, unscreeened)' }
+// prediction mapping from the preregistration (frozen, per model)
+const modelArg = process.argv[7] || 'glm';
+const inRange = (lo, hi) => (E) => E >= lo - 1e-9 && E <= hi + 1e-9;
+const predMaps = {
+  glm: {
+    'ts-01-fix-transport': { source: 'tasks_on_http_class', check: (E) => E >= 0.5, text: 'E >= 0.5 (both models)' },
+    'ts-02-fix-package': { source: 'tasks_on_package_split', check: inRange(0.33, 0.67), text: 'E ~ 0.33-0.67 (GLM)' },
+    'ts-03-fix-removed': { source: 'tasks_on_removed_transports', check: (E) => E >= 0.5, text: 'E >= 0.5 (GLM)' },
+    'ts-04-fix-errors': { source: 'preregistered_hypothesis', check: (E) => E >= 0.5, text: 'E >= 0.5 (resistance hypothesis, unscreeened)' }
+  },
+  deepseek: {
+    'ts-01-fix-transport': { source: 'tasks_on_http_class', check: (E) => E >= 0.5, text: 'E >= 0.5 (both models)' },
+    'ts-02-fix-package': { source: 'tasks_on_package_split', check: (E) => E >= 0.5, text: 'E >= 0.5 (DeepSeek)' },
+    'ts-03-fix-removed': { source: 'tasks_on_removed_transports', check: inRange(0.33, 0.67), text: 'E ~ 0.33-0.67 (DeepSeek)' },
+    'ts-04-fix-errors': { source: 'preregistered_hypothesis', check: (E) => E >= 0.5, text: 'E >= 0.5 (resistance hypothesis, unscreeened)' }
+  }
 };
+const predMap = predMaps[modelArg] || predMaps.glm;
 for (const r of rows) {
   const p = predMap[r.task];
   r.prediction = p ? p.text : 'none frozen';
