@@ -138,3 +138,12 @@ wcag 上的降级能力轨未复制 R2 结论：降级效应真实但窄（wc-01
 harness 内容抵抗模型先验（DSH 组合规则不在训练知识中）；先验覆盖的内容
 （WCAG 严重度分层）效应量低于 3 重复分辨率。与 headless eval-pin 形成同一机制线：
 因果效应量 = 内容与模型先验的距离。见 `rounds/wcag-audit-patterns/qualification-v1/r3b/`。
+
+
+## 附：WP1 广度（Path B 独立目标）— needs-redesign + 机制线第三数据点
+
+git-workflow-and-versioning（addyosmani/agent-skills，MIT）资格化 v1：54 次尝试后
+判定 needs-redesign——六任务中四个全变体天花板（git 惯例为行业通用知识，先验覆盖），
+gw-03 的 grader 状态设计与技能教义冲突。与 eval-pin、wcag 分层共同构成「先验距离」
+机制线的三个数据点：效应量 = 内容与模型先验的距离。见
+`rounds/git-workflow-and-versioning/qualification-v1/`。

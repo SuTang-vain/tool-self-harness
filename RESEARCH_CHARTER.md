@@ -249,6 +249,14 @@ specified.
     exploratory RQ2 association — still short of confirmatory category claims.
     Fixture iteration yielded discipline rule D5 (graders may only demand harness-taught content).
 
+13. **Prior distance is the measured mechanism (E0-E1, three data points).** The causal effect of
+    harness content scales with its distance from model priors: prior-resistant DSH realm rules
+    yield a clean degradation-recovery intervention (R2, h1, locally replicated); partially covered
+    WCAG severity tiers yield a narrow, variance-limited effect (R3b negative replication);
+    fully covered git workflow conventions yield ceiling fixtures with no harness dose-response
+    (WP1 breadth pilot, needs-redesign). Fixture design must therefore target prior-resistant
+    content or accept that the effect is below the 3-repeat resolution.
+
 10. **Workspace integrity is a runner property, not a prompt property (E0, methodological).**
     Agents escape honor-system workspace isolation through unrestricted `run_command` shells and
     read reference/grader files outside the workspace; held-out hiding must be enforced in the
