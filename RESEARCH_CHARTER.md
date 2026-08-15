@@ -267,7 +267,9 @@ specified.
     the negative-monotone G-E direction; both counterexamples carry identified boundary
     conditions (multi-item dilution, exact-phrase paraphrase). Low-G probes flag pilot-worthy
     tasks and high-G probes flag ceiling risks — new targets run the probe battery before
-    pilot investment.
+    pilot investment. The DeepSeek calibration (second point) confirms: prior floors are
+    measurably model-specific (commit-format G 0.33 -> 1.0), the G-E direction holds
+    within-model (4/4 pairs), and invented/DSH-composition items stay G=0 on both models.
 
 10. **Workspace integrity is a runner property, not a prompt property (E0, methodological).**
     Agents escape honor-system workspace isolation through unrestricted `run_command` shells and

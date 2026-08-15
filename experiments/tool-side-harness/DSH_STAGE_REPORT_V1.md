@@ -170,3 +170,10 @@ PRIOR_DISTANCE_MEASUREMENT_V1 协议 + 8 探针电池 + 运行脚本已冻结；
 6/8 对符合负单调方向，两个反例带已识别边界（多条目稀释、精确模板释义化）。
 实用价值验证：低 G 探针标记值得 pilot 的任务，高 G 标记天花板——新目标先探针
 后投入。见 `results/prior-guessability/`。
+
+
+## 附：先验距离测量 — DeepSeek 第二校准点
+
+同一电池在 DeepSeek V4 flash 重跑：先验地板可测量且模型特定（commit 格式 G
+0.33→1.0）；G-E 负单调方向跨模型保持（4/4）；发明值与 realm 规则两模型均 G=0。
+H2 方向预测（DSH 模型 id 更高 G）未获支持——R4 的 no-harness 优势来自其他条目。
