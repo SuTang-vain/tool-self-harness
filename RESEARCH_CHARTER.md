@@ -274,7 +274,12 @@ specified.
     level (4/4 anchored predictions out-of-range) and produced boundary B3: task fixtures
     reintroduce context that raises effective guessability, and composite items exceed
     single-probe prediction — prospective use requires context-aware probes and
-    per-sub-item predictions.
+    per-sub-item predictions. The v2 suite (B3c-corrected) qualified held-out (4/0/0, combo
+    anchor E=1.0) with predictions 1/4 in-range; the training-window hypothesis test then
+    produced boundary B4: reasoning models emit answers in reasoning_content, and single-shot
+    probes under-measure floors set by multi-step reasoning plus checker iteration — G is a
+    lower bound on task floors, and the gate's predictive use is bounded to recall-dominant
+    content.
 
 10. **Workspace integrity is a runner property, not a prompt property (E0, methodological).**
     Agents escape honor-system workspace isolation through unrestricted `run_command` shells and

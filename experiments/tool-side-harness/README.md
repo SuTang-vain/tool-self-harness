@@ -117,7 +117,9 @@ replication remains a first-class result.
 - `protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md` — task text must not contain the fix; tasks must
   direct harness consultation; checkers must not create feedback traps (DSH pilot findings).
 - `protocols/PRIOR_DISTANCE_MEASUREMENT_V1.md` — direct guessability measurement: probe battery,
-  G-E calibration, and the pre-pilot gate for new targets.
+  G-E calibration, and the pre-pilot gate for new targets (V2: B3a-c, B4a-b).
+- `protocols/Q3_VARIANCE_CONTROL_DESIGN.md` / `Q4_MINI_PROTOCOL.md` — frozen executable paths
+  for the remaining efficiency and human-utility threads.
 - `registries/sample-pool-v2.json` — category-balanced target registry; v1 remains historical.
 - `registries/sample-pool-dsh-v1.json` — DSH self-target wave (editing-cordis-compositions,
   headless-preset) with frozen feature vectors; historical pilot outcomes.
