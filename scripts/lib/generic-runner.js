@@ -335,7 +335,9 @@ async function main() {
       continue;
     }
 
-    messages.push({ role: 'assistant', content: msg.content || '', tool_calls: toolCalls });
+    const assistantMsg = { role: 'assistant', content: msg.content || '' };
+    if (toolCalls.length) assistantMsg.tool_calls = toolCalls;
+    messages.push(assistantMsg);
     if (parsedCalls.length) {
       metrics.tool_calls += parsedCalls.length;
       for (const { call, args: parsedArgs } of parsedCalls) {
