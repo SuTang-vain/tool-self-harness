@@ -1,0 +1,24 @@
+{
+  "schema_version": "prior-guessability-probes-v1-with-context",
+  "frozen_at": "2026-08-15",
+  "purpose": "V2 retrospective reconciliation of the S1 forward-validation failures (B3a/B3b)",
+  "model_phase": "deepseek-v4-flash (the S1 phase model)",
+  "probes": [
+    {"id": "ts02-context-package", "task": "ts-02-fix-package",
+     "context": "A TypeScript project's package.json depends on the retired monolithic package '@modelcontextprotocol/sdk' (v1). The task says to migrate to the current SDK packages.",
+     "prompt": "Which npm package should replace the dependency?",
+     "pattern": "@modelcontextprotocol/server", "flags": "", "expected_direction": "high"},
+    {"id": "ts03-context-transport", "task": "ts-03-fix-removed",
+     "context": "An MCP server imports SSEServerTransport, a transport that no longer exists in the SDK version the project depends on. The task says to use a supported transport instead.",
+     "prompt": "Which transport class should the server use?",
+     "pattern": "StdioServerTransport|NodeStreamableHTTPServerTransport", "flags": "", "expected_direction": "high"},
+    {"id": "ts04a-context-error-class", "task": "ts-04-fix-errors",
+     "context": "A v2 MCP server catches errors with the retired McpError class. The task says to migrate to the current error hierarchy.",
+     "prompt": "Which error class should replace McpError?",
+     "pattern": "ProtocolError|SdkError|SdkHttpError", "flags": "", "expected_direction": "high"},
+    {"id": "ts04b-context-error-field", "task": "ts-04-fix-errors",
+     "context": "In the MCP SDK v2 error hierarchy, the HTTP status no longer lives on error.code.",
+     "prompt": "Which field carries the HTTP status on v2 errors?",
+     "pattern": "\\.status", "flags": "", "expected_direction": "low"}
+  ]
+}
