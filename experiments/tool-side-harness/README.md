@@ -127,6 +127,9 @@ replication remains a first-class result.
 ## Files
 
 - `../../RESEARCH_CHARTER.md`: paper-level thesis, questions, outcomes, and claim levels.
+- `PAPER_DRAFT_V1.md`: consolidated paper draft (all numbers cite frozen records).
+- `EXPERIMENT_ARCHIVE_V1.md`: navigation map of every protocol, round, registry, and
+  calibration record with claim levels.
 - `DSH_STAGE_REPORT_V1.md`: staged report of the DSH self-target program (registration through formal baseline).
 - `OUTLINE_ALIGNMENT.md`: reconciliation of both source outlines and empirical corrections.
 - `protocols/TAXONOMY_AND_4D_V1.md`: sample selection, labeling, and baseline protocol.

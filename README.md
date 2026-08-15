@@ -188,6 +188,7 @@ The two source research outlines and the empirical corrections applied to them a
 - ✅ Research redirected to the Tool-Side Harness taxonomy + 4D baseline + progressive evolution program.
 - ✅ Sample/evidence/conflict registries and the progressive single-surface manifest validator are in place.
 - ✅ DSH self-targets registered (`experiments/tool-side-harness/registries/sample-pool-dsh-v1.json`), piloted v1–v3, and formally baselined: both targets formal-baseline-complete; WP4 category-conditioned evolution is next.
+- ✅ Research program consolidated: paper draft (`experiments/tool-side-harness/PAPER_DRAFT_V1.md`) and archive index (`EXPERIMENT_ARCHIVE_V1.md`) cover registration through the prior-distance measurement and screening gate.
 - ✅ Fixture-authoring discipline and workspace-integrity hardening frozen from the DSH pilots (`experiments/tool-side-harness/protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md`, `rounds/dsh-pilot-v3/`).
 - ⏳ Next formal step: qualify a multi-form sample pool and calibrate benchmark-sensitive baselines before new broad evolution claims.
 - ⚠ MCP tool support not yet implemented (skill-only).
