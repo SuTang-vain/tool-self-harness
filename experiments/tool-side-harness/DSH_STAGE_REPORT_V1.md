@@ -185,3 +185,12 @@ H2 方向预测（DSH 模型 id 更高 G）未获支持——R4 的 no-harness �
 v2 包拆分、SSE/WebSocket 移除）锚定区分任务，三个覆盖条目（stdio 类名、registerTool、
 zod 版本）不得作区分器；效应量预测已冻结，待 pilot 实测对账。事前门完成首个
 实战应用。
+
+
+## 附：S1（ts-mcp 定向 pilot，DeepSeek 相位）— 事前门前瞻验证失败 → B3
+
+GLM 周配额阻塞后经授权改在 deepseek-v4-flash 上跑（54 次尝试，0 逃逸）：held-out
+4/2/0，组合迁移任务 ts-05 是强锚点（E=1.0，3/1/0）；但四个锚定预测全部出界——
+任务 fixture 把上下文回注（ts-02/03 天花板）、复合条目超出单探针预测（ts-04 全变体
+地板：模型迁移了错误类却漏了 `.status` 字段）。事前门的首次前瞻验证为负，沉淀
+边界 B3（上下文感知探针 + 子条目预测），套件状态 partial-discrimination-boundary。

@@ -270,6 +270,11 @@ specified.
     pilot investment. The DeepSeek calibration (second point) confirms: prior floors are
     measurably model-specific (commit-format G 0.33 -> 1.0), the G-E direction holds
     within-model (4/4 pairs), and invented/DSH-composition items stay G=0 on both models.
+    The gate's first FORWARD validation (ts-mcp pilot, DeepSeek phase) failed at the task
+    level (4/4 anchored predictions out-of-range) and produced boundary B3: task fixtures
+    reintroduce context that raises effective guessability, and composite items exceed
+    single-probe prediction — prospective use requires context-aware probes and
+    per-sub-item predictions.
 
 10. **Workspace integrity is a runner property, not a prompt property (E0, methodological).**
     Agents escape honor-system workspace isolation through unrestricted `run_command` shells and
