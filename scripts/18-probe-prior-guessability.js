@@ -50,7 +50,7 @@ async function main() {
       const resp = await fetch(model.base_url + '/chat/completions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + model.api_key },
-        body: JSON.stringify({ model: model.model, temperature: 0, max_tokens: model.max_tokens, messages: [{ role: 'user', content: probe.prompt }] })
+        body: JSON.stringify({ model: model.model, temperature: 0, max_tokens: model.max_tokens, messages: [{ role: 'user', content: (probe.context ? probe.context + '\n\n' : '') + probe.prompt }] })
       });
       const json = await resp.json();
       const text = (json.choices && json.choices[0] && json.choices[0].message && (json.choices[0].message.content || '')) || '';
