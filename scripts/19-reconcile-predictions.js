@@ -41,7 +41,7 @@ for (const t of Object.keys(F)) {
 }
 
 // prediction mapping from the preregistration (frozen, per model)
-const modelArg = process.argv[7] || 'glm';
+const modelArg = process.argv[8] || 'glm';
 const inRange = (lo, hi) => (E) => E >= lo - 1e-9 && E <= hi + 1e-9;
 const predMaps = {
   glm: {

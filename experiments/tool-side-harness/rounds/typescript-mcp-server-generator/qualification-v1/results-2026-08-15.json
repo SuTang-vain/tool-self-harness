@@ -1,0 +1,33 @@
+{
+  "event": "ts-mcp-qualification-v1-results-deepseek-phase",
+  "recorded_at": "2026-08-15",
+  "preregistration": "rounds/typescript-mcp-server-generator/qualification-v1/preregistration.md (model amendment 2026-08-15, user-authorized)",
+  "model": "deepseek-v4-flash via api.deepseek.com",
+  "runner": "hardened generic-runner (empty-tool_calls compat fix e0e6a71); 3 variants x 3 fresh repeats; seed 20260826; 54 attempts; escape audit: 0 attempts",
+  "vectors": {
+    "official-full": {"held_in": "9/12", "held_in_reliable": 3, "held_out": "4/6", "held_out_reliable": 1},
+    "minimal": {"held_in": "8/12", "held_in_reliable": 2, "held_out": "2/6", "held_out_reliable": 0},
+    "no-harness": {"held_in": "8/12", "held_in_reliable": 2, "held_out": "0/6", "held_out_reliable": 0}
+  },
+  "per_task": {
+    "ts-01-fix-transport": {"full": "3/3", "minimal": "2/3", "none": "2/3"},
+    "ts-02-fix-package": {"full": "3/3", "minimal": "3/3", "none": "3/3"},
+    "ts-03-fix-removed": {"full": "3/3", "minimal": "3/3", "none": "3/3"},
+    "ts-04-fix-errors": {"full": "0/3", "minimal": "0/3", "none": "0/3"},
+    "ts-05-migrate": {"full": "3/3", "minimal": "1/3", "none": "0/3"},
+    "ts-06-generate": {"full": "1/3", "minimal": "1/3", "none": "0/3"}
+  },
+  "reconciliation": {
+    "verdict": "forward-validation-failed",
+    "out_of_range": ["ts-01 (E=0.33 vs >=0.5)", "ts-02 (E=0 vs >=0.5)", "ts-03 (E=0 vs 0.33-0.67)", "ts-04 (E=0 vs >=0.5)"],
+    "diagnosis_ts02_ts03": "task fixtures reintroduce context that raises effective guessability: the broken import + the task's 'retired'/'no longer exists' wording plus the checker hint make the fix inferable without the harness (context-reintroduced priors)",
+    "diagnosis_ts04": "composite item: the model migrates the error CLASS (McpError -> SdkError) but keeps error.code instead of error.status — the item is harder than predicted, and even official-full fails (0/3 floor)",
+    "diagnosis_ts01": "E=0.33: the wrong-class fix is partially inferable from the import path and package context"
+  },
+  "judgment": {
+    "decision": "partial-discrimination-boundary",
+    "reason": "held-out moves 4/6 -> 2/6 -> 0/6 with the combo task ts-05 as a strong anchor (3/1/0, E=1.0); held-in moves 9/8/8; but ts-02/ts-03 are ceiling (context-reintroduced priors) and ts-04 is floor (composite item beyond transfer) — three of six tasks saturated, so the suite needs a redesign pass before clean qualification",
+    "boundary_b3": "the pre-pilot gate's item-level G does not transfer to task-level E when fixtures reintroduce context or items are composite; codified as B3 in PRIOR_DISTANCE_MEASUREMENT_V1"
+  },
+  "claim_level": "E0 qualification observation + the gate's first forward-validation result (negative). The mechanism remains retrospectively calibrated; its prospective task-level transfer requires context-aware probing."
+}
