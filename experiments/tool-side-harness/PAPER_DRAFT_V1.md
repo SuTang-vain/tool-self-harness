@@ -157,7 +157,22 @@ semantic graders). DeepSeek calibration: 4/4 within-model consistent; G is
 measurably model-specific (commit-format G 0.33 → 1.0); invented and
 DSH-composition items stay G = 0 on both models.
 
-### 4.3 The pre-pilot gate
+### 4.3 The pre-pilot gate and its first forward validation
+
+A screening of `typescript-mcp-server-generator` (six dual-model probes)
+produced a targeted design with frozen per-model effect predictions. The
+ensuing pilot (DeepSeek phase, 54 attempts, user-authorized model amendment)
+was the gate's first forward validation and it failed at the task level:
+4/4 anchored predictions were out-of-range (held-out moved 4/6 -> 2/6 -> 0/6
+with a strong combo anchor E=1.0, but two anchors ceilinged and one floored).
+The V2 retrospective separated three failure modes: B3a context-reintroduced
+priors (fixture wording restores guessability), B3c anchor/binding-constraint
+mismatch (the fix consumed a covered item, not the anchor), and a
+harness-transfer failure (the model migrated the error class but ignored the
+field). The protocol now mandates context-aware probes, sub-item
+decomposition, the weakest-ring prediction rule, and task-context-only
+probes. Negative forward validations are first-class results: each failure
+upgraded the measurement protocol rather than being hidden.
 
 A screening of `typescript-mcp-server-generator` (six dual-model probes)
 produced a targeted design: anchor on three prior-resistant items
