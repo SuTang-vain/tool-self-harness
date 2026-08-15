@@ -44,3 +44,15 @@ G(task) 负单调关联。校准判据（描述性，不做显著性主张）：
   而非充分决定量（校准记录如实报告残差）；
 - 先验地板是模型特定的（R4 证据）——G 对每个模型单独测量；
 - 本协议不改变任何已冻结结论；只增加测量工具与预测规则。
+
+## DeepSeek 校准附记（2026-08-14，冻结于运行前）
+
+- 运行：同一冻结电池（8 探针 × 3 重复）在 deepseek-v4-flash（api.deepseek.com）上执行；
+  评分规则不变；配置 .tmp-config-dsh-deepseek.yaml（凭据不入库）。
+- 假设（由 R4 推出）：
+  H1 G 是模型特定的：至少一个探针的 G_DeepSeek ≠ G_GLM；
+  H2 方向预测：headless-models 的 G_DeepSeek > G_GLM（R4 显示 DeepSeek no-harness
+  held-in 地板 5/9 > GLM 3/9，即 DeepSeek 对 DSH 组合惯例先验更强）；
+  H3 eval-pin 与 realm 规则在两模型上均 G≈0（R4 中两模型的梯度都保持）。
+- 校准：G_DeepSeek 对 E_DeepSeek（R4 冻结记录）做与 GLM 相同的方向对照；跨模型
+  G 对比即「先验地板模型特定性」的测量层证据。
