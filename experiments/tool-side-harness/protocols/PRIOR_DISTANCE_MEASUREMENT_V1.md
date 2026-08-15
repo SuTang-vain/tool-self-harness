@@ -56,3 +56,10 @@ G(task) 负单调关联。校准判据（描述性，不做显著性主张）：
   H3 eval-pin 与 realm 规则在两模型上均 G≈0（R4 中两模型的梯度都保持）。
 - 校准：G_DeepSeek 对 E_DeepSeek（R4 冻结记录）做与 GLM 相同的方向对照；跨模型
   G 对比即「先验地板模型特定性」的测量层证据。
+
+## 筛查附记：typescript-mcp-server-generator（2026-08-14，冻结于运行前）
+
+按事前门筛查 Path A 第二数据点候选（源冻结 sha 校验通过）。六探针覆盖 SDK v2 承重
+知识项（包拆分、stdio/HTTP 传输类、registerTool API、zod 4、移除的传输）。双模型
+（GLM + DeepSeek）各 3 重复。判定规则：≥1 项 G ≤ 1/3 → 预注册预测对应任务 E ≥ 0.5
+→ 建议进入资格化；全部 G ≥ 2/3 → 预注册「效应量低于分辨率」。
