@@ -6,8 +6,8 @@ mkdir -p "$workspace/src"
 cp "$here"/input/package.json "$workspace"/package.json
 cat > "$workspace/src/server.ts" <<'YEOF'
 import { McpServer } from '@modelcontextprotocol/server';
-import { ProtocolError } from '@modelcontextprotocol/core';
+import { SdkError } from '@modelcontextprotocol/server';
 try { throw new Error('boom'); } catch (error) {
-  if (error instanceof ProtocolError) console.log(error.status);
+  if (error instanceof SdkError) console.log(error.status);
 }
 YEOF
