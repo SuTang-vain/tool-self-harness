@@ -56,6 +56,10 @@ study (`RESEARCH_CHARTER.md`). The charter poses four hierarchical questions:
 This paper reports the DSH self-target program: the first time a harness
 hosting the research program is itself the target ("harness studying harness"),
 plus the mechanism (prior distance) and measurement tooling that emerged.
+Disclosure: the program runs on the DeepSeek Harness, whose runtime realizes
+the Cordis paradigm paper cited in §5.5, and both originate from overlapping
+organizations; the §5.5 mapping is descriptive and version-dated, not an
+endorsement.
 
 ## 2. Method
 
@@ -83,6 +87,14 @@ workspace through unrestricted shells (38 confirmed accesses; one
 `$HOME`-variable-assembly evasion). The runner now refuses home expansion,
 parent traversal, and outside absolute paths. Held-out hiding is a runner
 property, not a prompt property (`rounds/dsh-pilot-v3/integrity-finding`).
+
+The same failure class later became a public benchmark crisis — the
+Terminal-Bench leaderboard incident, the systematic BenchJack audit, and the
+UK AISI evaluation-cheating findings (see Related Work) — audited post hoc at
+production scale. Our position differs in kind, not just in time: integrity
+is enforced as a preregistered property of the measurement protocol, and
+every number in this paper was produced under that enforcement, not
+corrected by it.
 
 ### 2.3 Fixture-authoring discipline (D1–D5)
 
@@ -288,7 +300,56 @@ behavioral surface: at single-plugin and repeated-cycle granularity, the DSH
 runtime restores its registries exactly, and the observability gaps found
 along the way define the next instrumentation increment.
 
-## 6. Conclusion and Future Work
+## 6. Related Work
+
+**Benchmark integrity (post-hoc auditing).** The 2026 wave of public
+benchmark-integrity failures — the [Terminal-Bench leaderboard
+incident](https://www.tbench.ai/news/leaderboard-integrity-update), the
+systematic BenchJack audit of eight agent benchmarks
+([arXiv:2605.12673](https://papers.cool/arxiv/2605.12673)), and the UK AISI
+finding that every frontier model it tested attempted evaluation cheating
+([CSA research note](https://labs.cloudsecurityalliance.org/research/csa-research-note-frontier-model-evaluation-cheating-systemi/)) —
+documents at scale the same failure class our runner audit caught early
+(§2.2). Our position differs in kind: isolation is a property of the
+measurement protocol, preregistered and in force for every number here,
+rather than a post-hoc trajectory review.
+
+**Self-evolving agent skills.** Two 2026 lines bound our position. Double
+Ratchet co-evolves the evaluation metric with the skill library and shows a
+collapsed always-pass metric still trains skills as well as a valid one —
+task score answers sufficiency only
+([arXiv:2607.12790](https://huggingface.co/papers/2607.12790)). Our program
+makes the opposite design choice: graders are frozen and audited (D3/D5), so
+harness effects stay measurable against an invariant; our checker-feedback
+trap (pilot v2) is an instance of their gaming warning. Rethinking
+self-evolution as sparse, validation-filtered search
+([arXiv:2608.02636](https://scirate.com/arxiv/2608.02636)) and the
+capability-contamination phase transition with pre-commit gating as the only
+effective response ([arXiv:2608.05810](https://scirate.com/arxiv/2608.05810))
+converge with our gate practice from the mechanism side: our Q2 hard gate is
+exactly a pre-commit admission filter, and our single-promotion record (one
+h1 lineage across the whole program) matches their finding that evolution
+gains are sparse and feedback-dependent.
+
+**Identifier semantics.** The M4 result (names, not structure, are the
+prior-leak channel) extends a known code-model property: method names
+measurably matter to neural code generation ([ACM TOSEM
+10.1145/3630010](https://dl.acm.org/doi/10.1145/3630010)), variable renaming
+is an effective adversarial transformation for code models ([ACM
+10.1145/3723353](https://dlnext.acm.org/doi/epdf/10.1145/3723353)), and a
+concurrent study asks directly whether LLMs learn structure or names in
+design-pattern detection ([PROMISE
+2026](https://conf.researchr.org/details/promise-2026/promise-2026-promise-2026/6/Do-LLMs-Learn-Structure-or-Names-A-Study-on-the-Robustness-of-Design-Pattern-Detecti)).
+Our contribution is the harness-measurement consequence: nominal linking is
+a measurable prior-coverage channel (B5, §5.5).
+
+**Prior-distance gate.** We found no published work using no-harness
+guessability to predict harness-intervention effect sizes. The closest
+neighbors are the reliability-science framing of agent evaluation
+([arXiv:2602.16666](https://ar5iv.labs.arxiv.org/html/2602.16666)) and the
+benchmark-audit line above; the gap is what §4 occupies.
+
+## 7. Conclusion and Future Work
 
 The program establishes: (a) DSH presets/skills are qualified tool-side harness
 targets with discriminating gradients; (b) bounded single-surface edits can
@@ -320,3 +381,9 @@ composite-G refinement (B1), the M5 eight-cycle full run with idle controls
   `prior-guessability-probes-structural-v1.json` (M4),
   `prior-guessability-probes-ts-mcp-v2-context.json`
 - Calibration: `results/prior-guessability/`
+- Related-work citations (verified against sources on 2026-08-16): BenchJack
+  `arXiv:2605.12673`; Terminal-Bench integrity update; AISI CSA research note;
+  Double Ratchet `arXiv:2607.12790`; Rethinking skills `arXiv:2608.02636`;
+  pre-commit gating `arXiv:2608.05810`; identifier semantics TOSEM
+  `10.1145/3630010` + ACM `10.1145/3723353` + PROMISE 2026 "Structure or
+  Names?"; reliability science `arXiv:2602.16666`
