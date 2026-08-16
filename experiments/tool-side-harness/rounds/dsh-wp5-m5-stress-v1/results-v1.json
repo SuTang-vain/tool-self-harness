@@ -1,0 +1,66 @@
+{
+  "round": "dsh-wp5-m5-stress-v1",
+  "protocols": [
+    "protocols/DSH_WP5_SELF_EVOLUTION_STRESS_V1.md",
+    "protocols/DSH_WP6_INTEGRITY_TRACK_V1.md"
+  ],
+  "date": "2026-08-16",
+  "environment": {
+    "hostProcessPid": 23048,
+    "approvalPrompts": "disabled",
+    "pluginScope": "host-only"
+  },
+  "baseline": {
+    "toolCount": 35,
+    "serviceCatalogueKeys": 55,
+    "plugins": [],
+    "slotControl": "dyn/evdsh-2 (untouched)",
+    "os_t0": { "rssKb": 227728, "vszKb": 424263840, "fd": 52 }
+  },
+  "cycles": [
+    {
+      "cycle": 1,
+      "plugins": ["strsa-5", "strsb-6"],
+      "packages": ["pkg-10", "pkg-12", "pkg-11"],
+      "runs": ["run-10", "run-12", "run-11"],
+      "readingA": { "uptimeMs": 11996, "listenerFires": 2, "timerTicks": 23, "serviceCalls": 1 },
+      "readingB_afterUpdate": { "uptimeMs": 12540, "listenerFires": 1, "timerTicks": 25, "serviceCalls": 1 },
+      "endSnapshot": { "toolCount": 35, "plugins": [], "os": { "rssKb": 252240, "fd": 56, "threads": 14 } }
+    },
+    {
+      "cycle": 2,
+      "plugins": ["strsc-7", "strsd-8"],
+      "packages": ["pkg-13", "pkg-15", "pkg-14"],
+      "runs": ["run-13", "run-15", "run-14"],
+      "readingA": { "uptimeMs": 12875, "listenerFires": 2, "timerTicks": 25, "serviceCalls": 1 },
+      "readingB_afterUpdate": { "uptimeMs": 16677, "listenerFires": 1, "timerTicks": 33, "serviceCalls": 1 },
+      "endSnapshot": { "toolCount": 35, "plugins": [], "os": { "rssKb": 294336, "fd": 53, "threads": 14 } }
+    },
+    {
+      "cycle": 3,
+      "plugins": ["strse-9", "strsf-10"],
+      "packages": ["pkg-16", "pkg-18", "pkg-17"],
+      "runs": ["run-16", "run-18", "run-17"],
+      "readingA": { "uptimeMs": 4620, "listenerFires": 2, "timerTicks": 9, "serviceCalls": 1 },
+      "readingB_afterUpdate": { "uptimeMs": 14296, "listenerFires": 1, "timerTicks": 28, "serviceCalls": 1 },
+      "endSnapshot": { "toolCount": 35, "plugins": [], "os": { "rssKb": 1340416, "fd": 57, "threads": 14 } }
+    }
+  ],
+  "lifecycleOps": { "defines": 6, "runs": 6, "updates": 3, "stops": 6, "undefines": 6, "errors": 0 },
+  "verdicts": {
+    "H5_1_registryRestoration": { "status": "pass", "cycles": "3/3", "evidence": "direct" },
+    "H5_2_noErrorAccumulation": { "status": "pass", "errors": 0 },
+    "H5_3_noMonotonicResourceGrowth": {
+      "status": "inconclusive-rss",
+      "detail": "RSS monotonic 227728->1340416 KB but confounded by ambient session growth (pre-pilot ps aux showed 1.57GB; +-1GB swings ambient). fd 52->57 flat, threads constant 14: no leak signal.",
+      "amendment": "A1: idle-control samples bracketing each cycle in the Full run"
+    }
+  },
+  "m6T1": {
+    "registryProbe": "usable",
+    "osProbe": "usable",
+    "pilotLeakCriterion": "registry restoration + fd/threads flatness (pass); RSS needs A1"
+  },
+  "claimLevel": "E2",
+  "fullRun": { "cycles": 8, "driver": "fresh rounds (multi-session)", "requires": "A1 idle controls", "entry": "this file + both protocols" }
+}
