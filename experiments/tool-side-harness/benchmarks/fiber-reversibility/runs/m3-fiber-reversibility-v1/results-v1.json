@@ -1,0 +1,40 @@
+{
+  "benchmark": "fiber-reversibility",
+  "protocol": "benchmarks/fiber-reversibility/protocol-v1.md",
+  "runId": "m3-fiber-reversibility-v1",
+  "date": "2026-08-16",
+  "environment": {
+    "runtime": "real DSH process (session host)",
+    "approvalPrompts": "disabled (session policy) — blocks client-package activation (E5)",
+    "filePolicy": "danger-full-access"
+  },
+  "probes": {
+    "fibrev-3": { "packages": ["pkg-6", "pkg-7"], "runs": ["run-6", "run-7"], "finalState": "undefined" },
+    "frslot-4": { "packages": ["pkg-8"], "runs": ["run-8"], "runOutcome": "awaiting-approval (cancelled by stop)", "finalState": "undefined" }
+  },
+  "snapshots": {
+    "baseline": { "toolCount": 35, "serviceCatalogueKeys": 55, "plugins": [], "toolViewCordisOccupants": ["dyn/evdsh-2"] },
+    "mounted": {
+      "toolCount": 36,
+      "readings": [
+        { "package": "pkg-6", "uptimeMs": 11741, "listenerFires": 1, "timerTicks": 21, "serviceCalls": 0 },
+        { "package": "pkg-6", "uptimeMs": 43437, "listenerFires": 1, "timerTicks": 83, "serviceCalls": 0 },
+        { "package": "pkg-7", "uptimeMs": 1806, "listenerFires": 1, "timerTicks": 3, "serviceCalls": 1 }
+      ]
+    },
+    "postStop": { "toolCount": 35, "serviceCatalogueKeys": 55, "toolViewCordisOccupants": ["dyn/evdsh-2"], "pluginStates": { "fibrev-3": "stopped", "frslot-4": "defined" } },
+    "postUndefine": { "plugins": [] }
+  },
+  "verdicts": {
+    "E1_tool": { "status": "pass", "evidence": "direct", "note": "listed+callable while mounted; absent after stop" },
+    "E2_service": { "status": "pass", "evidence": "witness+mechanism", "note": "serviceCalls 0→1 via probe tool; catalogue is static (observability gap)" },
+    "E3_listener": { "status": "pass", "evidence": "mechanism-inferred", "note": "fired on own registration; no post-mortem Inspect channel" },
+    "E4_timer": { "status": "pass", "evidence": "mechanism-inferred", "note": "monotonic 500ms ticks; no post-stop tick channel" },
+    "E5_clientSlot": { "status": "deferred", "evidence": "environment-constraint", "note": "run returned awaiting-approval; session approval prompts disabled" }
+  },
+  "controls": {
+    "crossSessionSlotOccupant": { "registrant": "dyn/evdsh-2", "key": "evdsh-2.pkg-5", "disturbed": false }
+  },
+  "claimLevel": "E2",
+  "judgement": "pass 4/4 executable classes, zero residue; E5 deferred by environment constraint"
+}

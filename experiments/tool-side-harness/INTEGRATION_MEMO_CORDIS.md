@@ -82,7 +82,7 @@ methodological boundaries in the formal vocabulary.
 |---|---|---|---|
 | M1 | ~~Add a "Correspondence with Cordis" section to `PAPER_DRAFT_V1.md`~~ **done**: `PAPER_DRAFT_V1.md` §5.5 | done | E0-methodological |
 | M2 | ~~Offer the DSH program as the paper's §1.2.2 validation case study~~ **done**: `CORDIS_VALIDATION_CASE_STUDY.md` | done | prospective validation evidence for the Cordis paper |
-| M3 | Fiber-reversibility benchmark: audit post-unmount context restoration (residual listeners/services/timers) across dynamic-plugin runs | small new harness tooling | E1-methodological |
+| M3 | ~~Fiber-reversibility benchmark~~ **done** (run v1, 2026-08-16): probe `fibrev-3`/`frslot-4`; E1 tool + E2 service + E3 listener + E4 timer all zero-residue after stop/undefine (E2 direct-witnessed, E3/E4 mechanism-inferred); E5 client Slot deferred (session approval prompts disabled); 3 observability-gap findings for M6. Record: `benchmarks/fiber-reversibility/runs/m3-fiber-reversibility-v1/` | done | E2-methodological |
 | M4 | ~~Structural-linking probes (§6.6)~~ **done** (18 calls): judgments ceiling (drift/collision/subtyping 3/3), structure-to-name 0, de-named realm 0 -> B5 de-naming guideline | done | E1; feeds the §6.6 open problem |
 | M5 | Continuous self-evolution stress test via Ralph loops generating plugin-change sequences | large (multi-session) | E2+ for the paper's conclusion claim |
 | M6 | Runtime-guaranteed integrity per §6.7 (track dynamic-plugin resources, OS-level probe isolation) | product-scale | engineering deliverable |
