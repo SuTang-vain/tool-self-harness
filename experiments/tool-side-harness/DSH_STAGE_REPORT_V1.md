@@ -243,3 +243,13 @@ mean tokens/attempt 31022 vs 29187（Δ=−1835，−5.9%，方向与编辑一�
 pooled SD 5132 → |Δ|=0.36 SD < 1.5 SD 预注册门槛 → **not-measurable-by-design**。
 charter 第 16 条正式登记：小套件 Q3 在此框架内不可测，效率轨闭合；未来 Q3 主张
 须换测量框架。见 `rounds/dsh-wp4-q3-variance-control/`。
+
+
+## 附：S1 GLM 交叉对照（2026-08-17，配额重置后）
+
+plan/v3 配额重置（00:00 +0800）后按 RESUME_RUNBOOK 执行 GLM 臂：端点已升级为
+glm-5.3（记录不评分）。v2 套件结果与 DeepSeek 相位**逐任务 E 值完全一致**
+（0.333/−0.333/0.333/0/1.0/0.333），聚合向量一致（held-in 11/9/10、held-out
+4/0/0），对账同为 1/4 → 前瞻验证不支持。结论：B3c 锚定与门控的任务级预测失败
+均为**模型不变量**，B3/B4 边界升级为双模型一致；逃逸审计 3 条尝试全拒、0 成功。
+见 `rounds/typescript-mcp-server-generator/qualification-v1/glm-crosscheck-2026-08-17.md`。
