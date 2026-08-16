@@ -211,6 +211,40 @@ gate predicts floors, not ceilings.
 **Threats.** Single operator; small suites (3–6 tasks); two models; n = 8–12
 calibration pairs; Q4 not measured.
 
+## 5.5 Correspondence with the Spatiotemporal Composability Paradigm
+
+Our program runs on Cordis, the runtime realization of *A Programming Paradigm
+for Spatiotemporal Composability* (Shi, Zhang, Cui). The paper's two guarantee
+dimensions map onto our boundary catalogue as follows, and the mapping is
+recorded in `INTEGRATION_MEMO_CORDIS.md`:
+
+- **Temporal composability (revertible effects)** underlies D1 (task text must
+  not contain the fix) and the full-release discipline of the dynamic-plugin
+  lifecycle: every intervention we apply to a harness is a tracked context
+  transformation with a defined inverse (reference repairs, lineage rollback),
+  which is what makes the degraded-baseline design sound — h0-minus and its
+  recovery are inverse transformations of the harness content.
+- **Spatial composability (reactive coeffects)** underlies the realm-rule
+  findings: `inject`/`provide` are coeffect declarations, the isolate-realm
+  rule is the dependency-coordination constraint, and the R2 intervention
+  shows that removing the coordination knowledge collapses behavior while a
+  condensed equivalent restores it — content-level evidence that the
+  coeffect specification, not its prose, is the load-bearing component.
+- **Nominal vs structural linking (§6.6)** is the formal face of our
+  prior-distance mechanism: model priors supply nominal knowledge of
+  interfaces, which is why conventional names annihilate harness effects
+  (B3a, B4b) while invented values (eval-pin) behave like key namespacing and
+  keep the effect measurable. The guessability battery is therefore a
+  measurement of nominal-link prior coverage.
+- **Transition cases** of the composition calculus (withdrawal, failure,
+  asynchrony) have measured instances in our integrity records: workspace
+  escapes are failed withdrawals, Gate 0 aborts are failure cases, and the
+  Q2 gate is a confluence check under interleaved edits.
+
+The correspondence is descriptive, not a validation of the calculus: our
+evidence bounds model-visible behavior, not runtime invariants (see the
+memo's honesty clause).
+
 ## 6. Conclusion and Future Work
 
 The program establishes: (a) DSH presets/skills are qualified tool-side harness

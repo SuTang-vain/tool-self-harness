@@ -80,8 +80,8 @@ methodological boundaries in the formal vocabulary.
 
 | # | Direction | Cost | Claim potential |
 |---|---|---|---|
-| M1 | Add a "Correspondence with Cordis" section to `PAPER_DRAFT_V1.md` translating D1-D5/B1-B4 into revertible-effect/coeffect vocabulary | writing only | E0-methodological |
-| M2 | Offer the DSH program as the paper's §1.2.2 validation case study (R2 recovery, realm load-bearing, integrity hardening) | writing only | prospective validation evidence for the Cordis paper |
+| M1 | ~~Add a "Correspondence with Cordis" section to `PAPER_DRAFT_V1.md`~~ **done**: `PAPER_DRAFT_V1.md` §5.5 | done | E0-methodological |
+| M2 | ~~Offer the DSH program as the paper's §1.2.2 validation case study~~ **done**: `CORDIS_VALIDATION_CASE_STUDY.md` | done | prospective validation evidence for the Cordis paper |
 | M3 | Fiber-reversibility benchmark: audit post-unmount context restoration (residual listeners/services/timers) across dynamic-plugin runs | small new harness tooling | E1-methodological |
 | M4 | Structural-linking probes (§6.6): de-named fixture families graded on structural compatibility only | small probe battery (≈24 calls) | E1; feeds the §6.6 open problem |
 | M5 | Continuous self-evolution stress test via Ralph loops generating plugin-change sequences | large (multi-session) | E2+ for the paper's conclusion claim |
