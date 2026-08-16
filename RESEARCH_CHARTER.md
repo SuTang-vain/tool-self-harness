@@ -288,6 +288,19 @@ specified.
     headless held-out result (minimal 6/6 → 0/6). This extends the discipline protocol and is
     recorded in `experiments/tool-side-harness/rounds/dsh-pilot-v3/integrity-finding-2026-08-14.json`.
 
+16. **Small-suite Q3 = not-measurable-by-design (E1-methodological; Q3 variance-control v1
+    closes the efficiency track).** Under the preregistered paired design (same-day, same seed
+    20260816, concurrently interleaved arms; 5 repeats × the 5-task editing suite,
+    official-full, n = 25/arm, DeepSeek V4 Flash), the −27.3% c2 edit shows mean
+    tokens/attempt 29187 vs h0 31022 — a −1835-token (−5.9%) difference in the edit's
+    direction, but the stratum pooled SD is 5132, so |Δ| = 0.36 SD, below the frozen
+    1.5-SD measurability bar. Per the preregistered branch, this clause formally registers:
+    at attempt-level token variance of this magnitude (±16%), single-surface content edits on
+    a 5-task suite have efficiency effects below measurement resolution; Q3 efficiency claims
+    require a different frame (larger suite, more attempts, or a different metric), not more
+    repeats of this design. Evidence:
+    `experiments/tool-side-harness/rounds/dsh-wp4-q3-variance-control/`.
+
 ## Active work packages
 
 - **WP1 — Category-balanced inventory:** freeze a licensed sample pool with at least two candidate

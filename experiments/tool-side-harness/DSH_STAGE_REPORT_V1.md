@@ -233,3 +233,13 @@ H5.1 注册表逐项还原 3/3、H5.2 无错误累积；H5.3 的 RSS 维度不�
 注册表探针 + ps/lsof 进程探针）端到端可用；T2 产品级设计（效果账本 + OS 级
 探针隔离）冻结为 §T2。见 `rounds/dsh-wp5-m5-stress-v1/` 与
 `protocols/DSH_WP5_SELF_EVOLUTION_STRESS_V1.md`、`protocols/DSH_WP6_INTEGRITY_TRACK_V1.md`。
+
+
+## 附：Q3 方差控制（效率轨正式闭合）
+
+配对 seed × 5 重复 × editing 全套件（n=25/臂，DeepSeek V4 Flash，同日双臂交错，
+2026-08-16）：h0 与 c2（roster-service 整节删除，−27.3%）均 25/25 全保持 Q2；
+mean tokens/attempt 31022 vs 29187（Δ=−1835，−5.9%，方向与编辑一致）对层内
+pooled SD 5132 → |Δ|=0.36 SD < 1.5 SD 预注册门槛 → **not-measurable-by-design**。
+charter 第 16 条正式登记：小套件 Q3 在此框架内不可测，效率轨闭合；未来 Q3 主张
+须换测量框架。见 `rounds/dsh-wp4-q3-variance-control/`。

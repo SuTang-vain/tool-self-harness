@@ -68,9 +68,9 @@ function main() {
   }
   const overall = {
     nA: A.length, nB: B.length,
-    meanA: mean(A), meanB: mean(B),
-    pooledSd: pooledSd(A, B),
-    diff: mean(A) - mean(B),
+    meanA: mean(A.map(r => r.total_tokens)), meanB: mean(B.map(r => r.total_tokens)),
+    pooledSd: pooledSd(A.map(r => r.total_tokens), B.map(r => r.total_tokens)),
+    diff: mean(A.map(r => r.total_tokens)) - mean(B.map(r => r.total_tokens)),
     usageCoverageA: h0.metrics && h0.metrics.usage_coverage,
     usageCoverageB: c2.metrics && c2.metrics.usage_coverage,
     loadedSkillRateA: h0.behavior && h0.behavior.loaded_skill_rate,
@@ -96,4 +96,9 @@ function main() {
   console.log('result: ' + outPath);
 }
 
-main().catch(error => { console.error(error.stack || error); process.exit(1); });
+try {
+  main();
+} catch (error) {
+  console.error(error.stack || error);
+  process.exit(1);
+}
