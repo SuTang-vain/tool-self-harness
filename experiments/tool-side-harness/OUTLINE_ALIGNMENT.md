@@ -95,3 +95,21 @@ The next formal activity is **category-balanced sample-pool qualification and be
 calibration**. The next registered diagnostic target is
 `addyosmani/agent-skills/debugging-and-error-recovery`; it is source-frozen but has no model
 attempts yet. No cross-model experiment or Q4 study is authorized in this phase.
+
+## Status appendix (2026-08-16, pre-submission reconciliation)
+
+The mapping table above reflects the 2026-07-30/08-03 plan. Current state per frozen records:
+
+| Paper section | 2026-08-16 state |
+|---|---|
+| taxonomy | sample pool v2 frozen; DSH wave registered; 4 classes still exploratory (multi-label hypothesis vocabulary) — unchanged discipline |
+| fitting paths | Path C: R2 h1 capability lineage (E2, local, cross-repo NOT transferred); Path A: ts-mcp qualification (B3/B4 boundaries, held-in needs-redesign); Path B: using-git-worktrees lineage + git-workflow terminated (prior-covered); Path D: unmeasured |
+| 4D baseline | editing/headless formal baselines; wcag qualified; Q4 still `not_measured` (mini-protocol frozen, unexecuted) |
+| progressive loop | Q2 hard gate exercised end-to-end; one promotion (h1), one retraction (efficiency), conflict matrix 13 entries |
+| implementation | hardened runner (integrity findings), suite validators, probe battery runner, Q3 variance-control analysis script |
+| experiments | DSH 2 targets + wcag + git + ts-mcp = 5 targets; runtime layer M3–M6 added (§5.6 of the draft) |
+| discussion | prior-distance mechanism B1–B5; cross-model R4 directional; efficiency track formally closed (charter clause 16) |
+
+Post-redirection priorities now fully discharged except: Q4 human protocol execution, Path B
+second anchor, third model. The paper draft (PAPER_DRAFT_V1.md, updated 2026-08-16) is the
+consolidation of the rows above; see SUBMISSION_CHECKLIST.md for the submission path.
