@@ -1,0 +1,32 @@
+{
+  "schema_version": "prior-guessability-probes-v1-with-context",
+  "frozen_at": "2026-08-16",
+  "purpose": "M4: structural-linking probes — measure the model's ability to reason about dependencies by structure rather than by name (Cordis paper section 6.6 open problem; prior-distance measurement line)",
+  "model_phase": "deepseek-v4-flash (GLM pending quota)",
+  "probes": [
+    {"id": "s1-resolve-by-contract", "task": "structural-resolution",
+     "context": "Component A requires a service with signature (items: {id: string}[]) => {total: number}. Three providers are installed: P1 exports (items: {id: string}[]) => {total: number, currency: string}; P2 exports (rows: string[]) => number; P3 exports (items: {id: string}[]) => {total: number}.",
+     "prompt": "Which provider satisfies A's dependency?",
+     "pattern": "P3", "flags": "", "expected_direction": "high"},
+    {"id": "s2-interface-drift", "task": "structural-drift",
+     "context": "A consumer was compiled against an interface {id: string, name: string}. The installed provider now provides {id: string, title: string} under the same key.",
+     "prompt": "Is the consumer's dependency satisfied? Answer yes or no.",
+     "pattern": "\\bno\\b", "flags": "i", "expected_direction": "high"},
+    {"id": "s3-key-collision", "task": "structural-collision",
+     "context": "Two providers both register the key 'auth': one provides {validate(token: string): boolean}, the other provides {login(user: string): string}. A consumer requires {validate(token: string): boolean}.",
+     "prompt": "Which provider satisfies the consumer?",
+     "pattern": "validate", "flags": "i", "expected_direction": "high"},
+    {"id": "s4-structure-to-name", "task": "structure-to-name-inference",
+     "context": "An MCP v2 HTTP server needs a transport class that: is exported by a dedicated Node transport package, supports streamable HTTP sessions, and is constructed with no arguments.",
+     "prompt": "What is the exact class name?",
+     "pattern": "NodeStreamableHTTPServerTransport", "flags": "", "expected_direction": "low"},
+    {"id": "s5-denamed-realm", "task": "denamed-realm-rule",
+     "context": "In a plugin composition, a row publishes a process-wide service. The mount audit rejects the composition unless the row sits inside a group that declares a per-session realm keyed by the service name, and the group must contain every consumer of that service.",
+     "prompt": "Show the correct YAML structure for this composition.",
+     "pattern": "isolate:[\\s\\S]{0,80}workflows:\\s*true", "flags": "", "expected_direction": "low"},
+    {"id": "s6-width-subtyping", "task": "structural-subtyping",
+     "context": "A provider's interface is {run(cmd: string): {exit: number, out: string}}. A consumer expects {run(cmd: string): {exit: number, out: string, err?: string}}.",
+     "prompt": "Does the provider structurally satisfy the consumer? Answer yes or no.",
+     "pattern": "\\byes\\b", "flags": "i", "expected_direction": "high"}
+  ]
+}

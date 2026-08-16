@@ -91,3 +91,13 @@ methodological boundaries in the formal vocabulary.
 
 - Paper: `~/Downloads/A Programming Paradigm for Spatiotemporal Composability.md` (local copy; authors Yifan Shi, Wei Zhang, Tianyi Cui; Peking University & DeepSeek-AI).
 - Program evidence: `experiments/tool-side-harness/` (rounds, protocols, registries, lineages, results) — see `EXPERIMENT_ARCHIVE_V1.md`.
+
+## M4 addendum (2026-08-16, frozen before running)
+
+Structural-linking probes (battery `prior-guessability-probes-structural-v1.json`)
+operationalize the §6.6 open problem in the measurement frame: H1 structural
+probes score lower than nominal probes on the same domains (de-naming removes
+nominal recall); H2 the judgment probes (drift, collision, width subtyping)
+reflect general structural knowledge; H3 structure-to-name inference ≈ 0
+(names are not derivable from structure — validating the invented-value
+strategy at a new probe family).
