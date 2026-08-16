@@ -28,9 +28,9 @@ positive and negative results are retained as observations to be explained by th
 | WP1 | Build category-balanced sample pool | v2 registry frozen; DSH wave registered; wcag-audit-patterns qualified (Path C third data point, independent repository) | at least 2 qualified independent targets per exploratory category |
 | WP2 | Structural feature coding | rubric frozen; historical anchors coded provisionally | feature vectors frozen before new candidate outcomes |
 | WP3 | Calibrate 4D baselines | Path B qualified/evolved; Path C formal stopped at per-task safety; DSH pilots v1–v3 + formal 4D baseline complete — both targets formal-baseline-complete, WP4 evolution next | diagnostic + formal sensitivity and Q3 coverage |
-| WP4 | Run category-conditioned evolution | DSH efficiency rounds 1-2 + replication (Q3 unmeasurable at 15-attempt granularity); R2 degraded-h0 capability track: condensed realm rewrite promoted to h1 (E2 bounded) | one frozen bounded lineage per qualified target |
-| WP5 | Mechanism and replication | RQ3/RQ4 deferred until independent targets qualify | preselected ablation and category replication |
-| WP6 | Evaluate utility | Q4 deferred | independent human/expert protocol |
+| WP4 | Run category-conditioned evolution | DSH efficiency rounds 1-2 + replication (Q3 unmeasurable at 15-attempt granularity); R2 degraded-h0 capability track: condensed realm rewrite promoted to h1 (E2 bounded, locally replicated, cross-repo NOT transferred); R4 cross-model directions replicated (E3-directional); wcag qualified, gfw/git terminated, ts-mcp qualification via DeepSeek phase (B3/B4) | one frozen bounded lineage per qualified target |
+| WP5 | Mechanism and replication | prior-distance direct measurement calibrated on GLM (6/8) and DeepSeek (4/4); boundaries B1–B5 registered; pre-pilot gate validated forward on ts-mcp (negative→protocol upgrades); runtime layer added: M3 fiber-reversibility (E2), M4 structural probes (B5), M5 stress pilot (E2, RSS A1), M6-T1 instrumentation | preselected ablation and category replication |
+| WP6 | Evaluate utility | Q4 deferred; M6-T2 effect-ledger design frozen as future work | independent human/expert protocol |
 
 ## Frozen current interpretation
 
@@ -45,13 +45,25 @@ positive and negative results are retained as observations to be explained by th
 - **Debugging diagnostic boundary:** the new `debugging-and-error-recovery` suite is process-sensitive
   (official-full tests before first edit in 9/9 attempts versus 7/9 minimal and 6/9 no-skill), but
   minimal reaches the 6/6 held-in ceiling; it stops before formal baseline and candidate generation.
-- **DSH self-targets (E0, pilots v1–v3):** both DSH suites now discriminate on every partition —
+- **DSH self-targets (E0–E3):** both DSH suites discriminate on every partition —
   editing held-in 9/9 → 3/9 → 3/9, held-out 6/6 → 3/6 → 3/6; headless held-in 8/9 → 3/9 → 3/9,
   held-out 6/6 → 0/6 → 1/6 (anchors in `rounds/dsh-pilot-v3`). Both targets are formal-baseline-complete
-  (`rounds/dsh-formal-baseline-v1`); WP4 category-conditioned evolution is next. Methodological findings (harness consultation gating, checker
+  (`rounds/dsh-formal-baseline-v1`). R2 degraded-h0 capability track promoted the condensed
+  realm-rule rewrite to h1 (E2, locally replicated; cross-repo not transferred — boundary);
+  R4 cross-model directions replicate on DeepSeek V4 (E3-directional, prior floors model-specific);
+  wcag qualified (Path C third data point), git-workflow terminated (prior-covered fourth data point),
+  ts-mcp qualification run through the pre-pilot gate's first forward validation (negative → B3/B4).
+  Methodological findings (harness consultation gating, checker
   feedback trap, over-specification ceiling, and run_command workspace-integrity enforcement) are
   codified in `protocols/FIXTURE_AUTHORING_DISCIPLINE_V1.md` and
   `rounds/dsh-pilot-v3/integrity-finding-2026-08-14.json`.
+- **Runtime layer (M3–M6, E2):** on the live DSH process, dynamic-plugin effects reverse with zero
+  registry residue (M3, 4/4 host classes) and three self-evolution stress cycles keep registries at
+  baseline with zero lifecycle errors (M5; RSS growth ambient-confounded → amendment A1). M4
+  structural probes add boundary B5 (names are the leak channel). M6-T1 (Inspect + OS probes) is
+  executable; M6-T2 effect-ledger design is frozen. Records:
+  `benchmarks/fiber-reversibility/`, `rounds/dsh-wp5-m5-stress-v1/`,
+  `protocols/DSH_WP5_SELF_EVOLUTION_STRESS_V1.md`, `protocols/DSH_WP6_INTEGRITY_TRACK_V1.md`.
 - **Not supported yet:** a universal four-class taxonomy, universal fitting paths, general
   Self-Harness improvement, Path C/D effectiveness, cross-model generality, or human utility.
 
@@ -120,6 +132,8 @@ replication remains a first-class result.
   G-E calibration, and the pre-pilot gate for new targets (V2: B3a-c, B4a-b).
 - `protocols/Q3_VARIANCE_CONTROL_DESIGN.md` / `Q4_MINI_PROTOCOL.md` — frozen executable paths
   for the remaining efficiency and human-utility threads.
+- `protocols/DSH_WP5_SELF_EVOLUTION_STRESS_V1.md` / `DSH_WP6_INTEGRITY_TRACK_V1.md` — frozen
+  self-evolution stress protocol and runtime-integrity instrumentation design (M5/M6).
 - `registries/sample-pool-v2.json` — category-balanced target registry; v1 remains historical.
 - `registries/sample-pool-dsh-v1.json` — DSH self-target wave (editing-cordis-compositions,
   headless-preset) with frozen feature vectors; historical pilot outcomes.

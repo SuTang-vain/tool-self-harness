@@ -1,6 +1,6 @@
 # Harnessing the Harness: Bounded Self-Evolution Applied to the DeepSeek Harness, and the Prior-Distance Mechanism That Predicts It
 
-**Status:** Paper draft v1 (2026-08-14). All numbers cite frozen records under
+**Status:** Paper draft v1 (2026-08-14, updated 2026-08-16 for M3–M6). All numbers cite frozen records under
 `experiments/tool-side-harness/`; claim levels follow the charter
 (`RESEARCH_CHARTER.md`). This draft is the consolidation artifact of the DSH
 self-target research program, not a new experiment.
@@ -29,7 +29,14 @@ exact-phrase paraphrase). The first cross-model run (GLM → DeepSeek V4)
 replicates gradient directions on all four partitions and shows that prior
 floors are measurable and model-specific. The protocol now serves as a
 pre-pilot gate: a screening of the next candidate target produced a targeted
-design with frozen effect predictions. Claim discipline is maintained
+design with frozen effect predictions. Structural-linking probes (M4)
+confirm that names, not structure, are the prior-leak channel (judgments 3/3,
+structure-to-name 0/3, de-named 0/3 → boundary B5). The runtime layer was then
+measured directly on the live DSH process: a single dynamic-plugin probe
+reversed all four host effect classes with zero registry residue (M3), and a
+three-cycle self-evolution stress pilot kept registries at baseline with zero
+lifecycle errors (M5), with the OS-level integrity instrumentation
+prototyped as M6-T1. Claim discipline is maintained
 throughout: the strongest claims are E2 (local, bounded) and E3 (directional
 cross-model); nothing is overstated.
 
@@ -155,7 +162,12 @@ negative-monotone G–E direction; both counterexamples carry identified
 boundaries (B1 multi-item dilution → composite G; B2 exact-phrase paraphrase →
 semantic graders). DeepSeek calibration: 4/4 within-model consistent; G is
 measurably model-specific (commit-format G 0.33 → 1.0); invented and
-DSH-composition items stay G = 0 on both models.
+DSH-composition items stay G = 0 on both models. Structural-linking probes
+(M4, 18 calls) add B5 de-naming: judgment probes (drift/collision/width
+subtyping) score 3/3 — structural knowledge is general — while
+structure-to-name inference and de-named-realm items score 0/3: **names are
+the leak channel; structure alone does not restore guessability**, validating
+the invented-value strategy at a new probe family.
 
 ### 4.3 The pre-pilot gate and its first forward validation
 
@@ -206,7 +218,9 @@ replicate (retraction); monotonic variant ordering broke once (headless
 held-in on DeepSeek); single-item probes under-predict multi-item tasks;
 exact-phrase tasks are paraphrase-confounded; task-level floors for
 reasoning models are set by reasoning plus iteration (B4), so the probe
-gate predicts floors, not ceilings.
+gate predicts floors, not ceilings; de-named fixtures stay prior-resistant
+because names are the leak channel (B5); stress-cycle RSS growth is
+ambient-confounded (M5, amendment A1).
 
 **Threats.** Single operator; small suites (3–6 tasks); two models; n = 8–12
 calibration pairs; Q4 not measured.
@@ -245,16 +259,52 @@ The correspondence is descriptive, not a validation of the calculus: our
 evidence bounds model-visible behavior, not runtime invariants (see the
 memo's honesty clause).
 
+## 5.6 Measured runtime guarantees (M3/M5/M6)
+
+The temporal side of §5.5 is no longer only correspondence: three rounds
+measured the live DSH runtime (the process hosting this program) as
+prospective application evidence.
+
+- **M3 fiber reversibility (E2).** A dynamic Plugin registering four host
+  effect classes (model tool, provided service, `tools/change` listener,
+  500 ms timer; a client Slot was preregistered but deferred — session
+  approval prompts disabled) was mounted, snapshotted, updated, stopped and
+  undefined. Tool presence reversed exactly (36 → 35), the plugin registry
+  returned to `[]`, and no errors surfaced. Listener/timer reversal is
+  mechanism-inferred (same fiber-dispose path that directly removed the tool)
+  because the Inspect catalog has no post-mortem channel for them — itself a
+  first-class finding feeding M6.
+- **M5 self-evolution stress pilot (E2).** Three cycles of
+  define→run→update→stop→undefine over six host plugins (27 lifecycle
+  operations, 0 errors): registry dimensions matched baseline after every
+  cycle (H5.1 3/3, H5.2 pass). OS sampling (ps/lsof) showed flat fd and thread
+  counts; RSS grew monotonically but is confounded by ambient session growth
+  (±1 GB swings predate the pilot), so H5.3 is registered as inconclusive with
+  amendment A1 (idle controls) for the 8-cycle full run.
+- **M6 integrity track (T1 done, T2 designed).** The registry probes above
+  plus the OS probes constitute T1, executable end-to-end. T2 — a per-plugin
+  effect ledger (register/dispose pairing with leak failure at stop) and
+  OS-level probe isolation — is a frozen design (`DSH_WP6_INTEGRITY_TRACK_V1.md`),
+  listed as product-scale future work.
+
+Together M3–M6 turn the Cordis paper's revertibility claim into a measured
+behavioral surface: at single-plugin and repeated-cycle granularity, the DSH
+runtime restores its registries exactly, and the observability gaps found
+along the way define the next instrumentation increment.
+
 ## 6. Conclusion and Future Work
 
 The program establishes: (a) DSH presets/skills are qualified tool-side harness
 targets with discriminating gradients; (b) bounded single-surface edits can
 recover degraded capability and replicate locally; (c) efficiency effects at
 this granularity are unmeasurable by design; (d) prior distance is a measured,
-calibrated, model-specific predictor usable as a pre-pilot gate. Future work:
+calibrated, model-specific predictor usable as a pre-pilot gate; (e) the live
+DSH runtime restores its registries exactly after dynamic-plugin unmount and
+across repeated self-evolution cycles (M3/M5). Future work:
 Path A second data point (ts-mcp, screened), Path B second anchor, Q3
-variance-controlled designs, Q4 human protocol, third model, and the
-composite-G refinement (B1).
+variance-controlled designs, Q4 human protocol, third model, the
+composite-G refinement (B1), the M5 eight-cycle full run with idle controls
+(A1), and the M6-T2 product implementation.
 
 ## Records
 
@@ -262,9 +312,15 @@ composite-G refinement (B1).
 - Archive index: `EXPERIMENT_ARCHIVE_V1.md`
 - Rounds: `rounds/dsh-pilot-v1..v3`, `rounds/dsh-formal-baseline-v1`,
   `rounds/dsh-wp4-v1`, `rounds/dsh-wp4-r2`, `rounds/wcag-audit-patterns`,
-  `rounds/git-workflow-and-versioning`, `rounds/r4-cross-model-v1`
+  `rounds/git-workflow-and-versioning`, `rounds/r4-cross-model-v1`,
+  `rounds/typescript-mcp-server-generator/qualification-v1`,
+  `rounds/dsh-wp5-m5-stress-v1`
+- Runtime benchmarks: `benchmarks/fiber-reversibility/` (M3), protocols
+  `DSH_WP5_SELF_EVOLUTION_STRESS_V1.md` + `DSH_WP6_INTEGRITY_TRACK_V1.md`
 - Lineages: `lineages/dsh-capability/editing-cordis-compositions/h1`
 - Registries: `registries/sample-pool-dsh-v1.json`, `sample-pool-v2.json`,
   `evidence-map-v2.json`, `attention-conflict-matrix-v2.json`,
-  `prior-guessability-probes-v1.json`
+  `prior-guessability-probes-v1.json`,
+  `prior-guessability-probes-structural-v1.json` (M4),
+  `prior-guessability-probes-ts-mcp-v2-context.json`
 - Calibration: `results/prior-guessability/`

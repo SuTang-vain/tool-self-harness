@@ -204,3 +204,30 @@ E=1.0），held-in 仍噪声主导（11/9/10），预测对账 1/4（较 v1 的 
 评分伪影，运行器已修）与 B4b（单发简略上下文无法复现任务内多步推理）。结论：
 G 是 reasoning 模型任务地板的下界；任务地板由推理+迭代设定。见
 `rounds/typescript-mcp-server-generator/` 与 `results/prior-guessability/`。
+
+
+## 附：M4 结构链接探针（§6.6 开放问题）— B5 去名边界
+
+结构探针电池（18 次调用）：判断类 3/3（drift / collision / width subtyping）——
+结构知识是通用的；structure-to-name 0/3 与 de-named realm 0/3——**名字才是先验
+泄漏通道，结构本身不恢复可猜度**。发明值（eval-pin）策略在结构维度的新探针家族
+得到验证，B5 去名边界入档。见 `registries/prior-guessability-probes-structural-v1.json`。
+
+
+## 附：M3 纤维可逆性基准（temporal 保证实测）
+
+真实 DSH 进程单插件探针（工具/服务/监听/500ms 定时器四类效果；客户端 Slot 因
+本会话审批弹窗禁用而 deferral）：挂载快照 → update → stop → undefine 全流程零
+残留（工具 36→35、plugins → []、跨会话 Slot 占用者不受扰动）。三条观测边界
+发现：Inspect 服务目录是静态清单（动态 provide 不可见）、监听/定时器无死后
+通道（机制推断）、跨会话隔离成立。见 `benchmarks/fiber-reversibility/`。
+
+
+## 附：M5 自演化压力 pilot + M6 完整性仪表
+
+3 周期 × 双探针（define→run→update→stop→undefine），27 次生命周期操作 0 错误：
+H5.1 注册表逐项还原 3/3、H5.2 无错误累积；H5.3 的 RSS 维度不确定（单调上升但与
+环境负载混淆，Full 以 A1 空闲对照修正）；fd 与线程平稳。M6：T1 仪表（Inspect
+注册表探针 + ps/lsof 进程探针）端到端可用；T2 产品级设计（效果账本 + OS 级
+探针隔离）冻结为 §T2。见 `rounds/dsh-wp5-m5-stress-v1/` 与
+`protocols/DSH_WP5_SELF_EVOLUTION_STRESS_V1.md`、`protocols/DSH_WP6_INTEGRITY_TRACK_V1.md`。

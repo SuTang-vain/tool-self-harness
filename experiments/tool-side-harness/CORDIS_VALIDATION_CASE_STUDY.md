@@ -25,11 +25,31 @@ itself.
   the verbatim restore and a −44% condensed rewrite both recover 9/9 + 6/6 with
   5/5 reliable tasks, and the recovery replicates in an independent run.
   Evidence: `rounds/dsh-wp4-r2/`, `lineages/dsh-capability/editing-cordis-compositions/h1/`.
+- **Measured outcome 5 (runtime-level reversibility, M3).** On the live DSH
+  process itself, a dynamic Plugin registering four host effect classes (model
+  tool, provided service, `tools/change` listener, 500 ms timer) was mounted,
+  snapshotted, updated, stopped and undefined: tool presence reversed exactly
+  (36 → 35), the plugin registry returned to `[]`, and an unrelated session's
+  Slot occupant was untouched throughout. A fifth class (client Slot) was
+  preregistered but deferred by a session policy (approval prompts disabled).
+  Evidence: `benchmarks/fiber-reversibility/runs/m3-fiber-reversibility-v1/`.
+- **Measured outcome 6 (repeated-cycle stress, M5).** Three full
+  define→run→update→stop→undefine cycles across six host plugins (27 lifecycle
+  operations, 0 errors): every cycle-end registry snapshot matched baseline
+  exactly (H5.1 3/3), with zero error accumulation (H5.2). OS probes showed flat
+  fd/thread counts; RSS growth was ambient-confounded and registered as
+  inconclusive with an idle-control amendment for the eight-cycle full run.
+  Evidence: `rounds/dsh-wp5-m5-stress-v1/`, `protocols/DSH_WP5_SELF_EVOLUTION_STRESS_V1.md`.
 
 What this supports for the paper: prospective, application-level evidence that
 a Cordis-based harness sustains bounded self-modification with observable,
 revertible, reproducible recovery — the kind of validation the conclusion
-calls for, at the content rather than the invariant level.
+calls for, at the content rather than the invariant level. Outcomes 5–6
+extend this from the content level to the runtime registry level: the
+revertibility guarantee is now directly observed on the live process, and the
+observability gaps found along the way (static service catalog; no post-mortem
+listener/timer channel) are the recorded entry conditions for the M6-T2
+effect-ledger design (`protocols/DSH_WP6_INTEGRITY_TRACK_V1.md`).
 
 ## Spatial dimension: dependency coordination under frequent topological change
 
@@ -62,9 +82,14 @@ themselves consumers of nominal links. The prior-distance battery measures
 how much interface knowledge a model's priors already contain; conventional
 names (package/class/tier vocabularies) make fixes guessable without the
 harness (boundaries B3a/B4b), while invented values behave like key
-namespacing and preserve measurability. The model-facing counterpart of
+namespacing and preserve measurability. The structural-linking probes (M4)
+sharpen this: judgment items (drift/collision/width subtyping) score 3/3 —
+structural knowledge is general — while structure-to-name and de-named-realm
+items score 0/3, i.e. names are the leak channel, structure alone does not
+restore guessability (boundary B5). The model-facing counterpart of
 nominal linking is thus measurable and was calibrated on two models (6/8 and
 4/4 consistent pairs). Evidence: `results/prior-guessability/`,
+`registries/prior-guessability-probes-structural-v1.json`,
 `protocols/PRIOR_DISTANCE_MEASUREMENT_V1.md`.
 
 ## Honesty clause
