@@ -199,12 +199,6 @@ reasoning models, not an unbiased estimate. The gate's predictive use is
 therefore bounded to recall-dominant content, with the B4 caveat for
 reasoning/iteration-heavy tasks.
 
-A screening of `typescript-mcp-server-generator` (six dual-model probes)
-produced a targeted design: anchor on three prior-resistant items
-(NodeStreamableHTTPServerTransport naming, v2 package split, SSE/WebSocket
-removal), avoid three prior-covered items, with per-model effect predictions
-frozen for the pilot check.
-
 ## 5. Discussion
 
 **Claim structure.** E2 (h1 capability recovery, bounded, locally replicated) is
@@ -228,7 +222,9 @@ calibration pairs; Q4 not measured.
 ## 5.5 Correspondence with the Spatiotemporal Composability Paradigm
 
 Our program runs on Cordis, the runtime realization of *A Programming Paradigm
-for Spatiotemporal Composability* (Shi, Zhang, Cui). The paper's two guarantee
+for Spatiotemporal Composability* (Shi, Zhang, Cui; preprint v1 2026-08-13,
+`cordiverse/paper`, under active revision — section numbers cited here refer
+to the 2026-08-16 copy and may drift). The paper's two guarantee
 dimensions map onto our boundary catalogue as follows, and the mapping is
 recorded in `INTEGRATION_MEMO_CORDIS.md`:
 
