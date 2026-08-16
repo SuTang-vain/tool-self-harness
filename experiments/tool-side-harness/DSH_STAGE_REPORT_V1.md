@@ -1,8 +1,10 @@
 # DSH 自指目标阶段性研究报告（v1）
 
-Status: 阶段报告 2026-08-14。覆盖从目标注册到正式 4D 基线的全部阶段；全部证据为
-E0 级别观察，未生成任何进化候选。所有数字引用 `rounds/dsh-pilot-v1..v3` 与
-`rounds/dsh-formal-baseline-v1` 的冻结记录。
+Status: 正文 2026-08-14（覆盖目标注册→正式 4D 基线，E0 观察，无进化候选）；
+附录持续更新至 2026-08-16，覆盖 WP4 效率/能力轨、R3/R3b、R4 跨模型、先验距离
+测量与边界 B1–B5、ts-mcp 资格化、以及 M3–M6 运行时层（含 E1–E3 证据）。
+正文数字引用 `rounds/dsh-pilot-v1..v3` 与 `rounds/dsh-formal-baseline-v1` 的冻结
+记录；附录数字引用各自 round / benchmark 记录。
 
 ## 1. 目标与方法
 
