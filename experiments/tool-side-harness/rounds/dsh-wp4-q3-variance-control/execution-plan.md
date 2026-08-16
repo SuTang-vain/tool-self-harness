@@ -19,14 +19,27 @@
 
 ## 执行前核对清单（未完成）
 
-- [ ] 核对 generic-runner 是否支持：同日配对 seed、交错执行顺序、per-attempt
-      token 计数导出、loaded_skill / steps 分层字段记录；
-- [ ] 确认 editing 冻结套件 + official-full 变体在 DeepSeek 上的配置
-      （R4 曾跑过 editing 套件，配置应可复用，需核对 seed 参数位）；
-- [ ] 确认 h0 与 c2 两个 harness 内容快照的当前文件路径（h0 = 现役
-      editing-cordis-compositions SKILL.md；c2 = 撤回候选的补丁快照，若快照不在
-      仓库需从 wp4-v1 round 记录重建并冻结哈希）；
-- [ ] 50 次尝试的配额/费用预算确认（deepseek-v4-flash）。
+- [x] generic-runner 能力：seed（task_order_seed）、per-attempt token 指标
+      （runner.metrics.*_tokens）、behavior.loaded_skill 与 behavior.steps 分层字段、
+      逐尝试 checkpoint 续跑 —— 全部具备（06-run-skill-benchmark.js）；
+- [x] editing 冻结套件 + official-full 接线：suite=`tasks/editing-cordis-compositions`
+      （5 任务 = 3 held-in + 2 held-out），official-full = skillRepo 指向
+      `targets/editing-cordis-compositions/full/`；
+- [x] h0/c2 快照哈希核对：manifest 值 8e3081ec… / 68dc1978… 与磁盘 shasum 一致；
+- [x] 配置与预算：`.tmp-config-dsh-deepseek.yaml`（deepseek-v4-flash），
+      50 次尝试 × 单次数千 token 级，费用可忽略。
+
+## 冻结的分层判定规则（2026-08-16，先于数据）
+
+- 双臂：A=h0（full/SKILL.md），B=c2（candidates/c2/SKILL.md）；同日、同 seed
+  =20260816、并发启动实现尝试级时间交错；repeats=5、variant=official-full。
+- 指标：每尝试 runner.metrics.total_tokens。
+- 分层（冻结阈值）：loaded_skill（0/1）× steps 桶（low ≤15 / high >15）；层内
+  两臂合计 ≥4 次尝试方可入判，否则并入 "other" 层。
+- 层内判据：|meanA − meanB| ≥ 1.5 × 层内 pooled SD（双臂合并方差）。
+  任一层达标 → 「效应可测（按观测符号）」；零层达标 → 按协议将
+  「小套件 Q3 = not-measurable-by-design」写入 charter。
+- 附带报告（不作判据）：不分层总体 |Δ| 与 pooled SD、usage_coverage、loaded_skill_rate。
 
 ## 结果落点
 
