@@ -8,6 +8,7 @@ Status: 2026-08-14。本文件是 DSH 自指研究程序全部实验文档的导
 | 文档 | 内容 |
 |---|---|
 | `experiments/tool-side-harness/PAPER_DRAFT_V1.md` | 论文草稿 v1（本文档的上游） |
+| `experiments/tool-side-harness/INTEGRATION_MEMO_CORDIS.md` | 与 Cordis 时空可组合性论文的结合性备忘录（供两篇论文引用） |
 | `experiments/tool-side-harness/DSH_STAGE_REPORT_V1.md` | 阶段报告（注册→测量的全叙事） |
 | `RESEARCH_CHARTER.md` | 研究纲领：RQ1–RQ4、Gate 0–4、claim 分级 E0–E5、WP1–WP6 |
 

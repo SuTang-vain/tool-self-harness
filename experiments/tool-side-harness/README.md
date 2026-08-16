@@ -130,6 +130,9 @@ replication remains a first-class result.
 
 - `../../RESEARCH_CHARTER.md`: paper-level thesis, questions, outcomes, and claim levels.
 - `PAPER_DRAFT_V1.md`: consolidated paper draft (all numbers cite frozen records).
+- `INTEGRATION_MEMO_CORDIS.md`: citable correspondence between the Cordis
+  spatiotemporal-composability paper and this program (concept table, deep overlaps,
+  honesty clause, M1-M6 roadmap).
 - `EXPERIMENT_ARCHIVE_V1.md`: navigation map of every protocol, round, registry, and
   calibration record with claim levels.
 - `DSH_STAGE_REPORT_V1.md`: staged report of the DSH self-target program (registration through formal baseline).
