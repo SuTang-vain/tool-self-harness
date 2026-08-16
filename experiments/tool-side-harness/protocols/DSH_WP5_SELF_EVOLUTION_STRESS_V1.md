@@ -44,5 +44,12 @@ harness）提供压力层面的行为证据——agent 驱动的动态插件变�
 
 ## Claim level
 
-- Pilot：E2（行为压力证据）。
-- Full 跨会话完成：E3。
+- Pilot：E1-methodological-runtime（行为压力证据）。
+- Full 跨会话完成：复制步骤（不升级 charter 级）。
+
+## A1 附记（2026-08-16，先于 Full 执行）与 claim 映射修正（2026-08-16，执行后）
+
+- A1：每周期边界配对齐采样 S_in/S_out，Δ_cycle 与 Δ_idle 分离环境漂移与周期归因。
+- Claim 映射修正：运行时层测量按 charter 属 E1-methodological；charter 的 E2
+  定义（4D 进化结果过 Gate 1）不适用于 M5。原「Pilot：E2 / Full 跨会话：E3」
+  映射作废，替换为上表。

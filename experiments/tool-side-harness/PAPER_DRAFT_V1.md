@@ -22,20 +22,24 @@ failed to replicate and was retracted). Cross-repository replication of the
 capability intervention did NOT transfer, motivating the central mechanism of
 this paper: **causal effect size scales with the distance between harness
 content and model priors.** We make this mechanism a direct measurement — a
-no-harness single-shot probe battery (guessability G) calibrated against
-measured effect sizes (6/8 consistent pairs on GLM; 4/4 within-model on
-DeepSeek V4), with identified boundary conditions (multi-item dilution,
-exact-phrase paraphrase). The first cross-model run (GLM → DeepSeek V4)
-replicates gradient directions on all four partitions and shows that prior
-floors are measurable and model-specific. The protocol now serves as a
-pre-pilot gate: a screening of the next candidate target produced a targeted
-design with frozen effect predictions. Structural-linking probes (M4)
-confirm that names, not structure, are the prior-leak channel (judgments 3/3,
-structure-to-name 0/3, de-named 0/3 → boundary B5). The runtime layer was then
-measured directly on the live DSH process: a single dynamic-plugin probe
-reversed all four host effect classes with zero registry residue (M3), and a
-three-cycle self-evolution stress pilot kept registries at baseline with zero
-lifecycle errors (M5), with the OS-level integrity instrumentation
+no-harness single-shot probe battery (guessability G) descriptively
+calibrated against measured effect sizes (6/8 consistent pairs on GLM; 4/4
+within-model on DeepSeek V4; no significance claims at these n), with
+identified boundary conditions (multi-item dilution, exact-phrase
+paraphrase). The first cross-model run (GLM → DeepSeek V4) replicates
+gradient directions on all four partitions and shows that prior floors are
+measurable and model-specific. The protocol serves as a pre-pilot gate for
+recall-dominant content; its first prospective application failed at the task
+level (0/4 → 1/4 anchored predictions in range) and each failure upgraded the
+measurement protocol (B3/B4) rather than being hidden. Structural-linking
+probes (M4) confirm that names, not structure, are the prior-leak channel
+(judgments 3/3, structure-to-name 0/3, de-named 0/3 → boundary B5). The
+runtime layer was then measured on the live DSH process: one dynamic-plugin
+probe's tool reversal was witnessed exactly (registry 36 → 35, plugins → [])
+while the remaining effect classes unwind through the same fiber-dispose path
+(two mechanism-inferred; a client Slot deferred) (M3), and an eight-cycle
+self-evolution stress run with idle controls kept registries at baseline with
+zero lifecycle errors (M5), with the OS-level integrity instrumentation
 prototyped as M6-T1. Claim discipline is maintained
 throughout: the strongest claims are E2 (local, bounded) and E3 (directional
 cross-model); nothing is overstated.
@@ -59,7 +63,14 @@ plus the mechanism (prior distance) and measurement tooling that emerged.
 Disclosure: the program runs on the DeepSeek Harness, whose runtime realizes
 the Cordis paradigm paper cited in §5.5, and both originate from overlapping
 organizations; the §5.5 mapping is descriptive and version-dated, not an
-endorsement.
+endorsement. Two further self-study limitations are disclosed: (i) the
+operator, the measured subject, and the grader are the same entity throughout
+(all protocols, graders, and analyses were preregistered before data to
+mitigate, not remove, this structure); (ii) this program and the Cordis paper
+cite each other — the program offers itself as prospective application
+evidence for that paper's conclusion (`INTEGRATION_MEMO_CORDIS.md`), and that
+paper is cited here as background infrastructure — a mutual-citation
+arrangement reviewers should weigh independently.
 
 ## 2. Method
 
@@ -139,7 +150,13 @@ provisionally promoted; the preregistered replication measured **−0.1%** —
 the promotion was retracted, the lineage flagged, and the false positive
 recorded in the conflict matrix. Conclusion: at 15-attempt granularity,
 attempt-level token variance (±10–20%) dominates edits up to 27% of content;
-Q3 effects require variance-controlled designs.
+Q3 effects require variance-controlled designs. The preregistered
+variance-controlled test then closed this question formally: paired seeds, 5
+repeats, n = 25/arm on DeepSeek — the −27.3% edit's token difference (−5.9%,
+in the edit's direction) sits at 0.36 SD against the frozen 1.5-SD bar, so
+small-suite Q3 is **not-measurable-by-design** (charter clause 16), and the
+earlier −16.1%/−0.1% pair is re-read as resolution failure, not direction
+failure.
 
 ### 3.4 Prior coverage as a qualification boundary
 
@@ -151,7 +168,7 @@ official-full because models paraphrase taught header phrases.
 ### 3.5 Cross-model replication (RQ4, first observation — E3 directional)
 
 DeepSeek V4 flash re-ran both frozen DSH suites: editing matched GLM exactly
-(9/3/3 + 6/3/3); headless held-out retained its gradient (5/1/1 vs 6/0/1) with
+(9/3/3 + 6/3/3); headless held-out retained its gradient (5/1/1 vs 6/0/0) with
 eval-pin still prior-resistant; headless held-in kept full ≥ none but with a
 higher no-harness floor (5/9 vs 3/9). Gradient directions replicate on all four
 partitions; prior floors are model-specific.
@@ -273,22 +290,27 @@ The temporal side of §5.5 is no longer only correspondence: three rounds
 measured the live DSH runtime (the process hosting this program) as
 prospective application evidence.
 
-- **M3 fiber reversibility (E2).** A dynamic Plugin registering four host
-  effect classes (model tool, provided service, `tools/change` listener,
-  500 ms timer; a client Slot was preregistered but deferred — session
-  approval prompts disabled) was mounted, snapshotted, updated, stopped and
-  undefined. Tool presence reversed exactly (36 → 35), the plugin registry
-  returned to `[]`, and no errors surfaced. Listener/timer reversal is
-  mechanism-inferred (same fiber-dispose path that directly removed the tool)
-  because the Inspect catalog has no post-mortem channel for them — itself a
-  first-class finding feeding M6.
-- **M5 self-evolution stress pilot (E2).** Three cycles of
-  define→run→update→stop→undefine over six host plugins (27 lifecycle
-  operations, 0 errors): registry dimensions matched baseline after every
-  cycle (H5.1 3/3, H5.2 pass). OS sampling (ps/lsof) showed flat fd and thread
-  counts; RSS grew monotonically but is confounded by ambient session growth
-  (±1 GB swings predate the pilot), so H5.3 is registered as inconclusive with
-  amendment A1 (idle controls) for the 8-cycle full run.
+- **M3 fiber reversibility (E1-methodological, runtime-layer).** A dynamic
+  Plugin registering four host effect classes (model tool, provided service,
+  `tools/change` listener, 500 ms timer; a client Slot was preregistered but
+  deferred — session approval prompts disabled) was mounted, snapshotted,
+  updated, stopped and undefined. The tool class reversed exactly and was
+  directly witnessed (registry 36 → 35, plugin list → `[]`, no errors); the
+  service class was witnessed through the tool channel; listener and timer
+  reversal is mechanism-inferred (the same fiber-dispose path that removed
+  the tool) because the Inspect catalog has no post-mortem channel for them —
+  itself a first-class finding feeding M6. These are runtime-layer
+  measurements, not 4D evolution outcomes, so they carry the charter's
+  E1-methodological level, not E2.
+- **M5 self-evolution stress (E1-methodological, runtime-layer).** A pilot of
+  three cycles (27 lifecycle operations, 0 errors) and a Full run of eight
+  further cycles C4–C11 (80 operations, 0 errors; 107 cumulative) each kept
+  registry dimensions at baseline after every cycle (H5.1 3/3 and 8/8; H5.2
+  pass). With A1 idle controls, cycle RSS deltas are mixed-sign and
+  same-order as idle swings, so RSS growth is **not attributable** to plugin
+  lifecycle at ±1.1 GB ambient resolution; fd and thread counts are flat
+  (H5.3-Full). A cross-session rerun of the same protocol is registered as
+  the replication step; no higher charter level is claimed for it here.
 - **M6 integrity track (T1 done, T2 designed).** The registry probes above
   plus the OS probes constitute T1, executable end-to-end. T2 — a per-plugin
   effect ledger (register/dispose pairing with leak failure at stop) and
@@ -354,14 +376,18 @@ benchmark-audit line above; the gap is what §4 occupies.
 The program establishes: (a) DSH presets/skills are qualified tool-side harness
 targets with discriminating gradients; (b) bounded single-surface edits can
 recover degraded capability and replicate locally; (c) efficiency effects at
-this granularity are unmeasurable by design; (d) prior distance is a measured,
-calibrated, model-specific predictor usable as a pre-pilot gate; (e) the live
-DSH runtime restores its registries exactly after dynamic-plugin unmount and
-across repeated self-evolution cycles (M3/M5). Future work:
-Path A second data point (ts-mcp, screened), Path B second anchor, Q3
-variance-controlled designs, Q4 human protocol, third model, the
-composite-G refinement (B1), the M5 eight-cycle full run with idle controls
-(A1), and the M6-T2 product implementation.
+this granularity are unmeasurable by design (formally closed: paired-seed
+n = 25/arm, 0.36 SD against the 1.5-SD bar — charter clause 16); (d) prior
+distance is a descriptively calibrated, model-specific predictor usable as a
+pre-pilot gate for recall-dominant content (B4-bounded), whose first
+prospective application failed at task level and upgraded the protocol;
+(e) the live DSH runtime restores its registries exactly after
+dynamic-plugin unmount and across repeated self-evolution cycles (M3/M5,
+E1-methodological runtime-layer evidence). Future work:
+Path A second data point (ts-mcp, screened), Path B second anchor, Q4 human
+protocol (mini-protocol frozen), third model, the
+composite-G refinement (B1), a cross-session replication of the M5 runtime
+measurement, and the M6-T2 product implementation.
 
 ## Records
 

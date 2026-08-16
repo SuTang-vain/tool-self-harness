@@ -40,7 +40,9 @@ OS t0：RSS 227728 KB、VSZ 424263840 KB、fd 52（线程未采，首采于周�
 
 ## Claim level
 
-E2（3 周期行为压力证据）。Full（8 周期、多会话、含 A1 对照）→ E3，
-续跑入口：本文件 + 两份协议；驱动机制按协议（新鲜轮次，Ralph 工具仅在用户显式要求时启用）。
+E1-methodological-runtime（3 周期行为压力证据；运行时层测量非 4D 进化结果，charter
+E2 定义不适用）。Full（8 周期 + A1 对照）见 `full-run-log.md`；跨会话复跑为复制步骤，
+不升级 charter 级。续跑入口：本文件 + 两份协议 + `full-run-log.md`；驱动机制按协议
+（新鲜轮次，Ralph 工具仅在用户显式要求时启用）。
 
 机器可读摘要：`results-v1.json`（同目录）。

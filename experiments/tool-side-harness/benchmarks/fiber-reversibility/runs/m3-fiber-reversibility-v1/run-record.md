@@ -71,7 +71,7 @@ run's effects, though counter state per fiber is not itself a leak detector.
 
 ## Judgement
 
-Pass (all executable classes, 4/4) at claim level **E2**: registry-visible effects were
+Pass (all executable classes, 4/4) at claim level **E1-methodological-runtime**: registry-visible effects were
 restored to baseline exactly; timer/listener reversal is mechanism-inferred (same
 fiber-dispose path demonstrably removed the visible classes); E5 deferred by an
 environment constraint (approval prompts disabled), not by any observed residue.
